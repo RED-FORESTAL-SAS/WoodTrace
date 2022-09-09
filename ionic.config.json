@@ -1,0 +1,7 @@
+{
+  "name": "finkapp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
