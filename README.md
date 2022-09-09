@@ -1,5 +1,5 @@
 # finkapp
-Desarrollo de una app para el conteo de grutos, clasificación por madurez y genereación de reportes de producción y venta en cultivos de limón.
+Desarrollo de una app para el conteo de frutos, clasificación por madurez y genereación de reportes de producción y venta en cultivos de limón.
 
 
 Este proyecto está desarrollado en Ionic Framework. Para ejecutarlo sigue los siguientes pasos:
