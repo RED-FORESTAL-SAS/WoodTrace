@@ -4,13 +4,23 @@
   <div class="gradient-input">
 
     <!-- Input -->
-    <ion-input *ngIf="type !== 'select'" debounce="400" [minlength]="min" [maxlength]="max" [formControl]="formControlValue" [placeholder]="label" [type]="type"></ion-input>
-    
+
+
+    <ion-item lines="none" *ngIf="type !== 'select'">
+      <ion-input debounce="400" [minlength]="min" [maxlength]="max" [formControl]="formControlValue"
+        [placeholder]="label" [type]="type"></ion-input>
+        <ion-icon *ngIf="isPassword" (click)="showAndHide()" [name]="hide ? 'eye-outline' : 'eye-off-outline'"></ion-icon>
+    </ion-item>
 
     <!-- Select -->
-    <ion-select *ngIf="type == 'select'" cancelText="" interface="action-sheet" [formControl]="formControlValue" [placeholder]="label">
-      <ion-select-option class="ion-text-wrap" *ngFor="let s of selectOptions" [value]="s.value">{{s.content}}</ion-select-option>
-    </ion-select>
+
+    <ion-item lines="none" *ngIf="type == 'select'">
+      <ion-select cancelText="" interface="action-sheet" [formControl]="formControlValue" [placeholder]="label">
+        <ion-select-option class="ion-text-wrap" *ngFor="let s of selectOptions" [value]="s.value">{{s.content}}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
 
 
   </div>

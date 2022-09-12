@@ -52,7 +52,7 @@
             </app-input-gradient>
             <div class="validators" *ngIf="docNumber.dirty && docNumber.errors">
                 <span *ngIf="docNumber.errors?.['required']">Ingresa el número del documento de identidad</span>
-                <span *ngIf="password.errors?.['minlength']">La contraseña debe contener mínimo 6 caracteres</span>
+                <span *ngIf="docNumber.errors?.['minlength']">El número del documento debe contener mínimo 6 caracteres</span>
             </div>
 
             <!-- Licencia/Número de serie  -->

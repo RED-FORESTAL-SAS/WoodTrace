@@ -85,6 +85,7 @@ export class LoginPage implements OnInit {
         this.utilsSvc.routerLink('/tabs/profile');
       } else {
         this.utilsSvc.routerLink('/email-verification');
+        this.firebaseSvc.sendEmailVerification();
       }
 
       this.resetForm();
@@ -97,7 +98,6 @@ export class LoginPage implements OnInit {
       this.utilsSvc.presentToast(err);
     })
   }
-
 
 
   /**

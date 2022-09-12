@@ -23,20 +23,12 @@ export class EmailVerificationPage implements OnInit {
 
   ionViewWillEnter(){
     this.user = this.utilsSvc.getCurrentUser();
+
   }
 
   logOut(){
     this.firebaseSvc.logout();
   }
 
-  sendEmailVerification(){
-    this.utilsSvc.presentLoading();
-    this.firebaseSvc.sendEmailVerification().then(res =>{
-     this.utilsSvc.presentToast('Enviado con éxito. Verifica tu correo');
-     this.utilsSvc.dismissLoading();
-    }, err =>{
-      this.utilsSvc.presentToast('Ha ocurrido un error, intenta de nuevo');
-     this.utilsSvc.dismissLoading();
-    })
-  }
+ 
 }

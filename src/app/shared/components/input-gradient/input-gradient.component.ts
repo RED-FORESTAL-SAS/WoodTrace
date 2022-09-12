@@ -19,18 +19,34 @@ export class InputGradientComponent implements OnInit {
   @Input() selectOptions: Option[];
   @Input() min: null | string;
   @Input() max: null | string;
+
+
+  hide: boolean = true;
+  isPassword: boolean;
+
   constructor() {
 
-    const selects: any = document.querySelectorAll('.custom-options');
+  
 
-    for (var i = 0; i < selects.length; i++) {
-      selects[i].interfaceOptions = {
-        cssClass: 'my-custom-interface'
-      };
-    };
   }
 
-  ngOnInit() { }
+  ngOnInit() { 
+
+    if(this.type == 'password'){
+      this.isPassword = true
+    }
+    
+  }
 
 
+  showAndHide(){
+    this.hide = !this.hide;
+    
+    if(this.hide){
+      this.type = 'password'
+    }else{
+      this.type = 'text'
+    }
+    
+  }
 }

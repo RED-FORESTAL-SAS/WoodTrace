@@ -6,12 +6,15 @@
     <div>
       <h4 class="ion-text-center ion-padding">Te hemos enviado un correo a <strong>{{user.email}} </strong> con un
         enlace para poder verificarlo</h4>
-
+       <h6>El correo podría haber llegado en la bandeja de Spam o No deseados</h6>
         <!-- Cerrar sesión -->
-      <ion-button (click)="logOut()" color="medium" mode="ios">
-        <span>Ir al Login</span>
-      </ion-button>
    
+      <div class="btn-gradient">
+        <ion-button (click)="logOut()"  mode="ios">
+          <span>Volver</span>
+        </ion-button>
+      </div>
+
     </div>
 
   </div>
