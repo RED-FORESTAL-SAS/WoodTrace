@@ -13,12 +13,19 @@ export class SignUpPage implements OnInit {
 
   fullName = new FormControl('', [Validators.required, Validators.minLength(4)])
   email = new FormControl('', [Validators.required, Validators.email])
-  password = new FormControl('', [Validators.required, Validators.minLength(6)]);
+  password = new FormControl('', [Validators.required, Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&.])[A-Za-z\d$@$!%*?&].{8,16}')]);
   docType = new FormControl('', [Validators.required])
-  docNumber = new FormControl('', [Validators.required])
-  license = new FormControl('')
+  docNumber = new FormControl('', [Validators.required, Validators.minLength(6)])
+  license = new FormControl('', [Validators.required, Validators.minLength(12)])
 
-  
+
+  docTypes = [
+    { value: 1, content: 'Cédula' },
+    { value: 2, content: 'Cédula de Extranjería' },
+    { value: 3, content: 'Número de Identificación Tributaria' },
+    { value: 4, content: 'Permiso Especial de Permanencia' },
+  ]
+
   constructor(
     private firebaseSvc: FirebaseService,
     private utilsSvc: UtilsService
@@ -57,14 +64,14 @@ export class SignUpPage implements OnInit {
     this.utilsSvc.presentLoading();
 
     this.firebaseSvc.createUser(user).then(res => {
-      
+
       user.id = res.user.uid;
       this.saveUserInfo(user);
 
       this.utilsSvc.dismissLoading();
 
     }, err => {
-      
+
       let error = this.utilsSvc.getError(err);
 
       this.utilsSvc.dismissLoading();
@@ -84,14 +91,17 @@ export class SignUpPage implements OnInit {
    * the loading spinner
    * @param {User} user - User - this is the user object that we created earlier.
    */
-  saveUserInfo(user: User){
+  saveUserInfo(user: User) {
+    //Delete password from object to save it
+    delete user.password;
+
     this.utilsSvc.presentLoading();
-    this.firebaseSvc.addToCollectionById('users', user).then(res =>{
+    this.firebaseSvc.addToCollectionById('users', user).then(res => {
       localStorage.setItem('user', JSON.stringify(user));
       this.firebaseSvc.sendEmailVerification();
       this.utilsSvc.routerLink('/email-verification');
       this.utilsSvc.dismissLoading();
-    }, err =>{
+    }, err => {
       this.utilsSvc.dismissLoading();
     })
   }

@@ -9,7 +9,7 @@
 
 
             <!-- Nombre completo  -->
-            <app-input-gradient label="Nombre Completo" type="text" [formControlValue]="fullName">
+            <app-input-gradient max="50" label="Nombre Completo" type="text" [formControlValue]="fullName">
             </app-input-gradient>
             <div class="validators" *ngIf="fullName.dirty && fullName.errors">
                 <span *ngIf="fullName.errors?.['required']">Ingresa tu nombre completo</span>
@@ -17,7 +17,7 @@
             </div>
 
             <!-- Email  -->
-            <app-input-gradient label="Correo Electrónico" type="email" [formControlValue]="email">
+            <app-input-gradient max="50" label="Correo Electrónico" type="email" [formControlValue]="email">
             </app-input-gradient>
             <div class="validators" *ngIf="email.dirty && email.errors">
                 <span *ngIf="email.errors?.['required']">Ingresa tu email</span>
@@ -25,30 +25,42 @@
             </div>
 
             <!-- Password -->
-            <app-input-gradient label="Contraseña" type="password" [formControlValue]="password"></app-input-gradient>
+            <app-input-gradient max="16" label="Contraseña" type="password" [formControlValue]="password"></app-input-gradient>
             <div class="validators" *ngIf="password.dirty && password.errors">
                 <span *ngIf="password.errors?.['required']">La contraseña es requerida</span>
-                <span *ngIf="password.errors?.['minlength']">La contraseña debe contener mínimo 6 caracteres</span>
+                <span *ngIf="password.errors?.['pattern']">
+                    La contraseña debe contener:
+                    <ul>
+                        <li>Mínimo 8 caracteres</li>
+                        <li>Al menos un número</li>
+                        <li>Al menos una letra mayúscula</li>
+                        <li>Al menos una letra minúscula</li>
+                        <li>Al menos un caracter especial ($@$!%*?&.)</li>
+                    </ul>
+                </span>
             </div>
 
             <!-- Tipo de documento  -->
-            <app-input-gradient label="Tipo de documento" type="select" [formControlValue]="docType"></app-input-gradient>
+            <app-input-gradient [selectOptions]="docTypes" label="Tipo de documento" type="select" [formControlValue]="docType"></app-input-gradient>
             <div class="validators" *ngIf="docType.touched && docType.errors">
                 <span *ngIf="docType.errors?.['required']">Selecciona el tipo de documento de identidad</span>
             </div> 
                
 
              <!-- Número de documento  -->
-             <app-input-gradient label="No. de documento" type="tel" [formControlValue]="docNumber">
+             <app-input-gradient max="15" min="6" label="No. de documento" type="tel" [formControlValue]="docNumber">
             </app-input-gradient>
             <div class="validators" *ngIf="docNumber.dirty && docNumber.errors">
                 <span *ngIf="docNumber.errors?.['required']">Ingresa el número del documento de identidad</span>
+                <span *ngIf="password.errors?.['minlength']">La contraseña debe contener mínimo 6 caracteres</span>
             </div>
 
             <!-- Licencia/Número de serie  -->
-            <app-input-gradient label="Licencia/Número de serie (opcional)" type="text" [formControlValue]="license">
+            <app-input-gradient max="12" label="Licencia/Número de serie (opcional)" type="text" [formControlValue]="license">
             </app-input-gradient>
-
+            <div class="validators" *ngIf="license.dirty && license.errors">
+                <span *ngIf="license.errors?.['minlength']">El formato de la licencia es inválido</span>
+            </div>
 
             <!-- Button -->
             <div class="btn-gradient">

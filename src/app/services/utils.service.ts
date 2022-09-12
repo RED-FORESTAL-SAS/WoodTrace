@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoadingController, ToastController } from '@ionic/angular';
+import { LoadingController, ModalController, ToastController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -10,14 +10,15 @@ export class UtilsService {
   constructor(
     private loadingController: LoadingController,
     private toastController: ToastController,
-    private router: Router
+    private router: Router,
+    private modalController: ModalController
   ) { }
 
- /**
-  * 
-  * @returns The current user information in localstorage
-  */
-  getCurrentUser(){
+  /**
+   * 
+   * @returns The current user information in localstorage
+   */
+  getCurrentUser() {
     return JSON.parse(localStorage.getItem('user'));
   }
 
@@ -51,13 +52,18 @@ export class UtilsService {
     toast.present();
   }
 
-  
+
 
   //======= Router =======
-  routerLink(url: string){
-   this.router.navigateByUrl(url);
+  routerLink(url: string) {
+    this.router.navigateByUrl(url);
   }
+  
 
+  //======= Close Modal =======
+  closeModal() {
+    this.modalController.dismiss();
+  }
 
 
   //======= Firebase Errors Handler =======
@@ -75,6 +81,5 @@ export class UtilsService {
       return 'El correo electrónico que ingresaste ya está registrado';
     }
 
-    
   }
 }

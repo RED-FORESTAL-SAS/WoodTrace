@@ -17,4 +17,7 @@ export class HeaderComponent implements OnInit {
   ngOnInit() {}
 
 
+  close(){
+   this.utilsSvc.closeModal();
+  }
 }
