@@ -74,7 +74,7 @@ export class UtilsService {
     }
 
     if (error == 'FirebaseError: Firebase: There is no user record corresponding to this identifier. The user may have been deleted. (auth/user-not-found).') {
-      return 'Este usuario no existe. Registráte para acceder';
+      return 'Este usuario no existe. Regístrate para acceder';
     }
 
     if (error == 'FirebaseError: Firebase: The email address is already in use by another account. (auth/email-already-in-use).') {
