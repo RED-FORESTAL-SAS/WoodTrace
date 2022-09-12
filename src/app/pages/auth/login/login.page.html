@@ -1,0 +1,51 @@
+<ion-content>
+
+  <div class="wrapper">
+
+    <!-- Vertical/Horizontal Container -->
+    <div>
+
+      <div class="header">
+        <app-logo></app-logo>
+        <h4>Inicio de Sesión</h4>
+      </div>
+
+
+      <div class="form">
+
+        <!-- Email  -->
+        <app-input-gradient label="Correo Electrónico" type="email" [formControlValue]="email"> </app-input-gradient>
+       <div class="validators" *ngIf="email.dirty && email.errors">
+          <span *ngIf="email.errors?.['required']">Ingresa tu email</span>
+          <span *ngIf="email.errors?.['email']">Ingresa un email válido</span>
+        </div>
+
+        <!-- Password -->
+        <app-input-gradient label="Contraseña" type="password" [formControlValue]="password"></app-input-gradient>
+        <div class="validators" *ngIf="password.dirty && password.errors">
+          <span *ngIf="password.errors?.['required']">La contraseña es requerida</span>
+        </div>
+
+
+        <!-- Button -->
+        <div class="btn-gradient">
+          <ion-button (click)="login()" [disabled]="!validator()" mode="ios">
+            <span>Iniciar Sesión</span>
+          </ion-button>
+        </div>
+
+
+        <div class="footer">
+          <ion-text routerLink="/sign-up" color="primary"><strong>Registrarse</strong></ion-text>
+         <div class="ion-padding-top"><ion-text routerLink="/reset-password" color="dark">Olvidé mi contraseña</ion-text></div> 
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+  </div>
+
+</ion-content>

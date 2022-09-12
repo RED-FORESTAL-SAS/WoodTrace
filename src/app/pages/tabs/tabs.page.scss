@@ -1,0 +1,10 @@
+ion-tab-bar{
+    --background: linear-gradient(to right, var(--ion-color-secondary), var(--ion-color-primary));
+
+    ion-tab-button{
+        --background: transparent;
+        --color: var(--ion-color-dark);
+        --color-selected: var(--ion-color-light-tint);
+    }
+}
+

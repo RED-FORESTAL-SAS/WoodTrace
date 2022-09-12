@@ -1,0 +1,15 @@
+.toolbar-sm{
+    --min-height: 25px;
+    padding-bottom: 10px;
+}
+
+.back-toolbar{
+    --min-height: 45px;
+    --padding-bottom: 0;
+    color: var(--ion-color-primary);
+}
+
+ion-back-button{
+    text-transform: capitalize;
+}
+

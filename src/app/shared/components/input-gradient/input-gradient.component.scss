@@ -1,0 +1,20 @@
+.label{
+    font-size: 13px;
+    padding-bottom: 5px;
+}
+
+.gradient-input {
+    width: 100%;
+    position: relative;
+    background: linear-gradient(to right, var(--ion-color-secondary), var(--ion-color-primary));
+    padding: 1px;
+    border-radius: 10px;
+
+    ion-input, ion-select {
+        border-radius: 10px;
+        font-size: 13px;
+        background: white;
+        color: var(--ion-color-dark);
+        --placeholder-opacity: 50%;
+    }
+}

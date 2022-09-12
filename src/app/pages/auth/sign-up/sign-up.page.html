@@ -1,0 +1,64 @@
+<app-header backButton="/login" title="Registro"></app-header>
+<ion-content>
+
+    <div class="wrapper">
+
+        <!-- Vertical/Horizontal Container -->
+
+        <div class="form">
+
+
+            <!-- Nombre completo  -->
+            <app-input-gradient label="Nombre Completo" type="text" [formControlValue]="fullName">
+            </app-input-gradient>
+            <div class="validators" *ngIf="fullName.dirty && fullName.errors">
+                <span *ngIf="fullName.errors?.['required']">Ingresa tu nombre completo</span>
+                <span *ngIf="fullName.errors?.['minlength']">El nombre debe contener mínimo 4 caracteres</span>
+            </div>
+
+            <!-- Email  -->
+            <app-input-gradient label="Correo Electrónico" type="email" [formControlValue]="email">
+            </app-input-gradient>
+            <div class="validators" *ngIf="email.dirty && email.errors">
+                <span *ngIf="email.errors?.['required']">Ingresa tu email</span>
+                <span *ngIf="email.errors?.['email']">Ingresa un email válido</span>
+            </div>
+
+            <!-- Password -->
+            <app-input-gradient label="Contraseña" type="password" [formControlValue]="password"></app-input-gradient>
+            <div class="validators" *ngIf="password.dirty && password.errors">
+                <span *ngIf="password.errors?.['required']">La contraseña es requerida</span>
+                <span *ngIf="password.errors?.['minlength']">La contraseña debe contener mínimo 6 caracteres</span>
+            </div>
+
+            <!-- Tipo de documento  -->
+            <app-input-gradient label="Tipo de documento" type="select" [formControlValue]="docType"></app-input-gradient>
+            <div class="validators" *ngIf="docType.touched && docType.errors">
+                <span *ngIf="docType.errors?.['required']">Selecciona el tipo de documento de identidad</span>
+            </div> 
+               
+
+             <!-- Número de documento  -->
+             <app-input-gradient label="No. de documento" type="tel" [formControlValue]="docNumber">
+            </app-input-gradient>
+            <div class="validators" *ngIf="docNumber.dirty && docNumber.errors">
+                <span *ngIf="docNumber.errors?.['required']">Ingresa el número del documento de identidad</span>
+            </div>
+
+            <!-- Licencia/Número de serie  -->
+            <app-input-gradient label="Licencia/Número de serie (opcional)" type="text" [formControlValue]="license">
+            </app-input-gradient>
+
+
+            <!-- Button -->
+            <div class="btn-gradient">
+                <ion-button (click)="createUser()" [disabled]="!validator()" mode="ios">
+                    <span>Registrarme</span>
+                </ion-button>
+            </div>
+
+
+        </div>
+    </div>
+
+</ion-content>

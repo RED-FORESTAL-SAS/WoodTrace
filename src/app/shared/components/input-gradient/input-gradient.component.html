@@ -1,0 +1,19 @@
+<div class="ion-padding-bottom">
+
+  <div class="label animate__animated animate__fadeIn" *ngIf="formControlValue.value">{{label}}</div>
+  <div class="gradient-input">
+
+    <!-- Input -->
+    <ion-input *ngIf="type !== 'select'" debounce="400" [formControl]="formControlValue" [placeholder]="label" [type]="type"></ion-input>
+    
+
+    <!-- Select -->
+    <ion-select *ngIf="type == 'select'" interface="popover" [formControl]="formControlValue" [placeholder]="label">
+      <ion-select-option value="1">Cédula</ion-select-option>
+      <ion-select-option value="2">Pasaporte</ion-select-option>
+    </ion-select>
+
+
+  </div>
+
+</div>

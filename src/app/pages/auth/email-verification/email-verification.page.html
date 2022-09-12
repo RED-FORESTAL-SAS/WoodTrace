@@ -1,0 +1,26 @@
+<app-header (click)="logOut()" backButton="/login" title="Verificar Email"></app-header>
+
+<ion-content>
+
+  <div class="wrapper ion-text-center">
+    <div>
+      <h4 class="ion-text-center ion-padding">Te hemos enviado un correo a <strong>{{user.email}} </strong> con un
+        enlace para poder verificarlo</h4>
+
+        <!-- Cerrar sesión -->
+      <ion-button (click)="logOut()" color="medium" mode="ios">
+        <span>Ir al Login</span>
+      </ion-button>
+
+      <!-- Enviar correo de nuevo -->
+      <ion-button (click)="sendEmailVerification()" mode="ios">
+        <span>Enviar de nuevo</span>
+      </ion-button>
+
+    </div>
+
+  </div>
+
+
+
+</ion-content>

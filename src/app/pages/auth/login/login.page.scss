@@ -1,0 +1,25 @@
+.wrapper {
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header {
+    text-align: center;
+}
+
+.form{
+    padding-top: 20px;
+    width: 340px;
+}
+
+.footer{
+    padding-top: 60px;
+    text-align: center;
+
+    ion-text{
+        padding-top: 20px;
+    }
+}
+

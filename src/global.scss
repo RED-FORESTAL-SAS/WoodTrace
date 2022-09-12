@@ -24,3 +24,40 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
+@import 'animate.css';
+
+.text-gradient {
+    background: linear-gradient(var(--ion-color-secondary), var(--ion-color-primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.validators {
+    padding: 0px 0px 10px 0px;
+    color: var(--ion-color-danger);
+    font-size: 13px;
+}
+
+.line-gradient{
+    background: linear-gradient(to right, var(--ion-color-secondary), var(--ion-color-primary)); 
+    width: 100vw;
+    height: 1px;
+}
+
+.btn-gradient {
+
+    text-align: center;
+    padding-top: 20px;
+
+    ion-button {
+        text-transform: capitalize;
+        font-weight: 400;
+        --background: linear-gradient(to right, var(--ion-color-secondary), var(--ion-color-primary));
+        --background-activated: linear-gradient(to left, var(--ion-color-secondary), var(--ion-color-primary));
+        --border-radius: 15px;
+
+        span{
+            padding: 15px;
+        }
+    }
+}
