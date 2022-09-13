@@ -5,7 +5,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { Router } from '@angular/router';
 import { LoadingController, ToastController } from '@ionic/angular';
-import * as firebase from 'firebase/app';
+import * as firebase from 'firebase/compat';
 import { User } from '../models/user.model';
 import { getStorage, ref, uploadString } from "firebase/storage";
 
@@ -56,7 +56,7 @@ sendRecoveryEmail(email:string){
  * Enviar email para verificación
  */
  async sendEmailVerification(){
-  return (await this.auth.currentUser).sendEmailVerification();
+  return (await this.auth.currentUser).sendEmailVerification()
 }
 
 

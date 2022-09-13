@@ -58,7 +58,8 @@ export class SignUpPage implements OnInit {
       fullName: this.fullName.value,
       docType: this.docType.value,
       docNumber: this.docNumber.value,
-      license: this.license.value
+      license: this.license.value,
+      emailVerified: false
     }
 
     this.utilsSvc.presentLoading();

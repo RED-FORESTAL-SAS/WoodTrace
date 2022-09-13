@@ -6,11 +6,10 @@ import { UtilsService } from '../services/utils.service';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuard implements CanActivate {
+export class NoVerifyEmailGuard implements CanActivate {
 
-  constructor(private utilsService: UtilsService){
+  constructor(private utilsService: UtilsService){}
 
-  }
 
   canActivate(
     route: ActivatedRouteSnapshot,
@@ -19,24 +18,20 @@ export class AuthGuard implements CanActivate {
 
    let user = this.utilsService.getCurrentUser(); 
 
-   
-   if(user && user.emailVerified){
+ 
+   if(user && !user.emailVerified){
     return true;
    }
 
-   if(user && !user.emailVerified){
-    this.utilsService.routerLink('/email-verification');
+   if(user && user.emailVerified){
+    this.utilsService.routerLink('/tabs/profile');
     return false;
    }
-
+   
    if(!user){
     this.utilsService.routerLink('/login');
     return false;
-
    }
    
-
-   
   }
-  
 }

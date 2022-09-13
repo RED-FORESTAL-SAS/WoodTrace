@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './guards/auth.guard';
+import { NoAuthGuard } from './guards/no-auth.guard';
+import { NoVerifyEmailGuard } from './guards/no-verify-email.guard';
 
 const routes: Routes = [
   {
@@ -9,23 +12,23 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    loadChildren: () => import('./pages/auth/login/login.module').then( m => m.LoginPageModule)
+    loadChildren: () => import('./pages/auth/login/login.module').then( m => m.LoginPageModule), canActivate: [NoAuthGuard]
   },
   {
     path: 'sign-up',
-    loadChildren: () => import('./pages/auth/sign-up/sign-up.module').then( m => m.SignUpPageModule)
+    loadChildren: () => import('./pages/auth/sign-up/sign-up.module').then( m => m.SignUpPageModule), canActivate: [NoAuthGuard]
   },
   {
     path: 'reset-password',
-    loadChildren: () => import('./pages/auth/reset-password/reset-password.module').then( m => m.ResetPasswordPageModule)
+    loadChildren: () => import('./pages/auth/reset-password/reset-password.module').then( m => m.ResetPasswordPageModule), canActivate: [NoAuthGuard]
   },
   {
     path: 'tabs',
-    loadChildren: () => import('./pages/tabs/tabs.module').then( m => m.TabsPageModule)
+    loadChildren: () => import('./pages/tabs/tabs.module').then( m => m.TabsPageModule), canActivate: [AuthGuard]
   },
   {
     path: 'email-verification',
-    loadChildren: () => import('./pages/auth/email-verification/email-verification.module').then( m => m.EmailVerificationPageModule)
+    loadChildren: () => import('./pages/auth/email-verification/email-verification.module').then( m => m.EmailVerificationPageModule), canActivate: [NoVerifyEmailGuard]
   },
 ];
 

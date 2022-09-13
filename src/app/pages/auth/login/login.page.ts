@@ -15,6 +15,8 @@ export class LoginPage implements OnInit {
   email = new FormControl('', [Validators.required, Validators.email])
   password = new FormControl('', [Validators.required]);
 
+  loading: boolean;
+
   constructor(
     private firebaseSvc: FirebaseService,
     private utilsSvc: UtilsService
@@ -47,21 +49,24 @@ export class LoginPage implements OnInit {
       emailVerified: null
     }
 
-    this.utilsSvc.presentLoading();
+    this.loading = true;
 
     this.firebaseSvc.Login(user).then(res => {
 
       user.id = res.user.uid;
       user.emailVerified = res.user.emailVerified;
-      this.utilsSvc.dismissLoading();
+      this.loading = false;
 
       this.getUserData(user);
 
     }, err => {
+      this.loading = false;
       let error = this.utilsSvc.getError(err);
 
-      this.utilsSvc.dismissLoading();
-      this.utilsSvc.presentToast(error);
+      if (error !== 'El correo electrónico que ingresaste ya está registrado') {
+        this.utilsSvc.presentToast(error);
+      }
+
     })
   }
 
@@ -75,11 +80,15 @@ export class LoginPage implements OnInit {
    * authentication service.
    */
   getUserData(user: User) {
-    this.utilsSvc.presentLoading();
+    this.loading = true;
 
-    let ref = this.firebaseSvc.getDataById('users', user.id).valueChanges().subscribe(res => {
+    let ref = this.firebaseSvc.getDataById('users', user.id).valueChanges().subscribe((res: User) => {
 
+      this.loading = false;
+
+      res.emailVerified = user.emailVerified;
       localStorage.setItem('user', JSON.stringify(res))
+
 
       if (user.emailVerified) {
         this.utilsSvc.routerLink('/tabs/profile');
@@ -91,10 +100,10 @@ export class LoginPage implements OnInit {
       this.resetForm();
       ref.unsubscribe();
 
-      this.utilsSvc.dismissLoading();
+
 
     }, err => {
-      this.utilsSvc.dismissLoading();
+      this.loading = false;
       this.utilsSvc.presentToast(err);
     })
   }

@@ -28,15 +28,22 @@
 
 
         <!-- Button -->
-        <div class="btn-gradient">
+        <div *ngIf="!loading" class="btn-gradient">
           <ion-button (click)="login()" [disabled]="!validator()" mode="ios">
             <span>Iniciar Sesión</span>
           </ion-button>
         </div>
 
+        <!-- Button Loading-->
+        <div *ngIf="loading" class="btn-gradient">
+          <ion-button class="btn-loading" disabled mode="ios">
+            <span><ion-spinner slot="end" color="dark"></ion-spinner></span>
+          </ion-button>
+        </div>
+
 
         <div class="footer">
-          <ion-text routerLink="/sign-up" color="primary"><strong>Registrarse</strong></ion-text>
+         <div class="ion-padding-bottom"><ion-text routerLink="/sign-up" color="primary"><strong>Registrarse</strong></ion-text></div> 
          <div class="ion-padding-top"><ion-text routerLink="/reset-password" color="dark">Olvidé mi contraseña</ion-text></div> 
         </div>
 
