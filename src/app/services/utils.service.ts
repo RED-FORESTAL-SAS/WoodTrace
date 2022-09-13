@@ -50,6 +50,7 @@ export class UtilsService {
     const toast = await this.toastController.create({
       message,
       color: 'primary',
+      position:'middle',
       buttons: [
         {
           side: 'end',
