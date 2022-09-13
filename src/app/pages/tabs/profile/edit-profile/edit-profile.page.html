@@ -6,9 +6,11 @@
         <!-- Photo -->
         <div class="ion-text-center ion-padding-bottom">
             
-            <ion-icon *ngIf="!photo.value" class="default-photo" name="person-circle-outline"></ion-icon>
+            <ion-spinner *ngIf="loading" color="secondary"></ion-spinner>
 
-            <ion-avatar class="photo" *ngIf="photo.value">
+            <ion-icon *ngIf="!photo.value && !loading" class="default-photo" name="person-circle-outline"></ion-icon>
+
+            <ion-avatar class="photo" *ngIf="photo.value && !loading">
                 <img [src]="photo.value" />
             </ion-avatar> 
 
@@ -30,7 +32,7 @@
         </div>
 
         <!-- Email  -->
-        <app-input-gradient [disabled]=true max="50" label="Correo Electrónico" type="email" [formControlValue]="email">
+        <app-input-gradient max="50" label="Correo Electrónico" type="email" [formControlValue]="email">
         </app-input-gradient>
         <div class="validators" *ngIf="email.dirty && email.errors">
             <span *ngIf="email.errors?.['required']">Ingresa tu email</span>
@@ -57,7 +59,7 @@
 
 
         <!-- Button -->
-        <div class="btn-gradient">
+        <div *ngIf="!loading && !loadingPhoto" class="btn-gradient">
             <ion-button (click)="updateUser()" [disabled]="!validator()" mode="ios">
                 <span>Actualizar</span>
             </ion-button>

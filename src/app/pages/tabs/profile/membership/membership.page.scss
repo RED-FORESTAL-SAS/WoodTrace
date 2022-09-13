@@ -1,0 +1,35 @@
+.wrapper {
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form{
+    width: 320px;
+
+    .line-w{
+        width: 100%;
+    }
+}
+
+ion-item{
+    font-size: 13px;
+}
+
+.date{
+    color: gray;
+    text-align: center;
+}
+
+.note{
+    font-size: 11px;
+    position: relative;
+    bottom: 10px;
+}
+
+.no-license{
+    padding-top: 20px;
+    text-align: center;
+}
+

@@ -13,7 +13,7 @@ import { UtilsService } from 'src/app/services/utils.service';
 export class EditProfilePage implements OnInit {
 
   fullName = new FormControl('', [Validators.required, Validators.minLength(4)])
-  email = new FormControl('', [Validators.required, Validators.email])
+  email = new FormControl('', [Validators.required, Validators.email]);
   docType = new FormControl('', [Validators.required])
   docNumber = new FormControl('', [Validators.required, Validators.minLength(6)])
   photo = new FormControl('');
@@ -21,6 +21,9 @@ export class EditProfilePage implements OnInit {
   docTypes = [];
 
   user = {} as User;
+
+  loading: boolean;
+  loadingPhoto: boolean;
 
   constructor(
     private firebaseSvc: FirebaseService,
@@ -48,7 +51,8 @@ export class EditProfilePage implements OnInit {
   }
 
   getUser() {
-    this.email.setValue(this.user.email);
+    this.email.setValue(this.user.email)
+    this.email.disable();
     this.fullName.setValue(this.user.fullName);
     this.docType.setValue(this.user.docType);
     this.docNumber.setValue(this.user.docNumber);
@@ -67,12 +71,14 @@ export class EditProfilePage implements OnInit {
       promptLabelPicture: 'Toma una foto',
       source: CameraSource.Prompt
     });
-    this.photo.setValue(image.dataUrl);
+    
 
+    this.loadingPhoto = true;
     this.user.photo = await this.firebaseSvc.uploadPhoto(this.user.id + '/profile', image.dataUrl);
+    this.photo.setValue(this.user.photo);
+    this.loadingPhoto = false;
 
-    let user: User = { id: this.user.id, photo: this.user.photo }
-    this.firebaseSvc.UpdateCollection('users', user);
+    this.updateUser();
     this.utilsSvc.saveLocalStorage('user', this.user)
   }
 
@@ -85,13 +91,13 @@ export class EditProfilePage implements OnInit {
 
     this.utilsSvc.saveLocalStorage('user', this.user);
 
-    this.utilsSvc.presentLoading();
+    this.loading = true;
     this.firebaseSvc.UpdateCollection('users', this.user).then(res => {
       this.utilsSvc.presentToast('Actualizado con éxito');
-      this.utilsSvc.dismissLoading();
+      this.loading = false;
     }, err => {
       this.utilsSvc.presentToast('No tienes conexión actualmente los datos se subiran una vez se restablesca la conexión');
-      this.utilsSvc.dismissLoading();
+      this.loading = false;
     })
   }
 

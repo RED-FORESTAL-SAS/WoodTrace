@@ -1,4 +1,77 @@
 <app-header backButton="/tabs/profile" title="Membresía"></app-header>
 <ion-content>
 
+    <div class="wrapper">
+
+        <div>
+
+            <div class="form">
+
+                <!-- Activo desde -->
+                <div class="ion-padding-bottom">
+                    <ion-item class="ion-no-padding" lines="none">
+                        <ion-label>
+                            <div>Miembro activo desde:</div>
+                            <div class="ion-padding-top date">{{date | date:'dd/MM/yyyy'}}</div>
+                        </ion-label>
+                    </ion-item>
+                    <div class="line-gradient line-w"></div>
+                </div>
+
+
+                <!-- Activo hasta -->
+                <div class="ion-padding-bottom">
+                    <ion-item class="ion-no-padding" lines="none">
+                        <ion-label>
+                            <div>Miembro activo hasta:</div>
+                            <div class="ion-padding-top date">{{date | date:'dd/MM/yyyy'}}</div>
+                        </ion-label>
+                    </ion-item>
+                    <div class="line-gradient line-w"></div>
+                </div>
+
+                <!-- Días restantes -->
+                <div class="ion-padding-bottom">
+                    <ion-item class="ion-no-padding" lines="none">
+                        <ion-label>
+                            <div>Días restantes de membresía:</div>
+                            <div class="ion-padding-top date">0</div>
+                        </ion-label>
+                    </ion-item>
+                    <div class="line-gradient line-w"></div>
+                </div>
+
+                <!-- Licencia/Número de serie  -->
+                <app-input-gradient max="12" label="Licencia/Número de serie" type="text" [formControlValue]="license">
+                </app-input-gradient>
+                <div class="note">El código de licencia expira una vez redimido.</div>
+                <div class="validators" *ngIf="license.dirty && license.errors">
+                    <span *ngIf="license.errors?.['minlength']">El formato de la licencia es inválido</span>
+                </div>
+
+
+                <div class="btn-gradient">
+                    <ion-button mode="ios">
+                        <span>Redimir</span>
+                    </ion-button>
+                </div>
+
+                <div class="no-license">
+                    ¿No tienes <strong>código de membresía</strong>? Puedes <br>
+                    conseguirlo por medio del siguiente botón:
+                </div>
+
+                <div class="btn-gradient">
+                    <ion-button mode="ios">
+                        <span>Conseguir Código</span>
+                    </ion-button>
+                </div>
+            </div>
+
+
+
+        </div>
+
+    </div>
+
 </ion-content>

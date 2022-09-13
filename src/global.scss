@@ -26,6 +26,10 @@
 @import "~@ionic/angular/css/flex-utils.css";
 @import 'animate.css';
 
+ion-content{
+    user-select: text;
+}
+
 
 .text-gradient {
     background: linear-gradient(var(--ion-color-secondary), var(--ion-color-primary));
