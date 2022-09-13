@@ -1,5 +1,6 @@
 export interface User{
     id?: string,
+    photo?: string;
     fullName?: string,
     email?: string,
     password?: string,
@@ -7,4 +8,8 @@ export interface User{
     docNumber?: string;
     license?: string;
     emailVerified?:boolean;
+    companyName?: string;
+    companyAddress?: string;
+    country?: string;
+    nit?: string;
 }

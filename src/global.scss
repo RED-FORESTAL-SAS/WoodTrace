@@ -39,10 +39,23 @@
     font-size: 13px;
 }
 
-.line-gradient{
-    background: linear-gradient(to right, var(--ion-color-secondary), var(--ion-color-primary)); 
+.line-gradient {
+    background: linear-gradient(to right, var(--ion-color-secondary), var(--ion-color-primary));
     width: 100vw;
     height: 1px;
+}
+
+.default-photo {
+    font-size: 120px;
+    border: 1.5px solid var(--ion-color-primary);
+    border-radius: 100%;
+}
+
+.photo {
+    margin: 0 auto;
+    width: 120px;
+    height: 120px;
+    border: 2px solid var(--ion-color-primary);
 }
 
 .btn-gradient {
@@ -57,7 +70,7 @@
         --background-activated: linear-gradient(to left, var(--ion-color-secondary), var(--ion-color-primary));
         --border-radius: 15px;
 
-        span{
+        span {
             padding: 15px;
         }
     }

@@ -22,6 +22,17 @@ export class UtilsService {
     return JSON.parse(localStorage.getItem('user'));
   }
 
+
+/**
+ * It saves an object to local storage.
+ * @param {string} name - The name of the object you want to save.
+ * @param {any} object - the object you want to save
+ */
+  saveLocalStorage(name: string, object: any){
+    localStorage.setItem(name, JSON.stringify(object))
+  }
+
+
   //======= Loading =======
   async presentLoading() {
     const loading = await this.loadingController.create();
@@ -58,7 +69,7 @@ export class UtilsService {
   routerLink(url: string) {
     this.router.navigateByUrl(url);
   }
-  
+
 
   //======= Close Modal =======
   closeModal() {
@@ -81,5 +92,19 @@ export class UtilsService {
       return 'El correo electrónico que ingresaste ya está registrado';
     }
 
+  }
+
+
+  //======= Document types =======
+
+  getDocTypes() {
+    let docTypes = [
+      { value: 1, content: 'Cédula' },
+      { value: 2, content: 'Cédula de Extranjería' },
+      { value: 3, content: 'Número de Identificación Tributaria' },
+      { value: 4, content: 'Permiso Especial de Permanencia' }
+    ]
+
+    return docTypes;
   }
 }

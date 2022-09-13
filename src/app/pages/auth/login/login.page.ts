@@ -86,9 +86,9 @@ export class LoginPage implements OnInit {
 
       this.loading = false;
 
+      //save emailVerified property before save it in localstorage
       res.emailVerified = user.emailVerified;
-      localStorage.setItem('user', JSON.stringify(res))
-
+      this.utilsSvc.saveLocalStorage('user', res);
 
       if (user.emailVerified) {
         this.utilsSvc.routerLink('/tabs/profile');

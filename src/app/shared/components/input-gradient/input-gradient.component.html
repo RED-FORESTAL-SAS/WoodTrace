@@ -1,15 +1,15 @@
 <div class="ion-padding-bottom">
 
-  <div class="label animate__animated animate__fadeIn" *ngIf="formControlValue.value">{{label}}</div>
+  <div class="label animate__animated animate__fadeIn"
+    *ngIf="(formControlValue && formControlValue.value) && type !== 'button'">{{label}}</div>
   <div class="gradient-input">
 
     <!-- Input -->
 
-
-    <ion-item lines="none" *ngIf="type !== 'select'">
-      <ion-input debounce="400" [minlength]="min" [maxlength]="max" [formControl]="formControlValue"
+    <ion-item lines="none" *ngIf="!noInputValues.includes(type)">
+      <ion-input [disabled]="disabled" debounce="400" [minlength]="min" [maxlength]="max" [formControl]="formControlValue"
         [placeholder]="label" [type]="type"></ion-input>
-        <ion-icon *ngIf="isPassword" (click)="showAndHide()" [name]="hide ? 'eye-outline' : 'eye-off-outline'"></ion-icon>
+      <ion-icon *ngIf="isPassword" (click)="showAndHide()" [name]="hide ? 'eye-outline' : 'eye-off-outline'"></ion-icon>
     </ion-item>
 
     <!-- Select -->
@@ -21,7 +21,16 @@
       </ion-select>
     </ion-item>
 
-
+    <!-- Button -->
+    <ion-item class="ion-activatable ripple-parent" lines="none" *ngIf="type == 'button'">
+      <ion-buttons slot="start">
+        <ion-button>
+          <ion-icon slot="start" color="primary" [name]="icon"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-label class="ion-text-wrap">{{label}}</ion-label>
+      <ion-ripple-effect type="unbounded"></ion-ripple-effect>
+    </ion-item>
 
   </div>
 

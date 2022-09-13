@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
+import { User } from '../models/user.model';
 import { UtilsService } from '../services/utils.service';
 
 @Injectable({
@@ -16,7 +17,7 @@ export class NoVerifyEmailGuard implements CanActivate {
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
 
-   let user = this.utilsService.getCurrentUser(); 
+   let user: User = this.utilsService.getCurrentUser(); 
 
  
    if(user && !user.emailVerified){

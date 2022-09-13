@@ -16,18 +16,17 @@ export class InputGradientComponent implements OnInit {
   @Input() formControlValue: FormControl;
   @Input() label: string;
   @Input() type: string;
+  @Input() disabled: boolean;
   @Input() selectOptions: Option[];
   @Input() min: null | string;
   @Input() max: null | string;
-
+  @Input() icon: string;
 
   hide: boolean = true;
   isPassword: boolean;
+  noInputValues = ['select','button'];
 
   constructor() {
-
-  
-
   }
 
   ngOnInit() { 

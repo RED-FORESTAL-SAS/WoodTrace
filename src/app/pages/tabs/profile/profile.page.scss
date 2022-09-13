@@ -9,13 +9,15 @@
 
     text-align: center;
 
-    ion-icon{
-      font-size: 120px;  
-    }
-
     .active{
+        padding-top: 5px;
         font-size: 14px;
         color: var(--ion-color-medium-tint);
     }
     
+}
+
+.btn-container{
+    padding-top: 20px;
+    width: 320px;
 }

@@ -1,0 +1,68 @@
+<app-header backButton="/tabs/profile" title="Editar Perfil"></app-header>
+<ion-content>
+    <div class="form">
+
+
+        <!-- Photo -->
+        <div class="ion-text-center ion-padding-bottom">
+            
+            <ion-icon *ngIf="!photo.value" class="default-photo" name="person-circle-outline"></ion-icon>
+
+            <ion-avatar class="photo" *ngIf="photo.value">
+                <img [src]="photo.value" />
+            </ion-avatar> 
+
+            <div style="padding-top: 0;" class="btn-gradient">
+                <ion-button (click)="uploadPhoto()" size="small" mode="ios">
+                    <span>Tomar/Seleccionar</span>
+                </ion-button>
+            </div>
+        </div>
+
+  
+
+        <!-- Nombre completo  -->
+        <app-input-gradient max="50" label="Nombre Completo" type="text" [formControlValue]="fullName">
+        </app-input-gradient>
+        <div class="validators" *ngIf="fullName.dirty && fullName.errors">
+            <span *ngIf="fullName.errors?.['required']">Ingresa tu nombre completo</span>
+            <span *ngIf="fullName.errors?.['minlength']">El nombre debe contener mínimo 4 caracteres</span>
+        </div>
+
+        <!-- Email  -->
+        <app-input-gradient [disabled]=true max="50" label="Correo Electrónico" type="email" [formControlValue]="email">
+        </app-input-gradient>
+        <div class="validators" *ngIf="email.dirty && email.errors">
+            <span *ngIf="email.errors?.['required']">Ingresa tu email</span>
+            <span *ngIf="email.errors?.['email']">Ingresa un email válido</span>
+        </div>
+
+
+        <!-- Tipo de documento  -->
+        <app-input-gradient [selectOptions]="docTypes" label="Tipo de documento" type="select"
+            [formControlValue]="docType"></app-input-gradient>
+        <div class="validators" *ngIf="docType.touched && docType.errors">
+            <span *ngIf="docType.errors?.['required']">Selecciona el tipo de documento de identidad</span>
+        </div>
+
+
+        <!-- Número de documento  -->
+        <app-input-gradient max="15" min="6" label="No. de documento" type="tel" [formControlValue]="docNumber">
+        </app-input-gradient>
+        <div class="validators" *ngIf="docNumber.dirty && docNumber.errors">
+            <span *ngIf="docNumber.errors?.['required']">Ingresa el número del documento de identidad</span>
+            <span *ngIf="docNumber.errors?.['minlength']">El número del documento debe contener mínimo 6
+                caracteres</span>
+        </div>
+
+
+        <!-- Button -->
+        <div class="btn-gradient">
+            <ion-button (click)="updateUser()" [disabled]="!validator()" mode="ios">
+                <span>Actualizar</span>
+            </ion-button>
+        </div>
+
+
+    </div>
+</ion-content>

@@ -19,12 +19,7 @@ export class SignUpPage implements OnInit {
   license = new FormControl('', [Validators.required, Validators.minLength(12)])
 
 
-  docTypes = [
-    { value: 1, content: 'Cédula' },
-    { value: 2, content: 'Cédula de Extranjería' },
-    { value: 3, content: 'Número de Identificación Tributaria' },
-    { value: 4, content: 'Permiso Especial de Permanencia' },
-  ]
+  docTypes = [];
 
   constructor(
     private firebaseSvc: FirebaseService,
@@ -42,6 +37,7 @@ export class SignUpPage implements OnInit {
   }
 
   ngOnInit() {
+    this.docTypes = this.utilsSvc.getDocTypes();
   }
 
 
@@ -98,7 +94,7 @@ export class SignUpPage implements OnInit {
 
     this.utilsSvc.presentLoading();
     this.firebaseSvc.addToCollectionById('users', user).then(res => {
-      localStorage.setItem('user', JSON.stringify(user));
+      this.utilsSvc.saveLocalStorage('user',user);
       this.firebaseSvc.sendEmailVerification();
       this.utilsSvc.routerLink('/email-verification');
       this.utilsSvc.dismissLoading();

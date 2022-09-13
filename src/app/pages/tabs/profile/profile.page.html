@@ -6,18 +6,45 @@
     <div>
 
       <div class="user-info">
-        <ion-icon name="person-circle-outline"></ion-icon>
-        <h5>{{user.fullName}}</h5>
+        <ion-icon *ngIf="!user.photo" class="default-photo" name="person-circle-outline"></ion-icon>
+
+        <ion-avatar class="photo" *ngIf="user.photo">
+            <img [src]="user.photo" />
+        </ion-avatar> 
+
+        <h5 class="ion-no-margin">{{user.fullName}}</h5>
         <div class="active">Miembro Inactivo</div>
       </div>
 
-      <div class="btn-gradient">
-        <ion-button (click)="logOut()" mode="ios">
-            <span>Cerrar Sesión</span>
-        </ion-button>
-    </div>
-    </div>
+      
+      <div class="btn-container">
+        <!-- Editar perfil -->
+        <app-input-gradient routerLink="edit-profile" icon="create-outline" label="Editar Perfil" type="button">
+        </app-input-gradient>
 
+        <!-- Membresia -->
+        <app-input-gradient routerLink="membership" icon="star-outline" label="Membresia" type="button">
+        </app-input-gradient>
+
+        <!-- Ayuda -->
+        <app-input-gradient routerLink="help" icon="help-circle-outline" label="Ayuda" type="button">
+        </app-input-gradient>
+
+        <!-- Términos y condiciones -->
+        <app-input-gradient routerLink="terms-and-conditions" icon="document-text-outline"
+          label="Términos y Condiciones" type="button"></app-input-gradient>
+
+        <!-- Políticas de privacidad -->
+        <app-input-gradient routerLink="privacy-policies" icon="shield-checkmark-outline"
+          label="Políticas de privacidad" type="button"></app-input-gradient>
+
+          <!-- Cerrar sesión -->
+        <app-input-gradient (click)="logOut()" icon="log-out-outline" label="Cerrar Sesión" type="button">
+        </app-input-gradient>
+
+      </div>
+
+    </div>
 
   </div>
 

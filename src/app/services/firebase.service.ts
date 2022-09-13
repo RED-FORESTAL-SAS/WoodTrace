@@ -4,11 +4,10 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { Router } from '@angular/router';
-import { LoadingController, ToastController } from '@ionic/angular';
 import * as firebase from 'firebase/compat';
 import { User } from '../models/user.model';
 import { getStorage, ref, uploadString } from "firebase/storage";
-
+import { map } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
@@ -23,41 +22,41 @@ export class FirebaseService {
   ) { }
 
 
- //=========Autenticación==========
+  //=========Autenticación==========
 
-/** login
- * @param user
- * autentica al usuario en firebase auth
- */
+  /** login
+   * @param user
+   * autentica al usuario en firebase auth
+   */
 
   Login(user: User) {
     return this.auth.signInWithEmailAndPassword(user.email, user.password);
   }
 
-/** Crear un nuevo usuario
- * @param user
- * autentica al usuario en firebase auth
- */
+  /** Crear un nuevo usuario
+   * @param user
+   * autentica al usuario en firebase auth
+   */
 
- createUser(user: User) {
-  return this.auth.createUserWithEmailAndPassword(user.email, user.password);
-}
+  createUser(user: User) {
+    return this.auth.createUserWithEmailAndPassword(user.email, user.password);
+  }
 
 
-/**
- * Enviar email para recuperar contraseña
- */
- 
-sendRecoveryEmail(email:string){
-  return this.auth.sendPasswordResetEmail(email);
-}
+  /**
+   * Enviar email para recuperar contraseña
+   */
 
-/**
- * Enviar email para verificación
- */
- async sendEmailVerification(){
-  return (await this.auth.currentUser).sendEmailVerification()
-}
+  sendRecoveryEmail(email: string) {
+    return this.auth.sendPasswordResetEmail(email);
+  }
+
+  /**
+   * Enviar email para verificación
+   */
+  async sendEmailVerification() {
+    return (await this.auth.currentUser).sendEmailVerification()
+  }
 
 
   //========= Funciones Comunes para consultar Firestore==========
@@ -97,8 +96,8 @@ sendRecoveryEmail(email:string){
   }
 
   /**Actualiza un documento existente en una colección*/
-  UpdateCollection(collectionName: string, object) {
-    return this.db.collection(collectionName).doc(object.id).update(object);
+ async UpdateCollection(collectionName: string, object) {
+ return this.db.collection(collectionName).doc(object.id).update(object);
   }
 
   /**Elimina un documento existente en una colección*/
@@ -123,7 +122,7 @@ sendRecoveryEmail(email:string){
   }
 
 
-  //====Subir imagenes=================
+  //============Subir imagenes=================
   async uploadPhoto(id, file): Promise<any> {
     const storage = getStorage();
     const storageRef = ref(storage, id);
