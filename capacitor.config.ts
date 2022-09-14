@@ -1,7 +1,7 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.fink.app',
+  appId: 'com.redforestal.finkapp',
   appName: 'FinkApp',
   webDir: 'www',
   bundledWebRuntime: false,
