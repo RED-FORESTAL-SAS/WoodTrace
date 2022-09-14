@@ -1,15 +1,31 @@
-export interface User{
+import { Location } from "./location.model";
+import { Operator } from "./operator.model";
+
+
+export interface User {
+    // ======Account======
     id?: string,
-    photo?: string;
-    fullName?: string,
     email?: string,
     password?: string,
-    docType?: string;
-    docNumber?: string;
-    license?: string;
-    emailVerified?:boolean;
-    companyName?: string;
-    companyAddress?: string;
-    country?: string;
-    nit?: string;
+    emailVerified?: boolean,
+    photo?: string,
+
+    // ======Owner data======
+    fullName?: string,
+    docType?: string,
+    docNumber?: string,
+    license?: string,
+
+    // ======Company data======  
+    companyName?: string,
+    companyAddress?: string,
+    country?: string,
+    department?: string,
+    town?: string,
+    nit?: string,
+    location?: Location,
+    operators?: Operator[],
+    lots?: string[]
 }
+
+
