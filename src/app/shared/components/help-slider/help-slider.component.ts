@@ -42,4 +42,8 @@ export class HelpSliderComponent implements OnInit {
   slidePrev(){
     this.swiper.swiperRef.slidePrev(800);
   }
+
+  goToRoot(){
+    this.utilsSvc.routerLink('/')
+  }
 }
