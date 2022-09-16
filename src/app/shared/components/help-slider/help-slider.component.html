@@ -1,0 +1,56 @@
+<div class="ion-text-center">
+
+<!-- Logo -->
+  <app-logo></app-logo>
+
+
+<!-- Slider -->
+  <swiper class="swiper" [config]="config" #swiper [virtual]="true" (slideChange)="onSlideChange($event)">
+    <ng-template *ngFor="let h of helpSlides" swiperSlide>
+      <h1>{{h.title}}</h1>
+      <h4>{{h.subtitle}}</h4>
+      <h6 class="ion-padding-top">{{h.indication}}</h6>
+      <ion-icon class="icon-slide" [src]="h.icon"></ion-icon>
+      <h6>{{h.message}}</h6>
+    </ng-template>
+  </swiper>
+
+
+
+  <!-- Button Next Slide-->
+
+  <div *ngIf="!slideActive" class="btn-gradient btn-gradient animate__animated animate__fadeIn">
+    <ion-button (click)="slideNext()" mode="ios">
+      <span>Siguiente</span>
+    </ion-button>
+  </div>
+
+  <!-- Buttons Next and Prev Slide-->
+  <div *ngIf="slideActive == 1" class="btn-container animate__animated animate__fadeIn">
+    <div class="btn-gradient">
+      <ion-button (click)="slidePrev()" mode="ios">
+        <span>Volver</span>
+      </ion-button>
+    </div>
+    <div class="btn-gradient">
+      <ion-button (click)="slideNext()" mode="ios">
+        <span>Siguiente</span>
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Buttons Prev Slide and Finish-->
+  <div *ngIf="slideActive == 2" class="btn-container animate__animated animate__fadeIn">
+    <div class="btn-gradient">
+      <ion-button (click)="slidePrev()" mode="ios">
+        <span>Volver</span>
+      </ion-button>
+    </div>
+    <div class="btn-gradient">
+      <ion-button (click)="slideNext()" mode="ios">
+        <span>Entendido </span>
+      </ion-button>
+    </div>
+  </div>
+
+</div>

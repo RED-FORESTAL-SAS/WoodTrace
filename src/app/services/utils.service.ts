@@ -23,12 +23,12 @@ export class UtilsService {
   }
 
 
-/**
- * It saves an object to local storage.
- * @param {string} name - The name of the object you want to save.
- * @param {any} object - the object you want to save
- */
-  saveLocalStorage(name: string, object: any){
+  /**
+   * It saves an object to local storage.
+   * @param {string} name - The name of the object you want to save.
+   * @param {any} object - the object you want to save
+   */
+  saveLocalStorage(name: string, object: any) {
     localStorage.setItem(name, JSON.stringify(object))
   }
 
@@ -50,7 +50,7 @@ export class UtilsService {
     const toast = await this.toastController.create({
       message,
       color: 'primary',
-      position:'middle',
+      position: 'middle',
       buttons: [
         {
           side: 'end',
@@ -108,4 +108,35 @@ export class UtilsService {
 
     return docTypes;
   }
+
+  //======= Help Slides =======
+
+  getHelpSlidesData() {
+    let helpSlides = [
+      {
+        title: '¡Te damos la bienvenida!',
+        subtitle: '¡Llevemos el manejo de tus cultivos al siguiente nivel!',
+        indication: 'Lo primero que debes hacer es: ',
+        icon: 'assets//icon/imagen-registrate.svg',
+        message: 'Una vez hagas parte de nuestra comunidad podrás adqurir la membresía para el análisis de tus árboles.'
+      },
+      {
+        title: 'Analiza tus árboles',
+        subtitle: '¡Realiza un seguimiento eficiente de tus cultivos!',
+        indication: 'Realiza un análisis automatizado de tus árboles.',
+        icon: 'assets//icon/imagen-analiza.svg',
+        message: '¡Podrás conocer el número de frutos totales y sus diferentes estados de madurez!'
+      },
+      {
+        title: 'Reportes a la mano',
+        subtitle: '¡Gestiona tu producción de manera inteligente!',
+        indication: 'Genera proyecciones de producción y ventas en tu cultivo.', 
+        icon: 'assets//icon/imagen-reporteseguro.svg',
+        message: 'Descarga de forma segura los reportes y toma decisiones informadas para el futuro de tu cultivo.'
+      },
+    ]
+
+    return helpSlides;
+  }
+
 }

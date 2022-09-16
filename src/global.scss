@@ -24,12 +24,23 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
+
 @import 'animate.css';
+@import 'swiper/scss';
+@import 'swiper/scss/navigation';
+@import 'swiper/scss/pagination';
+
 
 ion-content{
     user-select: text;
 }
 
+.bullet-active{
+    background: linear-gradient(var(--ion-color-secondary), var(--ion-color-primary)); 
+    opacity: 100%;
+    width: 10px;
+    height: 10px;
+}
 
 .text-gradient {
     background: linear-gradient(var(--ion-color-secondary), var(--ion-color-primary));
