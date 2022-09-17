@@ -44,6 +44,7 @@ export class HelpSliderComponent implements OnInit {
   }
 
   goToRoot(){
-    this.utilsSvc.routerLink('/')
+    this.utilsSvc.saveLocalStorage('introViewed', true);
+    this.utilsSvc.routerLink('/login')
   }
 }

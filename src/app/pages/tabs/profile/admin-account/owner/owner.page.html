@@ -1,27 +1,7 @@
-<app-header backButton="/tabs/profile" title="Editar Perfil"></app-header>
+<app-header backButton="/tabs/profile/admin-account" title="Propietario"></app-header>
 <ion-content>
     <div class="form">
 
-
-        <!-- Photo -->
-        <div class="ion-text-center ion-padding-bottom">
-            
-            <ion-spinner *ngIf="loadingPhoto" class="photo-spinner" color="secondary"></ion-spinner>
-
-            <ion-icon *ngIf="!photo.value && !loadingPhoto" class="default-photo" name="person-circle-outline"></ion-icon>
-
-            <ion-avatar class="photo" *ngIf="photo.value && !loadingPhoto">
-                <img [src]="photo.value" />
-            </ion-avatar> 
-
-            <div style="padding-top: 0;" class="btn-gradient">
-                <ion-button (click)="uploadPhoto()" size="small" mode="ios">
-                    <span>Tomar/Seleccionar</span>
-                </ion-button>
-            </div>
-        </div>
-
-  
 
         <!-- Nombre completo  -->
         <app-input-gradient max="50" label="Nombre Completo" type="text" [formControlValue]="fullName">

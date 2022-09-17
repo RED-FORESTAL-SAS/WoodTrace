@@ -1,6 +1,4 @@
 import { Location } from "./location.model";
-import { Operator } from "./operator.model";
-
 
 export interface User {
     // ======Account======
@@ -24,8 +22,8 @@ export interface User {
     town?: string,
     nit?: string,
     location?: Location,
-    operators?: Operator[],
-    lots?: string[]
+    operators?: string[],
+    properties?: string[]
 }
 
 

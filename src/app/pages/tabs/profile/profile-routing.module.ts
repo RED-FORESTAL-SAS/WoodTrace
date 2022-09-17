@@ -9,10 +9,6 @@ const routes: Routes = [
     component: ProfilePage
   },
   {
-    path: 'edit-profile',
-    loadChildren: () => import('./edit-profile/edit-profile.module').then( m => m.EditProfilePageModule)
-  },
-  {
     path: 'membership',
     loadChildren: () => import('./membership/membership.module').then( m => m.MembershipPageModule)
   },
@@ -27,6 +23,10 @@ const routes: Routes = [
   {
     path: 'privacy-policies',
     loadChildren: () => import('./privacy-policies/privacy-policies.module').then( m => m.PrivacyPoliciesPageModule)
+  },
+  {
+    path: 'admin-account',
+    loadChildren: () => import('./admin-account/admin-account.module').then( m => m.AdminAccountPageModule)
   }
 ];
 

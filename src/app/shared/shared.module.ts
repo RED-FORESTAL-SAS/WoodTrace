@@ -7,19 +7,22 @@ import { InputGradientComponent } from './components/input-gradient/input-gradie
 import { LogoComponent } from './components/logo/logo.component';
 import { HelpSliderComponent } from './components/help-slider/help-slider.component';
 import { SwiperModule } from 'swiper/angular';
+import { EmptyArrayComponent } from './components/empty-array/empty-array.component';
 
 @NgModule({
   declarations: [
     HeaderComponent,
     InputGradientComponent,
     LogoComponent,
-    HelpSliderComponent
+    HelpSliderComponent,
+    EmptyArrayComponent
   ],
   exports: [
     HeaderComponent,
     InputGradientComponent,
     LogoComponent,
-    HelpSliderComponent
+    HelpSliderComponent,
+    EmptyArrayComponent
   ],
   imports: [
     CommonModule,

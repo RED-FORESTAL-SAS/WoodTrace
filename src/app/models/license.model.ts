@@ -3,4 +3,5 @@ export interface License{
     userId?: string | null;
     dateInit?: string | null;
     dateEnd?: string;
+    months?: number;
 }

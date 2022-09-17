@@ -24,6 +24,7 @@
     "@capacitor/app": "4.0.1",
     "@capacitor/camera": "^4.1.1",
     "@capacitor/core": "4.2.0",
+    "@capacitor/geolocation": "^4.0.1",
     "@capacitor/haptics": "4.0.1",
     "@capacitor/ios": "^4.2.0",
     "@capacitor/keyboard": "4.0.1",

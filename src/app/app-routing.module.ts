@@ -1,13 +1,14 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
+import { IntroGuard } from './guards/intro.guard';
 import { NoAuthGuard } from './guards/no-auth.guard';
 import { NoVerifyEmailGuard } from './guards/no-verify-email.guard';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'login',
+    redirectTo: 'intro',
     pathMatch: 'full'
   },
   {
@@ -29,6 +30,10 @@ const routes: Routes = [
   {
     path: 'email-verification',
     loadChildren: () => import('./pages/auth/email-verification/email-verification.module').then( m => m.EmailVerificationPageModule), canActivate: [NoVerifyEmailGuard]
+  },
+  {
+    path: 'intro',
+    loadChildren: () => import('./pages/auth/intro/intro.module').then( m => m.IntroPageModule),canActivate:[IntroGuard]
   },
 ];
 

@@ -4,19 +4,26 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { User } from 'src/app/models/user.model';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
+import { Geolocation } from '@capacitor/geolocation';
+import { Location } from 'src/app/models/location.model';
 
 @Component({
-  selector: 'app-edit-profile',
-  templateUrl: './edit-profile.page.html',
-  styleUrls: ['./edit-profile.page.scss'],
+  selector: 'app-company',
+  templateUrl: './company.page.html',
+  styleUrls: ['./company.page.scss'],
 })
-export class EditProfilePage implements OnInit {
+export class CompanyPage implements OnInit {
 
-  fullName = new FormControl('', [Validators.required, Validators.minLength(4)])
-  email = new FormControl('', [Validators.required, Validators.email]);
-  docType = new FormControl('', [Validators.required])
-  docNumber = new FormControl('', [Validators.required, Validators.minLength(6)])
+  companyName = new FormControl('', [Validators.required, Validators.minLength(4)]);
+  companyAddress = new FormControl('', [Validators.required, Validators.minLength(10)]);
+  nit = new FormControl('', [Validators.required, Validators.minLength(10)]);
+  country = new FormControl('', [Validators.required]);
+  department = new FormControl('', [Validators.required]);
+  town = new FormControl('', [Validators.required]);
   photo = new FormControl('');
+
+  latitude: number;
+  longitude: number;
 
   docTypes = [];
 
@@ -24,6 +31,7 @@ export class EditProfilePage implements OnInit {
 
   loading: boolean;
   loadingPhoto: boolean;
+
 
   constructor(
     private firebaseSvc: FirebaseService,
@@ -51,13 +59,35 @@ export class EditProfilePage implements OnInit {
   }
 
   getUser() {
-    this.email.setValue(this.user.email)
-    this.email.disable();
-    this.fullName.setValue(this.user.fullName);
-    this.docType.setValue(this.user.docType);
-    this.docNumber.setValue(this.user.docNumber);
+    this.companyName.setValue(this.user.companyName);
+    this.companyAddress.setValue(this.user.companyAddress);
+    this.nit.setValue(this.user.nit);
+    this.country.setValue(this.user.country);
+    this.department.setValue(this.user.department);
+    this.town.setValue(this.user.town);
     this.photo.setValue(this.user.photo);
+    if(this.user.location && this.user.location.latitude){
+      this.latitude = this.user.location.latitude;
+      this.longitude = this.user.location.longitude;
+    }
+    
   }
+
+  async getCurrentPosition() {
+    this.utilsSvc.presentLoading();
+
+    const coordinates = await Geolocation.getCurrentPosition();
+    this.utilsSvc.dismissLoading();
+  
+
+    if (coordinates && coordinates.coords) {
+      this.latitude = coordinates.coords.latitude;
+      this.longitude = coordinates.coords.longitude;
+    }
+
+
+
+  };
 
 
   async uploadPhoto() {
@@ -71,7 +101,7 @@ export class EditProfilePage implements OnInit {
       promptLabelPicture: 'Toma una foto',
       source: CameraSource.Prompt
     });
-    
+
 
     this.loadingPhoto = true;
     this.user.photo = await this.firebaseSvc.uploadPhoto(this.user.id + '/profile', image.dataUrl);
@@ -85,9 +115,15 @@ export class EditProfilePage implements OnInit {
 
   updateUser() {
 
-    this.user.fullName = this.fullName.value;
-    this.user.docType = this.docType.value;
-    this.user.docNumber = this.docNumber.value;
+    let location = {latitude: this.latitude, longitude: this.longitude}
+
+    this.user.companyName = this.companyName.value;
+    this.user.companyAddress = this.companyAddress.value;
+    // this.user.country = this.country.value;
+    // this.user.department = this.department.value;
+    // this.user.town = this.town.value;
+    this.user.nit = this.nit.value;
+    this.user.location = location
 
     this.utilsSvc.saveLocalStorage('user', this.user);
 
@@ -96,22 +132,10 @@ export class EditProfilePage implements OnInit {
       this.utilsSvc.presentToast('Actualizado con éxito');
       this.loading = false;
     }, err => {
+      console.log(err);
+      
       this.utilsSvc.presentToast('No tienes conexión actualmente los datos se subiran una vez se restablesca la conexión');
       this.loading = false;
-    })
-  }
-
-
-
-
-  saveUserInfo(user: User) {
-
-    this.utilsSvc.presentLoading();
-    this.firebaseSvc.addToCollectionById('users', user).then(res => {
-
-      this.utilsSvc.dismissLoading();
-    }, err => {
-      this.utilsSvc.dismissLoading();
     })
   }
 
@@ -121,18 +145,24 @@ export class EditProfilePage implements OnInit {
    * @returns A boolean value.
    */
   validator() {
-    if (this.email.invalid) {
+    if (this.companyName.invalid) {
       return false;
     }
-    if (this.fullName.invalid) {
+    if (this.companyAddress.invalid) {
       return false;
     }
-    if (this.docType.invalid) {
+    if (this.nit.invalid) {
       return false;
     }
-    if (this.docNumber.invalid) {
-      return false;
-    }
+    // if (this.country.invalid) {
+    //   return false;
+    // }
+    // if (this.department.invalid) {
+    //   return false;
+    // }
+    // if (this.town.invalid) {
+    //   return false;
+    // }
 
     return true;
   }
