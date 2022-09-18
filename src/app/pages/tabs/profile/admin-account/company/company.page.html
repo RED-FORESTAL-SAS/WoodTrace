@@ -41,25 +41,29 @@
         </div>
 
         <!-- País  -->
-        <!-- <app-input-gradient [selectOptions]="countries" label="País" type="select"
-            [formControlValue]="country"></app-input-gradient>
+        <app-input-gradient label="País" type="text" [formControlValue]="country"></app-input-gradient>
+
         <div class="validators" *ngIf="country.touched && country.errors">
             <span *ngIf="country.errors?.['required']">Selecciona el país donde está ubicada la empresa</span>
-        </div> -->
+        </div>
 
-         <!-- Departamento  -->
-        <!-- <app-input-gradient [selectOptions]="departments" label="País" type="select"
-            [formControlValue]="deparment"></app-input-gradient>
+        <!-- Departamento  -->
+        <app-input-gradient (ionChange)="getTowns()"  [selectOptions]="departments" label="Departamento" type="select"
+            [formControlValue]="department"></app-input-gradient>
         <div class="validators" *ngIf="department.touched && department.errors">
-            <span *ngIf="department.errors?.['required']">Selecciona el departamento donde está ubicada la empresa</span>
-        </div> -->
+            <span *ngIf="department.errors?.['required']">Selecciona el departamento donde está ubicada la
+                empresa</span>
+        </div>
 
-         <!-- Municipio  -->
-        <!-- <app-input-gradient [selectOptions]="towns" label="País" type="select"
-            [formControlValue]="town"></app-input-gradient>
-        <div class="validators" *ngIf="town.touched && town.errors">
-            <span *ngIf="town.errors?.['required']">Selecciona el municipio donde está ubicada la empresa</span>
-        </div> -->
+        <!-- Municipio  -->
+        <div *ngIf="department.value">
+            <app-input-gradient [selectOptions]="towns" label="Municipio" type="select" [formControlValue]="town">
+            </app-input-gradient>
+            <div class="validators" *ngIf="town.touched && town.errors">
+                <span *ngIf="town.errors?.['required']">Selecciona el municipio donde está ubicada la empresa</span>
+            </div>
+        </div>
+
 
 
         <!-- Nit  -->
@@ -72,7 +76,8 @@
 
         <!-- Añadir Ubicación -->
         <div *ngIf="longitude && latitude" class="animate__animated animate__fadeIn label">Ubicación</div>
-        <app-input-gradient (click)="getCurrentPosition()" icon="location-outline" label="{{longitude && latitude ? latitude+', '+longitude : 'Añadir Ubicación'}}" type="button">
+        <app-input-gradient (click)="getCurrentPosition()" icon="location-outline"
+            label="{{longitude && latitude ? latitude+', '+longitude : 'Añadir Ubicación'}}" type="button">
         </app-input-gradient>
 
 

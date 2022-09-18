@@ -30,10 +30,18 @@
 @import 'swiper/scss/navigation';
 @import 'swiper/scss/pagination';
 
+.alert-wrapper{
+    width: 90% !important;
+}
+
+.alert-button-inner .sc-ion-alert-md{
+    white-space: normal !important;
+}
 
 ion-content{
     user-select: text;
 }
+
 
 .bullet-active{
     background: linear-gradient(var(--ion-color-secondary), var(--ion-color-primary)); 

@@ -15,7 +15,7 @@
     <!-- Select -->
 
     <ion-item lines="none" *ngIf="type == 'select'">
-      <ion-select cancelText="" interface="action-sheet" [formControl]="formControlValue" [placeholder]="label">
+      <ion-select cancelText="Cancelar" okText="Aceptar" [formControl]="formControlValue" [placeholder]="label">
         <ion-select-option class="ion-text-wrap" *ngFor="let s of selectOptions" [value]="s.value">{{s.content}}
         </ion-select-option>
       </ion-select>

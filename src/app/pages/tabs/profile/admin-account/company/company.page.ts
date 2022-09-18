@@ -5,7 +5,8 @@ import { User } from 'src/app/models/user.model';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { Geolocation } from '@capacitor/geolocation';
-import { Location } from 'src/app/models/location.model';
+import { colombia } from 'src/assets/data/colombia-deparments-towns';
+
 
 @Component({
   selector: 'app-company',
@@ -32,6 +33,8 @@ export class CompanyPage implements OnInit {
   loading: boolean;
   loadingPhoto: boolean;
 
+  departments = [];
+  towns = [];
 
   constructor(
     private firebaseSvc: FirebaseService,
@@ -56,40 +59,83 @@ export class CompanyPage implements OnInit {
   ionViewWillEnter() {
     this.user = this.utilsSvc.getCurrentUser();
     this.getUser();
+    this.getDeparments();
   }
 
+
+  /**
+   * We're using the Object.keys() method to get an array of the keys of the colombia object, then we're
+   * using the map() method to iterate over the array and return an array of objects with the value and
+   * content properties
+   */
+  getDeparments() {
+    this.departments = Object.keys(colombia).map(department => {
+      return {
+        value: department,
+        content: department
+      }
+    })
+  }
+
+
+  /**
+   * It loops through the object and if the value of the department is equal to the key of the object,
+   * it maps the value of the object to the towns array
+   */
+  getTowns() {
+    this.town.reset();
+    for (let [key, value] of Object.entries(colombia)) {
+      if (this.department.value == key) {
+        this.towns = value.map(department => {
+          return {
+            value: department,
+            content: department
+          }
+        })
+      }
+    }
+  }
+
+
+  /**
+   * This function sets the values of the form fields to the values of the user object
+   */
   getUser() {
     this.companyName.setValue(this.user.companyName);
     this.companyAddress.setValue(this.user.companyAddress);
     this.nit.setValue(this.user.nit);
-    this.country.setValue(this.user.country);
+    this.country.setValue('Colombia');
+    this.country.disable();
     this.department.setValue(this.user.department);
     this.town.setValue(this.user.town);
     this.photo.setValue(this.user.photo);
-    if(this.user.location && this.user.location.latitude){
+    if (this.user.location && this.user.location.latitude) {
       this.latitude = this.user.location.latitude;
       this.longitude = this.user.location.longitude;
     }
-    
   }
 
+  /**
+   * The function calls the Geolocation plugin's getCurrentPosition() function, which returns a promise
+   * that resolves to a Coordinates object
+   */
   async getCurrentPosition() {
     this.utilsSvc.presentLoading();
 
     const coordinates = await Geolocation.getCurrentPosition();
     this.utilsSvc.dismissLoading();
-  
 
     if (coordinates && coordinates.coords) {
       this.latitude = coordinates.coords.latitude;
       this.longitude = coordinates.coords.longitude;
     }
+  }
 
 
-
-  };
-
-
+  /**
+   * It takes a photo, uploads it to Firebase Storage, and then updates the user's profile photo in the
+   * database
+   */
   async uploadPhoto() {
 
     const image = await Camera.getPhoto({
@@ -102,7 +148,6 @@ export class CompanyPage implements OnInit {
       source: CameraSource.Prompt
     });
 
-
     this.loadingPhoto = true;
     this.user.photo = await this.firebaseSvc.uploadPhoto(this.user.id + '/profile', image.dataUrl);
     this.photo.setValue(this.user.photo);
@@ -113,15 +158,18 @@ export class CompanyPage implements OnInit {
   }
 
 
+  /**
+   * It updates the user information in the database.
+   */
   updateUser() {
 
-    let location = {latitude: this.latitude, longitude: this.longitude}
+    let location = { latitude: this.latitude, longitude: this.longitude }
 
     this.user.companyName = this.companyName.value;
     this.user.companyAddress = this.companyAddress.value;
-    // this.user.country = this.country.value;
-    // this.user.department = this.department.value;
-    // this.user.town = this.town.value;
+    this.user.country = this.country.value;
+    this.user.department = this.department.value;
+    this.user.town = this.town.value;
     this.user.nit = this.nit.value;
     this.user.location = location
 
@@ -133,7 +181,7 @@ export class CompanyPage implements OnInit {
       this.loading = false;
     }, err => {
       console.log(err);
-      
+
       this.utilsSvc.presentToast('No tienes conexión actualmente los datos se subiran una vez se restablesca la conexión');
       this.loading = false;
     })
@@ -154,15 +202,15 @@ export class CompanyPage implements OnInit {
     if (this.nit.invalid) {
       return false;
     }
-    // if (this.country.invalid) {
-    //   return false;
-    // }
-    // if (this.department.invalid) {
-    //   return false;
-    // }
-    // if (this.town.invalid) {
-    //   return false;
-    // }
+    if (this.country.invalid) {
+      return false;
+    }
+    if (this.department.invalid) {
+      return false;
+    }
+    if (this.town.invalid) {
+      return false;
+    }
 
     return true;
   }
