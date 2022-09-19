@@ -35,36 +35,6 @@ export class PropertiesPage implements OnInit {
     }
   }
 
-  /**
-   * It creates a modal, presents it, and then waits for the modal to be dismissed. 
-   * 
-   * If the modal is dismissed with data, then it will either add or remove a property. 
-   * 
-   * If the modal is dismissed without data, then nothing will happen.
-   * @param {string} updateType - string - This is the type of update we're doing. In this case, we're
-   * either adding or removing a property.
-   * @param {number} index - number - the index of the property to be removed
-   */
-  async passwordRequired(updateType: string, index: number) {
-    const modal = await this.modalController.create({
-      component: PasswordRequiredComponent,
-      cssClass: 'modal-password-required'
-    });
-
-    modal.present();
-    const { data } = await modal.onWillDismiss();
-
-    if (data) {
-      if (updateType == 'add') {
-        this.addProperty()
-      } else {
-        this.removeProperty(index)
-      }
-    }
-  }
-
- 
-
 /* The above code is adding a new property to the user object and then saving it to the local storage. */
   addProperty() {
     this.user.properties.push(this.fullName.value);

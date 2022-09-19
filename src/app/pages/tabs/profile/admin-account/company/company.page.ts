@@ -151,27 +151,6 @@ export class CompanyPage implements OnInit {
 
 
   /**
-   * It creates a modal, presents it, and then waits for the modal to be dismissed. 
-   * 
-   * If the modal is dismissed with data, then the user is updated. 
-   * 
-   * If the modal is dismissed without data, then the user is not updated.
-   */
-  async passwordRequired() {
-    const modal = await this.modalController.create({
-      component: PasswordRequiredComponent,
-      cssClass: 'modal-password-required'
-    });
-
-    modal.present();
-    const { data } = await modal.onWillDismiss();
-
-    if (data) {
-      this.updateUser();
-    }
-  }
-
-  /**
    * It updates the user information in the database.
    */
   updateUser() {

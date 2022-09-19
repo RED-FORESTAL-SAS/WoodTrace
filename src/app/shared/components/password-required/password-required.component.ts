@@ -34,27 +34,28 @@ export class PasswordRequiredComponent implements OnInit {
     this.modalController.dismiss();
   }
 
+  /**
+   * The function checks the password and if it's correct, it logs the user in
+   */
   checkPassword() {
     
-    this.user.password = this.password.value
-    
+    //set password in the user object
+    this.user.password = this.password.value;
+
     this.loading = true;
 
     this.firebaseSvc.Login(this.user).then(res => {
       this.loading = false;
       this.modalController.dismiss({checked: true});
-      console.log(res);
-      
+
     }, err => {
-      console.log(err);
-      
+  
       this.loading = false;
       let error = this.utilsSvc.getError(err);
 
       if (error !== 'El correo electrónico que ingresaste ya está registrado') {
         this.utilsSvc.presentToast(error);
       }
-
     })
   }
 

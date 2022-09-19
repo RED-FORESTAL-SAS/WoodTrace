@@ -46,29 +46,6 @@ export class OwnerPage implements OnInit {
     this.getUser();
   }
 
-
- /**
-  * It creates a modal, presents it, and then waits for the modal to be dismissed. 
-  * 
-  * If the modal is dismissed with data, then the user is updated. 
-  * 
-  * If the modal is dismissed without data, then the user is not updated.
-  */
-  async passwordRequired() {
-    const modal = await this.modalController.create({
-      component: PasswordRequiredComponent,
-      cssClass: 'modal-password-required'
-    });
-
-    modal.present();
-    const { data } = await modal.onWillDismiss();
-
-    if (data) {
-      this.updateUser();
-    }
-  }
-
-
 /**
  * We're setting the values of the form controls to the values of the user object
  */
