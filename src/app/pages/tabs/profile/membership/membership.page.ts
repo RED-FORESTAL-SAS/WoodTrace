@@ -3,6 +3,8 @@ import { FormControl, Validators } from '@angular/forms';
 import { User } from 'src/app/models/user.model';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
+import { Browser } from '@capacitor/browser';
+
 
 @Component({
   selector: 'app-membership',
@@ -28,4 +30,7 @@ export class MembershipPage implements OnInit {
     this.license.setValue(this.user.license);
   }
 
+  async getMembership(){
+    await Browser.open({ url: 'https://redforestal.com/' });
+  };
 }

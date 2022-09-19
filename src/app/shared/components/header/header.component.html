@@ -1,4 +1,4 @@
-<ion-toolbar class="back-toolbar">
+<ion-toolbar *ngIf="backButton || closeModal" class="back-toolbar">
   <ion-buttons slot="start">
     <ion-back-button *ngIf="backButton" [defaultHref]="backButton" text="Volver" icon="chevron-back"></ion-back-button>
     <ion-button *ngIf="closeModal" color="primary" (click)="close()" shape="round">
