@@ -42,6 +42,15 @@ ion-content{
     user-select: text;
 }
 
+ion-button{
+    text-transform: capitalize;
+}
+
+.modal-password-required{
+    --height: 410px;
+    --border-radius: 15px;
+    padding: 15px;
+}
 
 .bullet-active{
     background: linear-gradient(var(--ion-color-secondary), var(--ion-color-primary)); 

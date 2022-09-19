@@ -13,7 +13,7 @@
 
   <!-- Button -->
   <div *ngIf="!loading" class="btn-gradient">
-    <ion-button (click)="addProperty()" [disabled]="!validator()" mode="ios">
+    <ion-button (click)="passwordRequired('add', null)" [disabled]="!validator()" mode="ios">
       <span>Añadir</span>
     </ion-button>
   </div>
@@ -32,7 +32,7 @@
   <ion-item *ngFor="let o of user.properties; index as i" class="ion-no-padding">
     <ion-label>{{o}}</ion-label>
     <ion-buttons slot="end">
-      <ion-button (click)="removeProperty(i)">
+      <ion-button (click)="passwordRequired('remove', i)">
         <ion-icon color="primary" name="trash-outline"></ion-icon>
       </ion-button>
     </ion-buttons>

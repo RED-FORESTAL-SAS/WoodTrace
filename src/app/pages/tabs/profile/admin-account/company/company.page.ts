@@ -5,8 +5,9 @@ import { User } from 'src/app/models/user.model';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { Geolocation } from '@capacitor/geolocation';
-import { colombia } from 'src/assets/data/colombia-deparments-towns';
-
+import { colombia } from 'src/assets/data/colombia-departments-towns';
+import { ModalController } from '@ionic/angular';
+import { PasswordRequiredComponent } from 'src/app/shared/components/password-required/password-required.component';
 
 @Component({
   selector: 'app-company',
@@ -26,8 +27,6 @@ export class CompanyPage implements OnInit {
   latitude: number;
   longitude: number;
 
-  docTypes = [];
-
   user = {} as User;
 
   loading: boolean;
@@ -38,21 +37,14 @@ export class CompanyPage implements OnInit {
 
   constructor(
     private firebaseSvc: FirebaseService,
-    private utilsSvc: UtilsService
+    private utilsSvc: UtilsService,
+    private modalController: ModalController
   ) {
-
-    /* This is a listener that listens for the enter key to be pressed. If the enter key is pressed, and
-    the validator() function returns true, the createUser() function is called. */
-    window.addEventListener('keyup', e => {
-      if (e.key == 'Enter' && this.validator()) {
-        this.updateUser()
-      }
-    })
 
   }
 
   ngOnInit() {
-    this.docTypes = this.utilsSvc.getDocTypes();
+
   }
 
 
@@ -157,6 +149,27 @@ export class CompanyPage implements OnInit {
     this.utilsSvc.saveLocalStorage('user', this.user)
   }
 
+
+  /**
+   * It creates a modal, presents it, and then waits for the modal to be dismissed. 
+   * 
+   * If the modal is dismissed with data, then the user is updated. 
+   * 
+   * If the modal is dismissed without data, then the user is not updated.
+   */
+  async passwordRequired() {
+    const modal = await this.modalController.create({
+      component: PasswordRequiredComponent,
+      cssClass: 'modal-password-required'
+    });
+
+    modal.present();
+    const { data } = await modal.onWillDismiss();
+
+    if (data) {
+      this.updateUser();
+    }
+  }
 
   /**
    * It updates the user information in the database.

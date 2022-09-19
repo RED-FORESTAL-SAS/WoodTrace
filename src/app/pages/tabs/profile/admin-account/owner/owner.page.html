@@ -40,7 +40,7 @@
 
         <!-- Button -->
         <div *ngIf="!loading && !loadingPhoto" class="btn-gradient">
-            <ion-button (click)="updateUser()" [disabled]="!validator()" mode="ios">
+            <ion-button (click)="passwordRequired()" [disabled]="!validator()" mode="ios">
                 <span>Actualizar</span>
             </ion-button>
         </div>

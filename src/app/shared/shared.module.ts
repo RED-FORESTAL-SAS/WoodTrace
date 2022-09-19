@@ -8,6 +8,7 @@ import { LogoComponent } from './components/logo/logo.component';
 import { HelpSliderComponent } from './components/help-slider/help-slider.component';
 import { SwiperModule } from 'swiper/angular';
 import { EmptyArrayComponent } from './components/empty-array/empty-array.component';
+import { PasswordRequiredComponent } from './components/password-required/password-required.component';
 
 @NgModule({
   declarations: [
@@ -15,14 +16,16 @@ import { EmptyArrayComponent } from './components/empty-array/empty-array.compon
     InputGradientComponent,
     LogoComponent,
     HelpSliderComponent,
-    EmptyArrayComponent
+    EmptyArrayComponent,
+    PasswordRequiredComponent
   ],
   exports: [
     HeaderComponent,
     InputGradientComponent,
     LogoComponent,
     HelpSliderComponent,
-    EmptyArrayComponent
+    EmptyArrayComponent,
+    PasswordRequiredComponent
   ],
   imports: [
     CommonModule,

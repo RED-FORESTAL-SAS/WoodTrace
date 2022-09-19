@@ -3,6 +3,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { User } from 'src/app/models/user.model';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
+import { docTypes } from 'src/assets/data/document-types';
 
 @Component({
   selector: 'app-sign-up',
@@ -37,7 +38,7 @@ export class SignUpPage implements OnInit {
   }
 
   ngOnInit() {
-    this.docTypes = this.utilsSvc.getDocTypes();
+    this.docTypes = docTypes;
   }
 
 

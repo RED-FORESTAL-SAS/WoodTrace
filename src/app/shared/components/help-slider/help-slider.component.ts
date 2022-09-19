@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { UtilsService } from 'src/app/services/utils.service';
+import { helpSlides } from 'src/assets/data/help-slides';
 import SwiperCore, { SwiperOptions, Pagination, Virtual } from 'swiper';
 import { SwiperComponent } from 'swiper/angular';
 
@@ -28,7 +29,7 @@ export class HelpSliderComponent implements OnInit {
   constructor(private utilsSvc: UtilsService) { }
 
   ngOnInit() {
-    this.helpSlides = this.utilsSvc.getHelpSlidesData();
+    this.helpSlides = helpSlides;
   }
 
   onSlideChange(event) {
