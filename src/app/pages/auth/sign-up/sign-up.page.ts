@@ -17,8 +17,7 @@ export class SignUpPage implements OnInit {
   password = new FormControl('', [Validators.required, Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&.])[A-Za-z\d$@$!%*?&].{8,16}')]);
   docType = new FormControl('', [Validators.required])
   docNumber = new FormControl('', [Validators.required, Validators.minLength(6)])
-  license = new FormControl('', [Validators.required, Validators.minLength(12)])
-
+ 
 
   docTypes = [];
 
@@ -55,7 +54,6 @@ export class SignUpPage implements OnInit {
       fullName: this.fullName.value,
       docType: this.docType.value,
       docNumber: this.docNumber.value,
-      license: this.license.value,
       emailVerified: false
     }
 
@@ -113,7 +111,6 @@ export class SignUpPage implements OnInit {
     this.fullName.reset();
     this.docType.reset();
     this.docNumber.reset();
-    this.license.reset();
   }
 
 

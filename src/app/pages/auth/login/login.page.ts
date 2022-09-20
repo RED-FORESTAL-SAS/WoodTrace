@@ -91,21 +91,48 @@ export class LoginPage implements OnInit {
       this.utilsSvc.saveLocalStorage('user', res);
 
       if (user.emailVerified) {
-        this.utilsSvc.routerLink('/tabs/profile');
+        this.getLicense(user);
       } else {
         this.utilsSvc.routerLink('/email-verification');
         this.firebaseSvc.sendEmailVerification();
       }
 
-      this.resetForm();
+
       ref.unsubscribe();
-
-
 
     }, err => {
       this.loading = false;
       this.utilsSvc.presentToast(err);
     })
+  }
+
+  getLicense(user: User) {
+    this.loading = true;
+
+    let ref = this.firebaseSvc.getCollectionConditional('licenses',
+      ref => ref.where('userId', '==', user.id)).subscribe(data => {
+
+        this.loading = false;
+
+        let license = data.map(e => {
+          return {
+            id: e.payload.doc.id,
+            userId: e.payload.doc.data()['userId'],
+            dateInit: e.payload.doc.data()['dateInit'],
+            dateEnd: e.payload.doc.data()['dateEnd'],
+            months: e.payload.doc.data()['months']
+          };
+        })[0];
+
+        if (license) {
+          user.license = license;
+          this.utilsSvc.saveLocalStorage('user', user);
+        }
+        ref.unsubscribe();
+
+        this.utilsSvc.routerLink('/tabs/profile');
+        this.resetForm();
+      })
   }
 
 

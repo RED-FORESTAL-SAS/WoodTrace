@@ -1,5 +1,24 @@
 <app-header title="Reportes"></app-header>
 
-<ion-content>
+<ion-content class="ion-text-center">
 
+    <div class="table-container">
+        <table>
+            <thead>
+            <th>Especie <ion-icon name="chevron-down"></ion-icon></th>
+            <th>Operario <ion-icon name="chevron-down"></ion-icon></th>
+            <th>Fecha <ion-icon name="chevron-down"></ion-icon></th>
+            <th>ㅤ</th>
+            <th>ㅤ</th>
+        </thead>
+            <tr *ngFor="let item of [1,1,1,1,1,1,1]">
+                <td>Limón</td>
+                <td>José Silva</td>
+                <td>{{date | date: 'dd/MM/yyyy'}}</td>
+                <td><ion-icon class="option-icon" name="download-outline"></ion-icon></td>
+                <td><ion-icon class="option-icon" name="trash-outline"></ion-icon></td>
+            </tr>
+        </table>
+    </div>
+ 
 </ion-content>

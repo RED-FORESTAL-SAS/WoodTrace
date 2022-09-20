@@ -4,4 +4,5 @@ export interface License{
     dateInit?: string | null;
     dateEnd?: string;
     months?: number;
+    remainingDays?: number;
 }

@@ -1,0 +1,27 @@
+.option-icon{
+    font-size: 23px;
+}
+
+.table-container{
+    padding: 35px 5px 5px 5px;
+}
+
+ion-icon{
+    color: var(--ion-color-primary);
+}
+
+table{
+    width: 100%;
+    th{
+        padding-bottom: 15px;
+    }
+
+    tr{
+        border-bottom: 1px solid var(--ion-color-primary);
+
+        td{
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+    }
+}

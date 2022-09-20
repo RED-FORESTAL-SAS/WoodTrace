@@ -1,3 +1,4 @@
+import { License } from "./license.model";
 import { Location } from "./location.model";
 
 export interface User {
@@ -12,7 +13,7 @@ export interface User {
     fullName?: string,
     docType?: string,
     docNumber?: string,
-    license?: string,
+    license?: License,
 
     // ======Company data======  
     companyName?: string,

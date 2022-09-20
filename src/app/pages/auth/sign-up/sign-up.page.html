@@ -55,12 +55,6 @@
                 <span *ngIf="docNumber.errors?.['minlength']">El número del documento debe contener mínimo 6 caracteres</span>
             </div>
 
-            <!-- Licencia/Número de serie  -->
-            <app-input-gradient max="12" label="Licencia/Número de serie (opcional)" type="text" [formControlValue]="license">
-            </app-input-gradient>
-            <div class="validators" *ngIf="license.dirty && license.errors">
-                <span *ngIf="license.errors?.['minlength']">El formato de la licencia es inválido</span>
-            </div>
 
             <!-- Button -->
             <div class="btn-gradient">
