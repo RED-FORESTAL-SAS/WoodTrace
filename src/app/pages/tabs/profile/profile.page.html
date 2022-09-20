@@ -12,8 +12,11 @@
             <img [src]="user.photo" />
         </ion-avatar> 
 
-        <h5 class="ion-no-margin">{{user.fullName}}</h5>
-        <div class="active">Miembro Inactivo</div>
+        <h5 class="ion-no-margin name">{{user.fullName}}</h5>
+        <div class="active">
+          <ion-text *ngIf="user.license && user.license.remainingDays" color="primary">Miembro Activo</ion-text>
+          <ion-text *ngIf="!user.license" color="medium">Miembro Inactivo</ion-text>
+        </div>
       </div>
 
       

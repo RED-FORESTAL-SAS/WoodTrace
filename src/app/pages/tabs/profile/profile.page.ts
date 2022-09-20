@@ -18,21 +18,34 @@ export class ProfilePage implements OnInit {
     private firebaseSvc: FirebaseService,
     private utilsSvc: UtilsService,
     private modalController: ModalController
-  ){ }
+  ) { }
 
   ngOnInit() {
   }
 
-  ionViewWillEnter(){
+  ionViewWillEnter() {
     this.user = this.utilsSvc.getCurrentUser();
   }
 
+  ionViewDidEnter() {
+    this.user = this.utilsSvc.getCurrentUser();
+    this.getLicenseRemainingDays();
+  }
+
+  /**
+ * It calculates the difference between two dates and returns the number of days
+ */
+  getLicenseRemainingDays() {
+    if (this.user.license && this.user.license.dateInit) {
+      this.user.license.remainingDays = this.utilsSvc.getDiffDays(this.user.license.dateInit, this.user.license.dateEnd);
+    }
+  }
 
   /**
    * The function creates a modal, presents it, and then, if the modal is dismissed with data, it
    * navigates to the admin-account page
    */
-   async passwordRequired() {
+  async passwordRequired() {
     const modal = await this.modalController.create({
       component: PasswordRequiredComponent,
       cssClass: 'modal-password-required'
@@ -46,7 +59,7 @@ export class ProfilePage implements OnInit {
     }
   }
 
-  logOut(){
+  logOut() {
     this.firebaseSvc.logout();
   }
 }

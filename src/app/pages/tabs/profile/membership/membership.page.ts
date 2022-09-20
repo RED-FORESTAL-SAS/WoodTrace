@@ -21,6 +21,7 @@ export class MembershipPage implements OnInit {
 
   user = {} as User;
   loading: boolean;
+
   constructor(
     private firebaseSvc: FirebaseService,
     private utilsSvc: UtilsService
@@ -31,20 +32,29 @@ export class MembershipPage implements OnInit {
 
   ionViewWillEnter() {
     this.user = this.utilsSvc.getCurrentUser();
+    this.licenseExist();
+  }
 
+ 
+  async getMembership() {
+    await Browser.open({ url: 'https://redforestal.com/' });
+  };
+
+
+
+/**
+ * If the user has a license, set the licenseId value to the license id and get the remaining days of
+ * the license
+ */
+  licenseExist(){
     if (this.user.license && this.user.license.id) {
       this.licenseId.setValue(this.user.license.id);
     }
 
     if (this.user.license && this.user.license.dateInit) {
-      this.getRemainingDays(this.user.license.dateInit, this.user.license.dateEnd);
+      this.getRemainingDays();
     }
   }
-
-  async getMembership() {
-    await Browser.open({ url: 'https://redforestal.com/' });
-  };
-
 
   /**
    * It creates a license object and then adds it to the licenses collection in Firestore
@@ -60,9 +70,9 @@ export class MembershipPage implements OnInit {
       months: 3 //Number of months the license will be available
     }
 
-    for (let i = 1; i < numberOfLicense; i++) {
+    for (let i = 1; i < numberOfLicense + 1; i++) {
       this.firebaseSvc.addToCollection('licenses', license)
-        .then(res => console.log(res))
+        .then(res => { if(i == numberOfLicense){ this.utilsSvc.presentToast('¡Licencias creadas exitosamente!') }})
         .catch(err => console.log(err))
     }
   }
@@ -102,11 +112,13 @@ export class MembershipPage implements OnInit {
   }
 
 
-  /**
-   * It takes a number of months as a parameter, creates a license object, and then updates the license
-   * in the database
-   * @param {number} months - number - The number of months to add to the current date.
-   */
+
+ /**
+  * This function is used to redeem a license, it receives the number of months as a parameter, it
+  * creates a license object with the data of the license, it updates the license in the database and
+  * saves the license in the local storage
+  * @param {number} months - number - The number of months to add to the current date.
+  */
   redeemLicense(months: number) {
     this.loading = true;
 
@@ -121,7 +133,7 @@ export class MembershipPage implements OnInit {
       this.loading = false;
       this.user.license = license;
       this.utilsSvc.saveLocalStorage('user', this.user);
-      this.getRemainingDays(this.user.license.dateInit, this.user.license.dateEnd);
+      this.getRemainingDays();
 
       this.utilsSvc.presentToast('¡Licencia redimida exitosamente!');
     }, err => {
@@ -131,14 +143,11 @@ export class MembershipPage implements OnInit {
   }
 
 
-
-  getRemainingDays(dateInit: string, dateEnd: string) {
-
-    let x = moment(dateEnd, 'LLL');
-    let y = moment(dateInit, 'LLL');
-
-    let diffInDays = x.diff(y, 'days');
-    this.user.license.remainingDays = diffInDays;
+  /**
+   * It calculates the difference between two dates and returns the number of days
+   */
+  getRemainingDays() {
+    this.user.license.remainingDays = this.utilsSvc.getDiffDays(this.user.license.dateInit, this.user.license.dateEnd);
   }
 
 }

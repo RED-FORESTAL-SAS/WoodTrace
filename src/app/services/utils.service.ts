@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoadingController, ModalController, ToastController } from '@ionic/angular';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
@@ -42,8 +43,6 @@ export class UtilsService {
   dismissLoading() {
     this.loadingController.dismiss();
   }
-
-
 
   //======= Toast =======
   async presentToast(message: string) {
@@ -95,5 +94,18 @@ export class UtilsService {
 
   }
 
-  
+ /**
+  * It takes two dates in string format and returns the difference in days between them
+  * @param {string} dateInit - The date you want to start counting from.
+  * @param {string} dateEnd - The end date of the range.
+  * @returns The difference in days between two dates.
+  */
+  getDiffDays(dateInit: string, dateEnd: string) {
+
+    let x = moment(dateEnd, 'LLL');
+    let y = moment(dateInit, 'LLL');
+
+    let diffInDays = x.diff(y, 'days');
+    return diffInDays;
+  }
 }

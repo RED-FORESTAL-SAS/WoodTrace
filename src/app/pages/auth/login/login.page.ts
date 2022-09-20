@@ -82,16 +82,17 @@ export class LoginPage implements OnInit {
   getUserData(user: User) {
     this.loading = true;
 
-    let ref = this.firebaseSvc.getDataById('users', user.id).valueChanges().subscribe((res: User) => {
+    let ref = this.firebaseSvc.getDataById('users', user.id).valueChanges().subscribe((res: any) => {
 
       this.loading = false;
-
+  
       //save emailVerified property before save it in localstorage
       res.emailVerified = user.emailVerified;
+      
       this.utilsSvc.saveLocalStorage('user', res);
 
       if (user.emailVerified) {
-        this.getLicense(user);
+        this.getLicense(res);
       } else {
         this.utilsSvc.routerLink('/email-verification');
         this.firebaseSvc.sendEmailVerification();

@@ -5,19 +5,23 @@
     align-items: center;
 }
 
-.user-info{
+.user-info {
 
     text-align: center;
 
-    .active{
-        padding-top: 5px;
-        font-size: 14px;
-        color: var(--ion-color-medium-tint);
+    .name {
+        padding-top: 10px;
     }
-    
+
+    .active {
+        padding-top: 1px;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
 }
 
-.btn-container{
+.btn-container {
     padding-top: 20px;
     width: 320px;
 }

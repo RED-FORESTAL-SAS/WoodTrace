@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { FirebaseService } from 'src/app/services/firebase.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-tabs',
@@ -7,9 +9,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TabsPage implements OnInit {
 
-  constructor() { }
+  constructor(private firebaseSvc: FirebaseService) { }
 
   ngOnInit() {
   }
 
+  
 }
