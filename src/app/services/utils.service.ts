@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoadingController, ModalController, ToastController } from '@ionic/angular';
 import * as moment from 'moment';
+import { FinkAlertComponent } from '../shared/components/fink-alert/fink-alert.component';
 
 @Injectable({
   providedIn: 'root'
@@ -64,6 +65,23 @@ export class UtilsService {
   }
 
 
+  async presentFinkAlert(title: string, message: string) {
+    const modal = await this.modalController.create({
+      component: FinkAlertComponent,
+      componentProps: { title, message }
+    });
+
+    modal.present();
+
+    const { data } = await modal.onWillDismiss();
+
+    if (data.confirm) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
 
   //======= Router =======
   routerLink(url: string) {
@@ -94,12 +112,21 @@ export class UtilsService {
 
   }
 
- /**
-  * It takes two dates in string format and returns the difference in days between them
-  * @param {string} dateInit - The date you want to start counting from.
-  * @param {string} dateEnd - The end date of the range.
-  * @returns The difference in days between two dates.
-  */
+
+  /**
+   * It returns the current date in the format of "Month Day, Year Time"
+   * @returns The current date in the format of Month, Day, Year, Time
+   */
+  getCurrentDate() {
+    return moment(Date.now()).format('LLL');
+  }
+
+  /**
+   * It takes two dates in string format and returns the difference in days between them
+   * @param {string} dateInit - The date you want to start counting from.
+   * @param {string} dateEnd - The end date of the range.
+   * @returns The difference in days between two dates.
+   */
   getDiffDays(dateInit: string, dateEnd: string) {
 
     let x = moment(dateEnd, 'LLL');

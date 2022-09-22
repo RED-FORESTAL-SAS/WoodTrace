@@ -9,6 +9,8 @@ import { HelpSliderComponent } from './components/help-slider/help-slider.compon
 import { SwiperModule } from 'swiper/angular';
 import { EmptyArrayComponent } from './components/empty-array/empty-array.component';
 import { PasswordRequiredComponent } from './components/password-required/password-required.component';
+import { FinkAlertComponent } from './components/fink-alert/fink-alert.component';
+import { DownloadTypeComponent } from './components/download-type/download-type.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +19,9 @@ import { PasswordRequiredComponent } from './components/password-required/passwo
     LogoComponent,
     HelpSliderComponent,
     EmptyArrayComponent,
-    PasswordRequiredComponent
+    PasswordRequiredComponent,
+    FinkAlertComponent,
+    DownloadTypeComponent
   ],
   exports: [
     HeaderComponent,
@@ -25,7 +29,9 @@ import { PasswordRequiredComponent } from './components/password-required/passwo
     LogoComponent,
     HelpSliderComponent,
     EmptyArrayComponent,
-    PasswordRequiredComponent
+    PasswordRequiredComponent,
+    FinkAlertComponent,
+    DownloadTypeComponent
   ],
   imports: [
     CommonModule,

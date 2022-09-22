@@ -61,7 +61,7 @@
 
                 <!-- Button Redeem-->
                 <div *ngIf="!loading" class="btn-gradient">
-                    <ion-button (click)="getLicense()" [disabled]="licenseId.invalid" mode="ios">
+                    <ion-button (click)="getLicense()" [disabled]="licenseId.invalid || user.license" mode="ios">
                         <span>Redimir</span>
                     </ion-button>
                 </div>

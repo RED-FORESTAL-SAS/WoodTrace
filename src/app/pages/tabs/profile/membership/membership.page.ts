@@ -49,6 +49,7 @@ export class MembershipPage implements OnInit {
   licenseExist(){
     if (this.user.license && this.user.license.id) {
       this.licenseId.setValue(this.user.license.id);
+      this.licenseId.disable();
     }
 
     if (this.user.license && this.user.license.dateInit) {
@@ -147,7 +148,8 @@ export class MembershipPage implements OnInit {
    * It calculates the difference between two dates and returns the number of days
    */
   getRemainingDays() {
-    this.user.license.remainingDays = this.utilsSvc.getDiffDays(this.user.license.dateInit, this.user.license.dateEnd);
+    let currentDate = this.utilsSvc.getCurrentDate();
+    this.user.license.remainingDays = this.utilsSvc.getDiffDays(currentDate, this.user.license.dateEnd);
   }
 
 }

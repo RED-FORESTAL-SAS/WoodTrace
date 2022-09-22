@@ -4,6 +4,7 @@ import { User } from 'src/app/models/user.model';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { PasswordRequiredComponent } from 'src/app/shared/components/password-required/password-required.component';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-profile',
@@ -37,7 +38,12 @@ export class ProfilePage implements OnInit {
  */
   getLicenseRemainingDays() {
     if (this.user.license && this.user.license.dateInit) {
-      this.user.license.remainingDays = this.utilsSvc.getDiffDays(this.user.license.dateInit, this.user.license.dateEnd);
+      let currentDate = this.utilsSvc.getCurrentDate();
+      this.user.license.remainingDays = this.utilsSvc.getDiffDays(currentDate, this.user.license.dateEnd);
+    
+      if(this.user.license.remainingDays <= 0){
+       this.firebaseSvc.deleteFromCollection('licenses', this.user.license.id);
+      }
     }
   }
 
@@ -48,7 +54,7 @@ export class ProfilePage implements OnInit {
   async passwordRequired() {
     const modal = await this.modalController.create({
       component: PasswordRequiredComponent,
-      cssClass: 'modal-password-required'
+      cssClass: 'modal-fink-app'
     });
 
     modal.present();
