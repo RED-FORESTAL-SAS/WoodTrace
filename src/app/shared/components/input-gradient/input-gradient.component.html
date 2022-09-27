@@ -9,7 +9,7 @@
     <ion-item lines="none" *ngIf="!noInputValues.includes(type)">
       <ion-input debounce="400" [minlength]="min" [maxlength]="max" [formControl]="formControlValue"
         [placeholder]="label" [type]="type"></ion-input>
-      <ion-icon *ngIf="isPassword" (click)="showAndHide()" [name]="hide ? 'eye-outline' : 'eye-off-outline'"></ion-icon>
+      <ion-icon *ngIf="isPassword" slot="end" (click)="showAndHide()" [name]="hide ? 'eye-outline' : 'eye-off-outline'"></ion-icon>
     </ion-item>
 
     <!-- Select -->

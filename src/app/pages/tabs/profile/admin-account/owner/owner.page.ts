@@ -7,6 +7,7 @@ import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { PasswordRequiredComponent } from 'src/app/shared/components/password-required/password-required.component';
 import { docTypes } from 'src/assets/data/document-types';
+import { UpdatePasswordComponent } from './components/update-password/update-password.component';
 
 @Component({
   selector: 'app-owner',
@@ -80,7 +81,15 @@ export class OwnerPage implements OnInit {
     })
   }
 
+async updatePassword() {
+  const modal = await this.modalController.create({
+  component: UpdatePasswordComponent,
+  cssClass: 'modal-fink-app'
+  });
 
+  await modal.present();
+
+}
 
   /**
    * If the form field are invalid, return false. Otherwise, return true

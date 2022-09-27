@@ -7,7 +7,8 @@ import { Router } from '@angular/router';
 import * as firebase from 'firebase/compat';
 import { User } from '../models/user.model';
 import { getStorage, ref, uploadString } from "firebase/storage";
-import { map } from 'rxjs/operators';
+import { getAuth, updatePassword } from "firebase/auth";
+
 @Injectable({
   providedIn: 'root'
 })
@@ -58,6 +59,20 @@ export class FirebaseService {
     return (await this.auth.currentUser).sendEmailVerification()
   }
 
+
+
+ /**
+  * It takes a new password as a parameter, gets the current user from the auth object, and then calls
+  * the updatePassword function
+  * @param {string} newPassword - The new password for the user.
+  * @returns A promise that resolves when the password is updated.
+  */
+ changeUserPassword(newPassword: string){
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  return updatePassword(user, newPassword);
+ }
 
   //========= Funciones Comunes para consultar Firestore==========
   /**

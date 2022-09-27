@@ -8,6 +8,7 @@ import { OwnerPageRoutingModule } from './owner-routing.module';
 
 import { OwnerPage } from './owner.page';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { UpdatePasswordComponent } from './components/update-password/update-password.component';
 
 @NgModule({
   imports: [
@@ -17,6 +18,6 @@ import { SharedModule } from 'src/app/shared/shared.module';
     OwnerPageRoutingModule,
     SharedModule
   ],
-  declarations: [OwnerPage]
+  declarations: [OwnerPage, UpdatePasswordComponent]
 })
 export class OwnerPageModule {}
