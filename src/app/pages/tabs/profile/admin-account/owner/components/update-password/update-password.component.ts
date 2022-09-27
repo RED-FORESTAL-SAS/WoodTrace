@@ -61,7 +61,7 @@ export class UpdatePasswordComponent implements OnInit {
       return false;
     }
 
-    if (this.confirmPassword.invalid) {
+    if (this.confirmPassword.value !== this.password.value) {
       return false;
     }
 
