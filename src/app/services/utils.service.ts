@@ -2,7 +2,10 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoadingController, ModalController, ToastController } from '@ionic/angular';
 import * as moment from 'moment';
+import { AlertFinkApp } from '../models/alert.model';
+import { DownloadTypeComponent } from '../shared/components/download-type/download-type.component';
 import { FinkAlertComponent } from '../shared/components/fink-alert/fink-alert.component';
+import { PasswordRequiredComponent } from '../shared/components/password-required/password-required.component';
 
 @Injectable({
   providedIn: 'root'
@@ -65,21 +68,60 @@ export class UtilsService {
   }
 
 
-  async presentFinkAlert(title: string, message: string) {
+  /**
+   * It creates a modal with the FinkAlertComponent component, and returns true if the user clicks the
+   * "OK" button, and false if the user clicks the "Cancel" button
+   * @param {AlertFinkApp} info - AlertFinkApp - this is the object that will be passed to the modal.
+   * @returns A promise that resolves to a boolean.
+   */
+  async presentFinkAlert(info: AlertFinkApp) {
     const modal = await this.modalController.create({
       component: FinkAlertComponent,
-      componentProps: { title, message }
+      componentProps: { info },
+      cssClass: 'alert-fink-app'
     });
 
     modal.present();
 
     const { data } = await modal.onWillDismiss();
 
-    if (data.confirm) {
+    if (data) {
       return true;
     } else {
       return false;
     }
+  }
+
+
+  /**
+   * It creates a modal, presents it, and returns a boolean value based on the data returned from the
+   * modal
+   * @returns A boolean value.
+   */
+  async passwordRequired() {
+    const modal = await this.modalController.create({
+      component: PasswordRequiredComponent,
+      cssClass: 'modal-fink-app'
+    });
+
+    modal.present();
+    const { data } = await modal.onWillDismiss();
+
+    if (data) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  async downloadReport() {
+    const modal = await this.modalController.create({
+      component: DownloadTypeComponent,
+      cssClass: 'modal-fink-app'
+    });
+
+    await modal.present();
+
   }
 
 

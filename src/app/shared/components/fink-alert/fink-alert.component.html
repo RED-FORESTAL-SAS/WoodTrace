@@ -4,15 +4,15 @@
       <app-header closeModal="true"></app-header>
 
       <div class="ion-padding ion-text-center">
-        <h2 *ngIf="title">{{title}}</h2>
-        <div *ngIf="message">{{message}}</div>
+        <h2 *ngIf="info.title">{{info.title}}</h2>
+        <div *ngIf="info.content">{{info.content}}</div>
       </div>
 
 
       <!-- Confirm Button -->
       <div class="btn-gradient">
         <ion-button (click)="confirm()" mode="ios">
-          <span>Confirmar</span>
+          <span>{{info.btnText ? info.btnText : 'Confirmar'}}</span>
         </ion-button>
       </div>
 

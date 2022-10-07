@@ -1,0 +1,61 @@
+<app-header backButton="/tabs/analysis" title="Reporte: Arbol 1"></app-header>
+
+<ion-content>
+
+  <ion-item class="ion-padding-horizontal ion-padding-top">
+    <ion-label>
+     <div><strong>Fecha:</strong> {{date | date: 'dd/MM/YYYY'}}</div> 
+      <div><strong>Hora:</strong> {{date | date: 'shortTime'}}</div> 
+      </ion-label>
+  </ion-item>
+
+  <ion-card mode="ios">
+    <ion-grid fixed>
+      <ion-row>
+        <ion-col size="4">
+          <div><strong>Especie</strong></div>
+          <div>Limón Común</div>
+        </ion-col>
+        <ion-col class="border-start border-end" size="4">
+          <div><strong>Acierto</strong></div>
+          <div>99.5%</div>
+        </ion-col>
+        <ion-col size="4">
+          <div><strong>Operario</strong></div>
+          <div>Luis Martinez</div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+
+  <ion-card mode="ios">
+    <ion-grid fixed>
+      <ion-row>
+        <ion-col size="3">
+          <div><strong>Estadio 1</strong></div>
+          <div>35</div>
+        </ion-col>
+        <ion-col class="border-start" size="3">
+          <div><strong>Estadio 2</strong></div>
+          <div>20</div>
+        </ion-col>
+        <ion-col class="border-start" size="3">
+          <div><strong>Estadio 3</strong></div>
+          <div>50</div>
+        </ion-col>
+        <ion-col class="border-start" size="3">
+          <div><strong>Estadio 4</strong></div>
+          <div>0</div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+
+<!-- Button -->
+<div class="btn-gradient">
+  <ion-button (click)="submit()" mode="ios">
+    <span>Siguiente</span>
+  </ion-button>
+</div>
+
+</ion-content>

@@ -6,7 +6,7 @@ import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { Router } from '@angular/router';
 import * as firebase from 'firebase/compat';
 import { User } from '../models/user.model';
-import { getStorage, ref, uploadString } from "firebase/storage";
+import { getStorage, ref, uploadString, uploadBytes } from "firebase/storage";
 import { getAuth, updatePassword } from "firebase/auth";
 
 @Injectable({
@@ -61,18 +61,18 @@ export class FirebaseService {
 
 
 
- /**
-  * It takes a new password as a parameter, gets the current user from the auth object, and then calls
-  * the updatePassword function
-  * @param {string} newPassword - The new password for the user.
-  * @returns A promise that resolves when the password is updated.
-  */
- changeUserPassword(newPassword: string){
-  const auth = getAuth();
-  const user = auth.currentUser;
+  /**
+   * It takes a new password as a parameter, gets the current user from the auth object, and then calls
+   * the updatePassword function
+   * @param {string} newPassword - The new password for the user.
+   * @returns A promise that resolves when the password is updated.
+   */
+  changeUserPassword(newPassword: string) {
+    const auth = getAuth();
+    const user = auth.currentUser;
 
-  return updatePassword(user, newPassword);
- }
+    return updatePassword(user, newPassword);
+  }
 
   //========= Funciones Comunes para consultar Firestore==========
   /**
@@ -111,8 +111,8 @@ export class FirebaseService {
   }
 
   /**Actualiza un documento existente en una colección*/
- async UpdateCollection(collectionName: string, object) {
- return this.db.collection(collectionName).doc(object.id).update(object);
+  async UpdateCollection(collectionName: string, object) {
+    return this.db.collection(collectionName).doc(object.id).update(object);
   }
 
   /**Elimina un documento existente en una colección*/
@@ -144,6 +144,19 @@ export class FirebaseService {
     return uploadString(storageRef, file, 'data_url').then(res => {
       return this.storage.ref(id).getDownloadURL().toPromise();
     })
+  }
+
+  //============Subir imagenes=================
+  async uploadBlobFile(id, file): Promise<any> {
+    const storage = getStorage();
+    const storageRef = ref(storage, id);
+
+    // 'file' comes from the Blob or File API
+    return uploadBytes(storageRef, file).then((snapshot) => {
+      console.log('Uploaded a blob or file!');
+      return this.storage.ref(id).getDownloadURL().toPromise();
+    });
+
   }
 
   // =========Cerrar Sesión===========

@@ -1,0 +1,32 @@
+<app-header backButton="/tabs/analysis" title="Análisis"></app-header>
+
+<ion-content>
+
+  <p>Toma 4 fotos desde distintos ángulos del arbol para realizar el análisis</p>
+
+  <ion-grid fixed>
+    <ion-row>
+      <ion-col (click)="removePhoto(i)" *ngFor="let p of photos; index as i" size="6">
+        <div class="square">
+          <img [src]="p">
+        </div>
+      </ion-col>
+
+      <ion-col *ngFor="let p of [1,1,1,1] | slice: 0:(4-photos.length)" size="6">
+        <ion-card (click)="uploadPhoto()">
+          <ion-icon name="add-circle"></ion-icon> 
+        </ion-card>
+      </ion-col>
+
+    </ion-row>
+  </ion-grid>
+
+   <!-- Button *ngIf="!loading && photos.length == 4" -->
+   <div   class="btn-gradient">
+    <ion-button (click)="submit()" mode="ios">
+      <span>Analizar</span>
+    </ion-button>
+  </div>
+
+
+</ion-content>

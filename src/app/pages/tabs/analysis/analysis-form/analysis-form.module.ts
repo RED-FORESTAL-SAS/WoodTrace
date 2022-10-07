@@ -4,20 +4,19 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { AnalysisPageRoutingModule } from './analysis-routing.module';
+import { AnalysisFormPageRoutingModule } from './analysis-form-routing.module';
 
-import { AnalysisPage } from './analysis.page';
+import { AnalysisFormPage } from './analysis-form.page';
 import { SharedModule } from 'src/app/shared/shared.module';
-
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    AnalysisPageRoutingModule,
+    AnalysisFormPageRoutingModule,
     SharedModule
   ],
-  declarations: [AnalysisPage]
+  declarations: [AnalysisFormPage]
 })
-export class AnalysisPageModule {}
+export class AnalysisFormPageModule {}

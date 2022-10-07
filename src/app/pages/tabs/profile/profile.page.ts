@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
 import { User } from 'src/app/models/user.model';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
-import { PasswordRequiredComponent } from 'src/app/shared/components/password-required/password-required.component';
-import * as moment from 'moment';
+
 
 @Component({
   selector: 'app-profile',
@@ -18,7 +16,6 @@ export class ProfilePage implements OnInit {
   constructor(
     private firebaseSvc: FirebaseService,
     private utilsSvc: UtilsService,
-    private modalController: ModalController
   ) { }
 
   ngOnInit() {
@@ -47,20 +44,10 @@ export class ProfilePage implements OnInit {
     }
   }
 
-  /**
-   * The function creates a modal, presents it, and then, if the modal is dismissed with data, it
-   * navigates to the admin-account page
-   */
+
   async passwordRequired() {
-    const modal = await this.modalController.create({
-      component: PasswordRequiredComponent,
-      cssClass: 'modal-fink-app'
-    });
-
-    modal.present();
-    const { data } = await modal.onWillDismiss();
-
-    if (data) {
+    let passwordValid = await this.utilsSvc.passwordRequired();
+    if(passwordValid){
       this.utilsSvc.routerLink('/tabs/profile/admin-account')
     }
   }

@@ -1,0 +1,45 @@
+<app-header backButton="/tabs/analysis" title="Análisis: Limón"></app-header>
+
+
+<ion-content>
+
+
+  <div class="btn-container">
+    <!-- Añadir árbol -->
+    <div class="btn-gradient">
+      <ion-button mode="ios">
+        <span>Añadir árbol</span>
+      </ion-button>
+    </div>
+    
+    <!-- Generar Reporte -->
+    <div class="btn-gradient">
+      <ion-button mode="ios">
+        <span>Generar reporte</span>
+      </ion-button>
+    </div>
+  </div>
+
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <th>Número</th>
+        <th>Acierto</th>
+        <th>Ver</th>
+        <th>Rehacer</th>
+      </thead>
+      <tr *ngFor="let item of [1,2,3,4]; index as i">
+        <td>{{i + 1}}</td>
+        <td>99.5%</td>
+        <td>
+          <ion-icon class="option-icon" src="assets/icon/icon-reportes.svg"></ion-icon>
+        </td>
+        <td>
+          <ion-icon class="option-icon" src="assets/icon/icon-analisis.svg"></ion-icon>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+</ion-content>

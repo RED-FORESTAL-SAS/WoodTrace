@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { AlertFinkApp } from 'src/app/models/alert.model';
+import { UtilsService } from 'src/app/services/utils.service';
 
 @Component({
   selector: 'app-fink-alert',
@@ -8,15 +10,24 @@ import { ModalController } from '@ionic/angular';
 })
 export class FinkAlertComponent implements OnInit {
 
-@Input() title: string;
-@Input() message: string;
+  @Input() info: AlertFinkApp;
 
-  constructor(private modalController: ModalController) { }
+  constructor(
+    private modalController: ModalController,
+    private utilsSvc: UtilsService
+  ) { }
 
-  ngOnInit() {}
+  ngOnInit() { 
+ 
+  }
 
 
-  confirm(){
+  confirm() {
+    if (this.info.route) {
+      this.utilsSvc.routerLink(this.info.route);
+    }
+
     this.modalController.dismiss({ confirm: true });
+
   }
 }

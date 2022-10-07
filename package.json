@@ -1,6 +1,6 @@
 {
   "name": "finkapp",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
   "scripts": {
@@ -25,6 +25,7 @@
     "@capacitor/browser": "^4.0.1",
     "@capacitor/camera": "^4.1.1",
     "@capacitor/core": "4.2.0",
+    "@capacitor/filesystem": "^4.1.2",
     "@capacitor/geolocation": "^4.0.1",
     "@capacitor/haptics": "4.0.1",
     "@capacitor/ios": "^4.2.0",
@@ -34,6 +35,9 @@
     "@ionic/pwa-elements": "^3.1.1",
     "add": "^2.0.6",
     "animate.css": "^4.1.1",
+    "capacitor-blob-writer": "^1.1.4",
+    "exceljs": "^4.3.0",
+    "file-saver": "^2.0.5",
     "firebase": "^9.9.4",
     "ionicons": "^6.0.3",
     "moment": "^2.29.4",
@@ -55,6 +59,7 @@
     "@angular/language-service": "^14.0.0",
     "@capacitor/cli": "4.2.0",
     "@ionic/angular-toolkit": "^6.0.0",
+    "@types/file-saver": "^2.0.5",
     "@types/jasmine": "~3.6.0",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^12.11.1",
