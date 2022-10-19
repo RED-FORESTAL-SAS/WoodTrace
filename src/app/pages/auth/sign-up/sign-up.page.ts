@@ -14,10 +14,10 @@ export class SignUpPage implements OnInit {
 
   fullName = new FormControl('', [Validators.required, Validators.minLength(4)])
   email = new FormControl('', [Validators.required, Validators.email])
-  password = new FormControl('', [Validators.required, Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&.])[A-Za-z\d$@$!%*?&].{8,16}')]);
+  password = new FormControl('', [Validators.required, Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&.+])[A-Za-z\d$@$!%*?&].{8,16}')]);
   docType = new FormControl('', [Validators.required])
   docNumber = new FormControl('', [Validators.required, Validators.minLength(6)])
- 
+
 
   docTypes = [];
 
@@ -54,7 +54,8 @@ export class SignUpPage implements OnInit {
       fullName: this.fullName.value,
       docType: this.docType.value,
       docNumber: this.docNumber.value,
-      emailVerified: false
+      emailVerified: false,
+      devices: [this.utilsSvc.getFromLocalStorage('currentDevice')]
     }
 
     this.utilsSvc.presentLoading();
@@ -93,9 +94,10 @@ export class SignUpPage implements OnInit {
 
     this.utilsSvc.presentLoading();
     this.firebaseSvc.addToCollectionById('users', user).then(res => {
-      this.utilsSvc.saveLocalStorage('user',user);
+      this.utilsSvc.saveLocalStorage('user', user);
       this.firebaseSvc.sendEmailVerification();
       this.utilsSvc.routerLink('/email-verification');
+      this.resetForm();
       this.utilsSvc.dismissLoading();
     }, err => {
       this.utilsSvc.dismissLoading();

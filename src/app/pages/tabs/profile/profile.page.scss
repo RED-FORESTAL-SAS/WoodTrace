@@ -1,4 +1,6 @@
 .wrapper {
+    padding-top: constant(safe-area-inset-top); // for ios 13+
+    padding-top: env(safe-area-inset-top); // for previous ios versions
     height: 90vh;
     display: flex;
     justify-content: center;

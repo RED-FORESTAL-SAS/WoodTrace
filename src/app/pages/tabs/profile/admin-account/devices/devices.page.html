@@ -1,0 +1,23 @@
+<app-header backButton="/tabs/profile/admin-account" title="Dispositivos Vinculados"></app-header>
+<ion-content>
+
+<p class="ion-padding-horizontal">Puedes tener máximo 3 dispositivos asociados a tu cuenta</p>
+
+
+  <ion-item *ngFor="let d of user.devices; index as i">
+    <ion-icon slot="start" color="primary" name="phone-portrait-outline"></ion-icon>
+    <ion-label>{{d.model}}</ion-label>
+
+    <span slot="end" style="font-size: 13px;" *ngIf="currentDevice.uuid == d.uuid">(Dispositivo Actual)</span>
+
+    <ion-buttons *ngIf="currentDevice.uuid !== d.uuid" slot="end">
+      <ion-button (click)="removeDevice(i)">
+        <ion-icon color="medium" name="trash-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-item> 
+
+
+
+
+</ion-content>

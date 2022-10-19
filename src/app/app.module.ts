@@ -15,7 +15,8 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 
 import { environment } from 'src/environments/environment';
 
-
+// ======= Plugins =======
+import { Device } from '@awesome-cordova-plugins/device/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -32,6 +33,7 @@ import { environment } from 'src/environments/environment';
     { provide: RouteReuseStrategy, 
       useClass: IonicRouteStrategy 
     }, 
+    Device
   ],
   bootstrap: [AppComponent],
 })

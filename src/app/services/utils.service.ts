@@ -29,6 +29,15 @@ export class UtilsService {
 
 
   /**
+   * It takes a key as a parameter, and returns the value of that key from localStorage
+   * @param {string} key - The key to store the data under.
+   * @returns The value of the key in localStorage.
+   */
+  getFromLocalStorage(key: string) {
+    return JSON.parse(localStorage.getItem(key));
+  }
+
+  /**
    * It saves an object to local storage.
    * @param {string} name - The name of the object you want to save.
    * @param {any} object - the object you want to save

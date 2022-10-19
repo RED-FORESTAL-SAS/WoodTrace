@@ -2,18 +2,22 @@
 
 <ion-content>
 
-  <p>Toma 4 fotos desde distintos ángulos del arbol para realizar el análisis</p>
+  <p>Para analizar el arbol debes tomar 4 fotos, una desde cada lado del arbol</p>
 
   <ion-grid fixed>
     <ion-row>
-      <ion-col (click)="removePhoto(i)" *ngFor="let p of photos; index as i" size="6">
+      <ion-col (click)="removePhoto(i, p.side)" *ngFor="let p of photos; index as i" size="6">
+        
+        <div class="side-label">{{p.side}}</div>
         <div class="square">
-          <img [src]="p">
+          <ion-icon (click)="removePhoto(i, p.side)" class="remove-photo" color="light" name="close-circle"></ion-icon>
+          <img [src]="p.img">
         </div>
       </ion-col>
 
-      <ion-col *ngFor="let p of [1,1,1,1] | slice: 0:(4-photos.length)" size="6">
-        <ion-card (click)="uploadPhoto()">
+      <ion-col *ngFor="let s of sides" size="6">
+        <div class="side-label">{{s}}</div>
+        <ion-card (click)="uploadPhoto(s)">
           <ion-icon name="add-circle"></ion-icon> 
         </ion-card>
       </ion-col>
@@ -22,8 +26,8 @@
   </ion-grid>
 
    <!-- Button *ngIf="!loading && photos.length == 4" -->
-   <div   class="btn-gradient">
-    <ion-button (click)="submit()" mode="ios">
+   <div class="btn-gradient">
+    <ion-button [disabled]="photos.length !== 4" (click)="submit()" mode="ios">
       <span>Analizar</span>
     </ion-button>
   </div>

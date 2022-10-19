@@ -11,6 +11,7 @@ import { EmptyArrayComponent } from './components/empty-array/empty-array.compon
 import { PasswordRequiredComponent } from './components/password-required/password-required.component';
 import { FinkAlertComponent } from './components/fink-alert/fink-alert.component';
 import { DownloadTypeComponent } from './components/download-type/download-type.component';
+import { NgxCurrencyModule } from 'ngx-currency';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { DownloadTypeComponent } from './components/download-type/download-type.
     IonicModule,
     FormsModule,
     ReactiveFormsModule,
-    SwiperModule
+    SwiperModule,
+    NgxCurrencyModule
   ]
 })
 export class SharedModule { }

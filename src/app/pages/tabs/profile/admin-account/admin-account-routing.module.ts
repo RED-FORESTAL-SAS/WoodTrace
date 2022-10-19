@@ -23,6 +23,10 @@ const routes: Routes = [
   {
     path: 'properties',
     loadChildren: () => import('./properties/properties.module').then( m => m.PropertiesPageModule)
+  },
+  {
+    path: 'devices',
+    loadChildren: () => import('./devices/devices.module').then( m => m.DevicesPageModule)
   }
 ];
 

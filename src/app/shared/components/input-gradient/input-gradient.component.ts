@@ -23,8 +23,8 @@ export class InputGradientComponent implements OnInit {
 
   hide: boolean = true;
   isPassword: boolean;
-  noInputValues = ['select','button'];
-
+  noInputTypes = ['select','button','currency'];
+  mask = { prefix: 'COP    ', thousands: '.', decimal: ',',align: 'left' }
   constructor() {
   }
 

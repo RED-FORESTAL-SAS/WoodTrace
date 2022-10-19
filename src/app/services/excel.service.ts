@@ -20,8 +20,8 @@ export class ExcelService {
     this._workbook = new Workbook();
 
     this._workbook.creator = 'FinkApp';
-
     this.createExcelTable();
+
     this._workbook.xlsx.writeBuffer().then((data) => {
       const blob = new Blob([data]);
 

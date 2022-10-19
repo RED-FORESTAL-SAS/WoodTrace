@@ -73,7 +73,7 @@ export class AnalysisFormPage implements OnInit {
    }
 
    this.utilsSvc.saveLocalStorage('analysis',data);
-   this.utilsSvc.routerLink('/tabs/analysis/take-photos')
+   this.utilsSvc.routerLink('/tabs/analysis/how-to-use')
    
   }
 

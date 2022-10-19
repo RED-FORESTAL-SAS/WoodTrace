@@ -35,7 +35,7 @@
     </div>
 
     <!-- Precio por kilogramos -->
-    <app-input-gradient label="Precio por kilogramo (COP)" type="number" [formControlValue]="priceKg">
+    <app-input-gradient label="Precio por kilogramo" type="currency" [formControlValue]="priceKg">
     </app-input-gradient>
     <div class="validators" *ngIf="priceKg.dirty && priceKg.errors">
       <span *ngIf="priceKg.errors?.['required']">Ingresa el precio por kilogramo</span>

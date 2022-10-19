@@ -1,3 +1,4 @@
+import { Device } from "./device.model";
 import { License } from "./license.model";
 import { Location } from "./location.model";
 
@@ -8,6 +9,7 @@ export interface User {
     password?: string,
     emailVerified?: boolean,
     photo?: string,
+    devices?: Device[],
 
     // ======Owner data======
     fullName?: string,

@@ -165,6 +165,7 @@ export class FirebaseService {
   async logout() {
     await this.auth.signOut();
     localStorage.removeItem('user');
+    localStorage.removeItem('analysis');
     this.router.navigate(['login']);
   }
 

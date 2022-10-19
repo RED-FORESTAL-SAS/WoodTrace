@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from 'src/app/models/user.model';
 import { FirebaseService } from 'src/app/services/firebase.service';
+import { PdfService } from 'src/app/services/pdf.service';
 import { UtilsService } from 'src/app/services/utils.service';
 
 
@@ -19,6 +20,7 @@ export class ProfilePage implements OnInit {
   ) { }
 
   ngOnInit() {
+
   }
 
   ionViewWillEnter() {
@@ -30,6 +32,9 @@ export class ProfilePage implements OnInit {
     this.getLicenseRemainingDays();
   }
 
+
+
+
   /**
  * It calculates the difference between two dates and returns the number of days
  */
@@ -37,9 +42,9 @@ export class ProfilePage implements OnInit {
     if (this.user.license && this.user.license.dateInit) {
       let currentDate = this.utilsSvc.getCurrentDate();
       this.user.license.remainingDays = this.utilsSvc.getDiffDays(currentDate, this.user.license.dateEnd);
-    
-      if(this.user.license.remainingDays <= 0){
-       this.firebaseSvc.deleteFromCollection('licenses', this.user.license.id);
+
+      if (this.user.license.remainingDays <= 0) {
+        this.firebaseSvc.deleteFromCollection('licenses', this.user.license.id);
       }
     }
   }
@@ -47,10 +52,11 @@ export class ProfilePage implements OnInit {
 
   async passwordRequired() {
     let passwordValid = await this.utilsSvc.passwordRequired();
-    if(passwordValid){
+    if (passwordValid) {
       this.utilsSvc.routerLink('/tabs/profile/admin-account')
     }
   }
+
 
   logOut() {
     this.firebaseSvc.logout();

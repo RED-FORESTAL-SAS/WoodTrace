@@ -12,6 +12,7 @@ export class TakePhotosPage implements OnInit {
 
 
   photos = [];
+  sides = ['Izquierda', 'Derecha', 'Adelante', 'Atrás'];
 
   constructor(
     private firebaseSvc: FirebaseService,
@@ -22,24 +23,31 @@ export class TakePhotosPage implements OnInit {
   }
 
 
-  async uploadPhoto() {
+  async uploadPhoto(sideSelected: string) {
 
-    const image = await Camera.getPhoto({
+    await Camera.getPhoto({
       quality: 100,
-      allowEditing: true,
+      allowEditing: false,
       resultType: CameraResultType.DataUrl,
       source: CameraSource.Camera
-    });
+    }).then(image => {
+      this.sides = this.sides.filter(side => side !== sideSelected);
+      this.photos.push({ side: sideSelected, img: image.dataUrl });
 
-    this.photos.push(image.dataUrl);
+    }, err => {
+      console.log(err);
+
+    })
+
   }
 
 
-  removePhoto(index: number) {
-    this.photos.splice(index, 1)
+  removePhoto(index: number, side) {
+    this.photos.splice(index, 1);
+    this.sides.push(side)
   }
 
-  submit(){
-  this.utilsSvc.routerLink('/tabs/analysis/analysis-resumen')
+  submit() {
+    this.utilsSvc.routerLink('/tabs/analysis/analysis-resumen')
   }
 }

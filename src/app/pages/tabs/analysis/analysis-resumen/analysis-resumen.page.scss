@@ -5,6 +5,7 @@ ion-card{
 
 ion-item{
     font-size: 14px;
+   border-top: 1px solid rgb(225, 224, 224)
 }
 
 ion-col{
@@ -17,4 +18,19 @@ ion-col{
 
 .border-end{
     border-right: 1px solid #cfcfcf;
+}
+
+.d-flex{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.total{
+    border: 1px solid rgb(207, 207, 207);
+    padding: 10px;
+    border-radius: 20px;
+    width: 150px;
+    text-align: center;
+    color: rgb(65, 64, 64);
 }

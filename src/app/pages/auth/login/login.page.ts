@@ -55,11 +55,22 @@ export class LoginPage implements OnInit {
 
       user.id = res.user.uid;
       user.emailVerified = res.user.emailVerified;
+      this.utilsSvc.saveLocalStorage('user', user);
       this.loading = false;
 
-      this.getUserData(user);
+
+      if (!user.emailVerified) {
+        this.utilsSvc.routerLink('/email-verification');
+        this.firebaseSvc.sendEmailVerification();
+      } else {
+        this.getUserData(user);
+      }
+
+
+
 
     }, err => {
+
       this.loading = false;
       let error = this.utilsSvc.getError(err);
 
@@ -81,22 +92,33 @@ export class LoginPage implements OnInit {
    */
   getUserData(user: User) {
     this.loading = true;
+    let currentDevice = this.utilsSvc.getFromLocalStorage('currentDevice');
 
     let ref = this.firebaseSvc.getDataById('users', user.id).valueChanges().subscribe((res: any) => {
 
       this.loading = false;
-  
-      //save emailVerified property before save it in localstorage
-      res.emailVerified = user.emailVerified;
-      
-      this.utilsSvc.saveLocalStorage('user', res);
 
-      if (user.emailVerified) {
+      res.emailVerified = user.emailVerified;
+      let deviceExist = res.devices.filter(device => device.uuid == currentDevice.uuid).length;
+
+
+      //Valida si el dispositivo actual existe en los dispositivos del usuario
+      if (deviceExist) {
+        this.utilsSvc.saveLocalStorage('user', res);
         this.getLicense(res);
+
       } else {
-        this.utilsSvc.routerLink('/email-verification');
-        this.firebaseSvc.sendEmailVerification();
+        //Si el usuario tiene menos de 3 dispositivos, se añade uno nuevo. Si tiene 3, no le permite iniciar.
+        if (res.devices.length == 3) {
+          this.utilsSvc.presentToast('No se pudo iniciar. Tienes 3 dispositivos vinculados a esta cuenta, elimina alguno para iniciar en este.')
+        } else {
+          res.devices.push(currentDevice);
+          this.updateDevices(res);
+        }
+
       }
+
+
 
 
       ref.unsubscribe();
@@ -106,6 +128,7 @@ export class LoginPage implements OnInit {
       this.utilsSvc.presentToast(err);
     })
   }
+
 
   getLicense(user: User) {
     this.loading = true;
@@ -135,6 +158,31 @@ export class LoginPage implements OnInit {
         this.resetForm();
       })
   }
+
+
+  updateDevices(user: User) {
+
+    let data = {
+      id: this.utilsSvc.getCurrentUser().id,
+      devices: user.devices
+    }
+    
+    this.loading = true;
+
+    this.firebaseSvc.UpdateCollection('users', data)
+      .then(res => {
+
+        this.loading = false;
+        this.utilsSvc.saveLocalStorage('user', user);
+        this.getLicense(user);
+
+      }, err => {
+        this.loading = false;
+        console.log(err);
+
+      })
+  }
+
 
 
   /**

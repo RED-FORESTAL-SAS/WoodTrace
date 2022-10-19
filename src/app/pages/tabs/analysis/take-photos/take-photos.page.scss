@@ -4,7 +4,20 @@
 }
 
 p{
-  padding: 25px 25px 10px 25px;
+  padding: 25px 25px 5px 25px;
+  font-size: 15px;
+}
+
+.side-label{
+  padding-bottom: 10px;
+  font-size: 14px;
+}
+
+.remove-photo{
+  position: absolute;
+  font-size: 27px;
+  left: 81%;
+  top: 3%;
 }
 
 ion-card{

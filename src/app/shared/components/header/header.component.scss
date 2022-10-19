@@ -1,3 +1,8 @@
+ion-toolbar{
+    padding-top: constant(safe-area-inset-top); // for ios 13+
+    padding-top: env(safe-area-inset-top); // for previous ios versions
+}
+
 .toolbar-sm{
     --min-height: 25px;
     padding-bottom: 10px;

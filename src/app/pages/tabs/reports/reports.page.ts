@@ -20,8 +20,13 @@ date = Date.now();
 
   }
 
-  downloadType(){
-    this.utilsSvc.downloadReport();
+  async passwordRequired() {
+    let passwordValid = await this.utilsSvc.passwordRequired();
+
+    if(passwordValid){
+      this.utilsSvc.downloadReport();
+    }
+
   }
 
   downloadExcel(){   

@@ -1,18 +1,33 @@
 <div class="ion-padding-bottom">
 
-  <div class="label animate__animated animate__fadeIn"
-    *ngIf="(formControlValue && formControlValue.value) && type !== 'button'">{{label}}</div>
+
+  <!-- ========= Label Regular ========= -->
+  <div class="label animate__animated animate__fadeIn" *ngIf="(formControlValue && formControlValue.value) 
+    && type !== 'button' 
+    && type !== 'currency'">{{label}}</div>
+
+  <!-- ========= Label Currency Input ========= -->
+  <div class="label animate__animated animate__fadeIn" *ngIf="type == 'currency'">{{label}}</div>
+
+
+
   <div class="gradient-input">
+    <!-- ========= Input Regular ========= -->
 
-    <!-- Input -->
-
-    <ion-item lines="none" *ngIf="!noInputValues.includes(type)">
+    <ion-item lines="none" *ngIf="!noInputTypes.includes(type)">
       <ion-input debounce="400" [minlength]="min" [maxlength]="max" [formControl]="formControlValue"
         [placeholder]="label" [type]="type"></ion-input>
-      <ion-icon *ngIf="isPassword" slot="end" (click)="showAndHide()" [name]="hide ? 'eye-outline' : 'eye-off-outline'"></ion-icon>
+      <ion-icon *ngIf="isPassword" slot="end" (click)="showAndHide()" [name]="hide ? 'eye-outline' : 'eye-off-outline'">
+      </ion-icon>
     </ion-item>
 
-    <!-- Select -->
+    <!-- ========= Input Currency ========= -->
+
+    <ion-item lines="none" *ngIf="type == 'currency'">
+      <input type="tel" currencyMask [formControl]="formControlValue" [options]="mask" />
+    </ion-item>
+
+    <!-- ========= Select ========= -->
 
     <ion-item lines="none" *ngIf="type == 'select'">
       <ion-select cancelText="Cancelar" okText="Aceptar" [formControl]="formControlValue" [placeholder]="label">
@@ -21,7 +36,7 @@
       </ion-select>
     </ion-item>
 
-    <!-- Button -->
+    <!-- ========= Button ========= -->
     <ion-item class="ion-activatable ripple-parent" lines="none" *ngIf="type == 'button'">
       <ion-buttons slot="start">
         <ion-button>
