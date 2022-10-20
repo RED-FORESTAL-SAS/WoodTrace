@@ -18,7 +18,7 @@ export class CompanyPage implements OnInit {
 
   companyName = new FormControl('', [Validators.required, Validators.minLength(4)]);
   companyAddress = new FormControl('', [Validators.required, Validators.minLength(10)]);
-  nit = new FormControl('', [Validators.required, Validators.minLength(10)]);
+  nit = new FormControl('', [Validators.required, Validators.minLength(7)]);
   country = new FormControl('', [Validators.required]);
   department = new FormControl('', [Validators.required]);
   town = new FormControl('', [Validators.required]);
