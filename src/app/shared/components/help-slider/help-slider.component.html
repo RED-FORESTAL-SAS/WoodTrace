@@ -1,17 +1,27 @@
 <div class="ion-text-center">
 
-<!-- Logo -->
+  <div class="safe-p-top"></div>
+
+  <!-- Logo -->
   <app-logo></app-logo>
 
 
-<!-- Slider -->
+  <!-- Slider -->
   <swiper class="swiper" [config]="config" #swiper [virtual]="true" (slideChange)="onSlideChange($event)">
     <ng-template *ngFor="let h of helpSlides" swiperSlide>
+      <div class="wrapper">
+
+<div>
       <h1>{{h.title}}</h1>
       <h4>{{h.subtitle}}</h4>
       <h6 class="ion-padding-top">{{h.indication}}</h6>
       <ion-icon class="icon-slide" [src]="h.icon"></ion-icon>
       <h6>{{h.message}}</h6>
+
+</div>
+  
+      </div>
+
     </ng-template>
   </swiper>
 
@@ -53,4 +63,5 @@
     </div>
   </div>
 
+  <div class="safe-p-bottom"></div>
 </div>

@@ -32,9 +32,6 @@ export class ProfilePage implements OnInit {
     this.getLicenseRemainingDays();
   }
 
-
-
-
   /**
  * It calculates the difference between two dates and returns the number of days
  */

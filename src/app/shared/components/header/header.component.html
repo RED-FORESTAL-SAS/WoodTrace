@@ -1,3 +1,4 @@
+<div *ngIf="!closeModal" class="safe-p-top"></div>
 <ion-toolbar *ngIf="backButton || closeModal" class="back-toolbar">
   <ion-buttons slot="start">
     <ion-back-button *ngIf="backButton" [defaultHref]="backButton" text="Volver" icon="chevron-back"></ion-back-button>
