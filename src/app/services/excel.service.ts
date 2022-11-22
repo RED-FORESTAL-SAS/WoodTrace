@@ -4,6 +4,8 @@ import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { FirebaseService } from './firebase.service';
 import { UtilsService } from "src/app/services/utils.service";
 import * as fs from 'file-saver';
+import { Color } from '@ionic/core';
+import { CurrencyPipe } from '@angular/common';
 @Injectable({
   providedIn: 'root'
 })
@@ -13,85 +15,360 @@ export class ExcelService {
 
   constructor(
     private firebaseSvc: FirebaseService,
-    private utilsSvc: UtilsService
+    private utilsSvc: UtilsService,
+    private currency: CurrencyPipe
   ) { }
 
-  createAndUploadExcel() {
+  createAndUploadExcel(id: string) {
     this._workbook = new Workbook();
 
     this._workbook.creator = 'FinkApp';
     this.createExcelTable();
 
-    this._workbook.xlsx.writeBuffer().then((data) => {
+    let currentUser = this.utilsSvc.getCurrentUser();
+
+    this._workbook.xlsx.writeBuffer().then(async (data) => {
       const blob = new Blob([data]);
 
-      // fs.saveAs(blob, 'frutos_report_1.xlsx');
+      // fs.saveAs(blob, 'frutos_report_1.xlsx');   
+      
+      this.utilsSvc.presentLoading('Cargando Excel');
+      let url = await this.firebaseSvc.uploadBlobFile(`${currentUser.id}/reports/${id}.xlsx`, blob)
 
-      this.firebaseSvc.uploadBlobFile(`${this.utilsSvc.getCurrentUser().id}/report_1.xlsx`, blob)
+  
+      this.firebaseSvc.UpdateCollection('reports', {id, excel: url }).then(res => {
+          this.utilsSvc.dismissLoading();
+          this.utilsSvc.routerLink('/tabs/reports')
+          this.utilsSvc.deleteFromLocalStorage('analysis')
+        }, err => {
+          this.utilsSvc.dismissLoading();
+          this.utilsSvc.presentToast('Ha ocurrido un error, intenta de nuevo.')
+        })
+     
+      
     })
   }
 
 
   createExcelTable() {
-    let reportValues = [{
-      especie: 'Limon Común',
-      acierto: '99.5%',
-      cantidad: 46,
-      fecha: this.utilsSvc.getCurrentDate(),
-      operario: 'Luis Martinez',
-      estadio_1: 39,
-      estadio_2: 0,
-      estadio_3: 5,
-      estadio_4: 2,
-    },
-  ]
-  
+
+
+    let currentUser = this.utilsSvc.getCurrentUser();
+    let analysis = this.utilsSvc.getFromLocalStorage('analysis');
+
+    let treeWithFlower = analysis.trees.filter(tree => tree.flowers).length;
+    let treeWithoutFlower = analysis.trees.filter(tree => !tree.flowers).length;
+
+    let treeWithFruits = analysis.trees.filter(tree => tree.flowers || tree.lemons.estadio_1 || tree.lemons.estadio_2 || tree.lemons.estadio_3).length;
+    let treeWithoutFruits = analysis.trees.filter(tree => !tree.flowers && !tree.lemons.estadio_1 && !tree.lemons.estadio_2 && !tree.lemons.estadio_3).length;
+
+    let promedio_incedencia = (analysis.trees.reduce((i, j) => i + j.lemons.confidenceAvergae, 0) / analysis.trees.length).toFixed(0);
+
+    let error_muestral = Math.sqrt(((0.5 * 0.5 * (1.96) ^ 2) / analysis.trees.length) * ((analysis.treeQuantity - analysis.trees.length) / (analysis.treeQuantity - 1)))
+
+
+    let promedio_flores = (analysis.trees.reduce((i, j) => i + j.flowers, 0) / analysis.trees.length).toFixed(0);
+    let promedio_estadio_1 = (analysis.trees.reduce((i, j) => i + j.lemons.estadio_1, 0) / analysis.trees.length).toFixed(0);
+    let promedio_estadio_2 = (analysis.trees.reduce((i, j) => i + j.lemons.estadio_2, 0) / analysis.trees.length).toFixed(0);
+    let promedio_estadio_3 = (analysis.trees.reduce((i, j) => i + j.lemons.estadio_3, 0) / analysis.trees.length).toFixed(0);
+
+    let peso_limon = 0.03239;
+
+    let conteo_flor = parseInt(promedio_flores) * analysis.treeQuantity;
+    let conteo_estadio_1 = parseInt(promedio_estadio_1) * analysis.treeQuantity;
+    let conteo_estadio_2 = parseInt(promedio_estadio_2) * analysis.treeQuantity;
+    let conteo_estadio_3 = parseInt(promedio_estadio_3) * analysis.treeQuantity;
+
+
+    let semanas = [
+      //============= Semana 1 =============
+      {
+        conteo_flor,
+        conteo_estadio_1,
+        conteo_estadio_2,
+        conteo_estadio_3,
+        peso_produccion: conteo_estadio_3 * peso_limon,
+        ingreso_esperado: (conteo_estadio_3 * peso_limon) * analysis.priceKg,
+        total: conteo_flor + conteo_estadio_1 + conteo_estadio_2 + conteo_estadio_3
+      },
+      //============= Semana 2 =============
+      {
+        conteo_flor,
+        conteo_estadio_1,
+        conteo_estadio_2,
+        conteo_estadio_3: 0,
+        peso_produccion: 0,
+        ingreso_esperado: 0,
+        total: conteo_flor + conteo_estadio_1 + conteo_estadio_2 + 0
+      },
+      //============= Semana 3 =============
+      {
+        conteo_flor: 0,
+        conteo_estadio_1: conteo_flor + conteo_estadio_1,
+        conteo_estadio_2,
+        conteo_estadio_3: 0,
+        peso_produccion: 0,
+        ingreso_esperado: 0,
+        total: conteo_flor + conteo_estadio_1 + conteo_estadio_2 + 0
+      },
+      //============= Semana 4 =============
+      {
+        conteo_flor: 0,
+        conteo_estadio_1: conteo_flor + conteo_estadio_1,
+        conteo_estadio_2,
+        conteo_estadio_3: 0,
+        peso_produccion: 0,
+        ingreso_esperado: 0,
+        total: conteo_flor + conteo_estadio_1 + conteo_estadio_2 + 0
+      },
+      //============= Semana 5 =============
+      {
+        conteo_flor: 0,
+        conteo_estadio_1: conteo_flor + conteo_estadio_1,
+        conteo_estadio_2,
+        conteo_estadio_3: 0,
+        peso_produccion: 0,
+        ingreso_esperado: 0,
+        total: conteo_flor + conteo_estadio_1 + conteo_estadio_2 + 0
+      },
+      //============= Semana 6 =============
+      {
+        conteo_flor: 0,
+        conteo_estadio_1: conteo_flor + conteo_estadio_1,
+        conteo_estadio_2,
+        conteo_estadio_3: 0,
+        peso_produccion: 0,
+        ingreso_esperado: 0,
+        total: conteo_flor + conteo_estadio_1 + conteo_estadio_2 + 0
+      },
+      //============= Semana 7 =============
+      {
+        conteo_flor: 0,
+        conteo_estadio_1: conteo_flor + conteo_estadio_1,
+        conteo_estadio_2: 0,
+        conteo_estadio_3: conteo_estadio_2,
+        peso_produccion: conteo_estadio_2 * peso_limon,
+        ingreso_esperado: (conteo_estadio_2 * peso_limon) * analysis.priceKg,
+        total: conteo_flor + conteo_estadio_1 + conteo_estadio_2 + 0
+      },
+      //============= Semana 8 =============
+      {
+        conteo_flor: 0,
+        conteo_estadio_1: conteo_flor,
+        conteo_estadio_2: conteo_estadio_1,
+        conteo_estadio_3: 0,
+        peso_produccion: 0,
+        ingreso_esperado: 0,
+        total: conteo_flor + conteo_estadio_1
+      },
+      //============= Semana 9 =============
+      {
+        conteo_flor: 0,
+        conteo_estadio_1: conteo_flor,
+        conteo_estadio_2: conteo_estadio_1,
+        conteo_estadio_3: 0,
+        peso_produccion: 0,
+        ingreso_esperado: 0,
+        total: conteo_flor + conteo_estadio_1
+      },
+      //============= Semana 10 =============
+      {
+        conteo_flor: 0,
+        conteo_estadio_1: 0,
+        conteo_estadio_2: conteo_estadio_1 + conteo_flor,
+        conteo_estadio_3: 0,
+        peso_produccion: 0,
+        ingreso_esperado: 0,
+        total: conteo_flor + conteo_estadio_1
+      },
+      //============= Semana 11 =============
+      {
+        conteo_flor: 0,
+        conteo_estadio_1: 0,
+        conteo_estadio_2: conteo_estadio_1 + conteo_flor,
+        conteo_estadio_3: 0,
+        peso_produccion: 0,
+        ingreso_esperado: 0,
+        total: conteo_flor + conteo_estadio_1
+      },
+      //============= Semana 12 =============
+      {
+        conteo_flor: 0,
+        conteo_estadio_1: 0,
+        conteo_estadio_2: conteo_estadio_1 + conteo_flor,
+        conteo_estadio_3: 0,
+        peso_produccion: 0,
+        ingreso_esperado: 0,
+        total: conteo_flor + conteo_estadio_1
+      },
+      //============= Semana 13 =============
+      {
+        conteo_flor: 0,
+        conteo_estadio_1: 0,
+        conteo_estadio_2: conteo_estadio_1 + conteo_flor,
+        conteo_estadio_3: 0,
+        peso_produccion: 0,
+        ingreso_esperado: 0,
+        total: conteo_flor + conteo_estadio_1
+      },
+      //============= Semana 14 =============
+      {
+        conteo_flor: 0,
+        conteo_estadio_1: 0,
+        conteo_estadio_2: conteo_flor,
+        conteo_estadio_3: conteo_estadio_1,
+        peso_produccion: conteo_estadio_1 * peso_limon,
+        ingreso_esperado: (conteo_estadio_1 * peso_limon) * analysis.priceKg,
+        total: conteo_flor + conteo_estadio_1
+      },
+      //============= Semana 15 =============
+      {
+        conteo_flor: 0,
+        conteo_estadio_1: 0,
+        conteo_estadio_2: conteo_flor,
+        conteo_estadio_3: 0,
+        peso_produccion: 0,
+        ingreso_esperado: 0,
+        total: conteo_flor
+      },
+      //============= Semana 16 =============
+      {
+        conteo_flor: 0,
+        conteo_estadio_1: 0,
+        conteo_estadio_2: 0,
+        conteo_estadio_3: conteo_flor,
+        peso_produccion: conteo_flor * peso_limon,
+        ingreso_esperado: (conteo_flor * peso_limon) * analysis.priceKg,
+        total: conteo_flor
+      },
+    ]
+
+
+
     const sheet = this._workbook.addWorksheet('frutos');
-    sheet.getColumn('A').width = 25;
-    sheet.getColumn('D').width = 25;
-    sheet.getColumn('E').width = 25;
 
-    //====== Título de la hoja ========
-    const titleCell = sheet.getCell('E1');
-    titleCell.value = 'Reporte 1';
-    titleCell.style.font = { bold: true, size: 16 }
-
-    // ====== Cabecera ========
-    const headerRow = sheet.getRow(3);
-
-    headerRow.values = [
-      'Especie',
-      'Acierto',
-      'Cantidad de Fruto',
-      'Fecha',
-      'Operario',
-      'Estadio 1',
-      'Estadio 2',
-      'Estadio 3',
-      'Estadio 4',
-    ];
-
-    headerRow.font = { bold: true, size: 13 }
+    //============= Datos del Predio ===============
+    sheet.getCell('A1').value = 'Datos del Predio';
+    sheet.getCell('A1').style.font = { bold: true, size: 18 }
 
 
-    reportValues.map((value, index)=> {
-      let rowCounter = index + 4;
-      let row = sheet.getRow(rowCounter);
-      row.font = { bold: false, size: 13 };
+    const colA = sheet.getColumn('A');
+    colA.width = 40;
+    colA.style.font = { bold: true, size: 15 }
 
-      row.values = [
-        value.especie,
-        value.acierto,
-        value.cantidad,
-        value.fecha,
-        value.operario,
-        value.estadio_1,
-        value.estadio_2,
-        value.estadio_3,
-        value.estadio_4,
-      ]
+    const colB = sheet.getColumn('B');
+    colB.width = 30;
+    colB.style.font = { bold: false, size: 15, }
 
-    })
+    sheet.getColumn('C').width = 30;
+    sheet.getColumn('C').style.font = { bold: false, size: 15, }
+
+    sheet.getColumn('D').width = 30;
+    sheet.getColumn('D').style.font = { bold: false, size: 15, }
+
+
+    sheet.getRow(2).values = ['Empresa', currentUser.companyName];
+    sheet.getRow(3).values = ['Nombre Predio', analysis.property];
+    sheet.getRow(4).values = ['Operario que realiza el análisis', analysis.operator];
+    sheet.getRow(5).values = ['Fecha', this.utilsSvc.getCurrentDate()];
+
+
+    //============= Datos de Entrada ===============
+
+    sheet.getCell('A9').value = 'Datos de Entrada';
+    sheet.getCell('A9').style.font = { bold: true, size: 18 }
+
+
+    sheet.getRow(10).values = ['No. Árboles Analizados', analysis.trees.length + ' '];
+    sheet.getRow(11).values = ['Total árboles en producción', analysis.treeQuantity + ' '];
+    sheet.getRow(12).values = ['Precio (Kilogramo)', 'COP ' + this.currency.transform(analysis.priceKg, ' ')];
+
+    //============= Estadística ===============
+
+    sheet.getCell('A16').value = 'Estadística';
+    sheet.getCell('A16').style.font = { bold: true, size: 18 }
+
+
+    sheet.getRow(17).values = ['Error muestral', error_muestral];
+    sheet.getRow(18).values = ['Precisión', '90,16%'];
+    sheet.getRow(19).values = ['Desaciertos', '9,84%'];
+    sheet.getRow(20).values = ['Promedio de la incidencia', promedio_incedencia + '%'];
+
+
+    //============= Incidencia de árboles en floración ===============
+
+    sheet.getCell('A24').value = 'Incidencia de árboles en floración';
+    sheet.getCell('A24').style.font = { bold: true, size: 18 }
+
+
+    sheet.getRow(25).values = ['No. de árboles con flor', treeWithFlower];
+    sheet.getRow(26).values = ['No. de árboles sin flor', treeWithoutFlower];
+
+
+    //============= Incidencia de árboles en fructificación ===============
+
+    sheet.getCell('A30').value = 'Incidencia de árboles en fructificación';
+    sheet.getCell('A30').style.font = { bold: true, size: 18 }
+
+
+    sheet.getRow(31).values = ['No de árboles con fruto', treeWithFruits];
+    sheet.getRow(32).values = ['No de árboles sin fruto', treeWithoutFruits];
+
+
+    //============= Estimación de Producción ===============
+
+    sheet.getCell('A34').value = 'Estimación de Producción';
+    sheet.getCell('A34').style.font = { bold: true, size: 18 }
+
+    let n_semana = 1
+    let n_row = 36;
+
+    let cellsWithBordersWeeks = []
+
+
+
+    for (let e of semanas) {
+      sheet.getRow(n_row).values = [`Semana ${n_semana++}`, 'Conteo', 'Peso Producción', 'Ingreso Esperado'];
+      sheet.getRow(n_row + 1).values = ['Flor', e.conteo_flor, ' ', ' '];
+      sheet.getRow(n_row + 2).values = ['Fruto Pequeño', e.conteo_estadio_1, ' ', ' '];
+      sheet.getRow(n_row + 3).values = ['Fruto Verde', e.conteo_estadio_2, ' ', ' '];
+      sheet.getRow(n_row + 4).values = ['Fruto Maduro', e.conteo_estadio_3, e.peso_produccion,'COP '+this.currency.transform(e.ingreso_esperado.toFixed(2), ' ') ];
+      sheet.getRow(n_row + 5).values = ['Total', e.total, ' ', ' '];
+
+
+      sheet.getCell('B'+n_row).style.font = { bold: true, size: 15, }
+      sheet.getCell('C'+n_row).style.font = { bold: true, size: 15, }
+      sheet.getCell('D'+n_row).style.font = { bold: true, size: 15, }
+  
+
+      cellsWithBordersWeeks.push(n_row);
+      cellsWithBordersWeeks.push(n_row + 1);
+      cellsWithBordersWeeks.push(n_row + 2);
+      cellsWithBordersWeeks.push(n_row + 3);
+      cellsWithBordersWeeks.push(n_row + 4);
+      cellsWithBordersWeeks.push(n_row + 5);
+
+      n_row = n_row + 9
+    }
+
+    for (let c of cellsWithBordersWeeks) {
+      sheet.getCell('A' + c).border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
+      sheet.getCell('B' + c).border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
+      sheet.getCell('C' + c).border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
+      sheet.getCell('D' + c).border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
+
+    }
+
+
+    //============= Generar bordes de tablas =============== 
+
+    let cellsWithBorders = [1, 2, 3, 4, 5, 9, 10, 11, 12, 16, 17, 18, 19, 20, 24, 25, 26, 30, 31, 32]
+
+    for (let c of cellsWithBorders) {
+      sheet.getCell('A' + c).border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
+      sheet.getCell('B' + c).border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
+    }
+
 
   }
 

@@ -1,4 +1,6 @@
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
+import es from '@angular/common/locales/es';
+
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
@@ -17,6 +19,9 @@ import { environment } from 'src/environments/environment';
 
 // ======= Plugins =======
 import { Device } from '@awesome-cordova-plugins/device/ngx';
+import { CurrencyPipe, registerLocaleData } from '@angular/common';
+
+registerLocaleData(es);
 
 @NgModule({
   declarations: [AppComponent],
@@ -30,10 +35,12 @@ import { Device } from '@awesome-cordova-plugins/device/ngx';
     HttpClientModule
   ],
   providers: [
+    { provide: LOCALE_ID, useValue: 'es-MX' },
     { provide: RouteReuseStrategy, 
       useClass: IonicRouteStrategy 
     }, 
-    Device
+    Device,
+    CurrencyPipe
   ],
   bootstrap: [AppComponent],
 })

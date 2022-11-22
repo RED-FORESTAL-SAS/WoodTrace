@@ -148,8 +148,8 @@ export class MembershipPage implements OnInit {
    * It calculates the difference between two dates and returns the number of days
    */
   getRemainingDays() {
-    let currentDate = this.utilsSvc.getCurrentDate();
-    this.user.license.remainingDays = this.utilsSvc.getDiffDays(currentDate, this.user.license.dateEnd);
+    let currentDate = this.utilsSvc.getCurrentDate(); 
+    this.user.license.remainingDays = this.utilsSvc.getDiffDays(currentDate, this.user.license.dateEnd);    
   }
 
 }

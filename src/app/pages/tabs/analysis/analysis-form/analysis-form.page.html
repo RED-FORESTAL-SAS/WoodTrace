@@ -1,7 +1,10 @@
 <app-header backButton="/tabs/analysis" title="Análisis"></app-header>
 <ion-content>
 
-  <div *ngIf="operators.length && properties.length" class="ion-padding">
+  <div class="wrapper">
+
+  
+  <div *ngIf="operators.length && properties.length" class="form">
 
     <!-- Especie -->
     <app-input-gradient [selectOptions]="speciesList" label="Especie" type="select" [formControlValue]="species">
@@ -59,7 +62,7 @@
 
   </div>
 
-
+</div>
   <!-- Si no existen Operadores o Predios -->
   <div *ngIf="!operators.length || !properties.length" class="ion-padding-horizontal" style="padding-top: 20vh;">
     <app-empty-array iconSrc="assets/icon/icon-perfil.svg"

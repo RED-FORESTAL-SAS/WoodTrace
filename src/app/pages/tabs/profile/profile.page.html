@@ -6,16 +6,16 @@
     <div>
 
       <div class="user-info">
-        <ion-icon *ngIf="!user.photo" class="default-photo" name="person-circle-outline"></ion-icon>
+        <ion-icon *ngIf="!currentUser().photo" class="default-photo" name="person-circle-outline"></ion-icon>
 
-        <ion-avatar class="photo" *ngIf="user.photo">
-            <img [src]="user.photo" />
+        <ion-avatar class="photo" *ngIf="currentUser().photo">
+            <img [src]="currentUser().photo" />
         </ion-avatar> 
 
-        <h5 class="ion-no-margin name">{{user.fullName}}</h5>
+        <h5 class="ion-no-margin name">{{currentUser().fullName}}</h5>
         <div class="active">
-          <ion-text *ngIf="user.license && user.license.remainingDays" color="primary">Miembro Activo</ion-text>
-          <ion-text *ngIf="!user.license" color="medium">Miembro Inactivo</ion-text>
+          <ion-text *ngIf="currentUser().license && currentUser().license.remainingDays" color="primary">Miembro Activo</ion-text>
+          <ion-text *ngIf="!currentUser().license" color="medium">Miembro Inactivo</ion-text>
         </div>
       </div>
 

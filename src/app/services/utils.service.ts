@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoadingController, ModalController, ToastController } from '@ionic/angular';
+import { AlertController, AlertOptions, LoadingController, ModalController, ToastController } from '@ionic/angular';
 import * as moment from 'moment';
 import { AlertFinkApp } from '../models/alert.model';
 import { DownloadTypeComponent } from '../shared/components/download-type/download-type.component';
 import { FinkAlertComponent } from '../shared/components/fink-alert/fink-alert.component';
 import { PasswordRequiredComponent } from '../shared/components/password-required/password-required.component';
+import { Browser } from '@capacitor/browser';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +17,13 @@ export class UtilsService {
     private loadingController: LoadingController,
     private toastController: ToastController,
     private router: Router,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private alertController: AlertController
   ) { }
+
+  async openUrl(url: string) {
+     await Browser.open({ url })
+   };
 
   /**
    * 
@@ -46,10 +52,13 @@ export class UtilsService {
     localStorage.setItem(name, JSON.stringify(object))
   }
 
+  deleteFromLocalStorage(name: string){
+   localStorage.removeItem(name);
+  }
 
   //======= Loading =======
-  async presentLoading() {
-    const loading = await this.loadingController.create();
+  async presentLoading(message?: string) {
+    const loading = await this.loadingController.create({message, mode: 'ios'});
     await loading.present();
   }
 
@@ -101,6 +110,11 @@ export class UtilsService {
     }
   }
 
+  async presentAlertConfirm(opt: AlertOptions) {
+    const alert = await this.alertController.create(opt);
+  
+  return  await alert.present();
+  }
 
   /**
    * It creates a modal, presents it, and returns a boolean value based on the data returned from the
@@ -123,10 +137,11 @@ export class UtilsService {
     }
   }
 
-  async downloadReport() {
+  async downloadReport(report) {
     const modal = await this.modalController.create({
       component: DownloadTypeComponent,
-      cssClass: 'modal-fink-app'
+      cssClass: 'modal-fink-app',
+      componentProps: { report }
     });
 
     await modal.present();
@@ -169,7 +184,8 @@ export class UtilsService {
    * @returns The current date in the format of Month, Day, Year, Time
    */
   getCurrentDate() {
-    return moment(Date.now()).format('LLL');
+    moment.locale('es');
+    return moment(Date.now()).format('MMMM D YYYY, h:mm a');
   }
 
   /**
@@ -180,8 +196,8 @@ export class UtilsService {
    */
   getDiffDays(dateInit: string, dateEnd: string) {
 
-    let x = moment(dateEnd, 'LLL');
-    let y = moment(dateInit, 'LLL');
+    let x = moment(dateEnd, 'MMMM D YYYY, h:mm a');
+    let y = moment(dateInit, 'MMMM D YYYY, h:mm a');
 
     let diffInDays = x.diff(y, 'days');
     return diffInDays;

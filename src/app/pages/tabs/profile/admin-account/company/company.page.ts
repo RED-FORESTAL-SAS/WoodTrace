@@ -141,19 +141,24 @@ export class CompanyPage implements OnInit {
     });
 
     this.loadingPhoto = true;
-    this.user.photo = await this.firebaseSvc.uploadPhoto(this.user.id + '/profile', image.dataUrl);
-    this.photo.setValue(this.user.photo);
+   
+    this.photo.setValue(image.dataUrl);
     this.loadingPhoto = false;
 
-    this.updateUser();
-    this.utilsSvc.saveLocalStorage('user', this.user)
+   
   }
 
 
   /**
    * It updates the user information in the database.
    */
-  updateUser() {
+ async updateUser() {
+
+
+  if(this.user.photo !== this.photo.value){
+    this.user.photo = await this.firebaseSvc.uploadPhoto(this.user.id + '/profile', this.photo.value);
+  }
+    
 
     let location = { latitude: this.latitude, longitude: this.longitude }
 
@@ -170,6 +175,7 @@ export class CompanyPage implements OnInit {
     this.loading = true;
     this.firebaseSvc.UpdateCollection('users', this.user).then(res => {
       this.utilsSvc.presentToast('Actualizado con éxito');
+      this.utilsSvc.routerLink('/tabs/profile/admin-account')
       this.loading = false;
     }, err => {
       console.log(err);

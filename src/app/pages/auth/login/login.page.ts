@@ -136,6 +136,8 @@ export class LoginPage implements OnInit {
     let ref = this.firebaseSvc.getCollectionConditional('licenses',
       ref => ref.where('userId', '==', user.id)).subscribe(data => {
 
+        
+        
         this.loading = false;
 
         let license = data.map(e => {
@@ -148,10 +150,16 @@ export class LoginPage implements OnInit {
           };
         })[0];
 
+    
+        
         if (license) {
           user.license = license;
           this.utilsSvc.saveLocalStorage('user', user);
+        }else{
+          user.license = null;
+          this.utilsSvc.saveLocalStorage('user', user);
         }
+        
         ref.unsubscribe();
 
         this.utilsSvc.routerLink('/tabs/profile');

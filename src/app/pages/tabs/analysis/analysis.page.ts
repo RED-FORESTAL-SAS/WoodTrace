@@ -51,6 +51,21 @@ export class AnalysisPage implements OnInit {
     }
   }
 
+
+  continueAnalysis(){
+    let currentAnalysis = this.utilsSvc.getFromLocalStorage('analysis');
+
+    if(currentAnalysis){
+      this.utilsSvc.routerLink('/tabs/analysis/analysis-trees/pending')
+    }else{
+      this.utilsSvc.presentFinkAlert({
+        title:'No tienes ningún análisis en curso. Inicia un nuevo análisis',
+        btnText: 'Aceptar'
+      })
+    }
+  }
+
+
   noMembership(){
     this.utilsSvc.presentFinkAlert({
       title:'No eres miembro',
@@ -58,6 +73,5 @@ export class AnalysisPage implements OnInit {
       btnText: 'Aceptar',
       route: 'tabs/profile/membership'
     })
-    
   }
 }

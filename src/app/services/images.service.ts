@@ -1,18 +1,26 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Urls } from '../models/urls.model';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class ImagesService {
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
- 
- /**
-  * It takes an image, cuts it up into 144 pieces, and returns an array of 144 base64 encoded images
-  * @param {string} imageBase64 - The base64 string of the image you want to cut up.
-  * @returns An array of base64 strings.
-  */
+
+  analyzeImages(data: Urls) {
+    return this.http.post('http://34.122.159.190/v1/predict', data);
+  }
+
+
+  /**
+   * It takes an image, cuts it up into 144 pieces, and returns an array of 144 base64 encoded images
+   * @param {string} imageBase64 - The base64 string of the image you want to cut up.
+   * @returns An array of base64 strings.
+   */
   cut(imageBase64: string) {
     var image = new Image();
     let imagePieces = [];

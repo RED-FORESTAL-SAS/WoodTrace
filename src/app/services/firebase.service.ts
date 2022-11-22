@@ -6,7 +6,7 @@ import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { Router } from '@angular/router';
 import * as firebase from 'firebase/compat';
 import { User } from '../models/user.model';
-import { getStorage, ref, uploadString, uploadBytes } from "firebase/storage";
+import { getStorage, ref, uploadString, uploadBytes, deleteObject } from "firebase/storage";
 import { getAuth, updatePassword } from "firebase/auth";
 
 @Injectable({
@@ -146,7 +146,7 @@ export class FirebaseService {
     })
   }
 
-  //============Subir imagenes=================
+  //============Subir Archivos=================
   async uploadBlobFile(id, file): Promise<any> {
     const storage = getStorage();
     const storageRef = ref(storage, id);
@@ -159,6 +159,15 @@ export class FirebaseService {
 
   }
 
+  //============Eliminar de FireStorage=================
+  deleteFromStorage(path: string) {
+    const storage = getStorage();
+    const desertRef = ref(storage, path);
+    
+   return deleteObject(desertRef)
+  }
+
+
   // =========Cerrar Sesión===========
   /* Cierra sesión y borra datos almacenados en localstorage. */
 
@@ -166,6 +175,7 @@ export class FirebaseService {
     await this.auth.signOut();
     localStorage.removeItem('user');
     localStorage.removeItem('analysis');
+    localStorage.removeItem('reports');
     this.router.navigate(['login']);
   }
 

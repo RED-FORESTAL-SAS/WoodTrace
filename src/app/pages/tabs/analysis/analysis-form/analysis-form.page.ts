@@ -69,7 +69,8 @@ export class AnalysisFormPage implements OnInit {
     property: this.property.value,
     treeQuantity: this.treeQuantity.value,
     priceKg: this.priceKg.value,
-    species: this.species.value
+    species: this.species.value,
+    date: this.utilsSvc.getCurrentDate()
    }
 
    this.utilsSvc.saveLocalStorage('analysis',data);

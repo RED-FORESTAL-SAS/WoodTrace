@@ -71,7 +71,7 @@
         </app-input-gradient>
         <div class="validators" *ngIf="nit.dirty && nit.errors">
             <span *ngIf="nit.errors?.['required']">Ingresa el número del Nit</span>
-            <span *ngIf="nit.errors?.['minlength']">El número del documento debe contener 7 caracteres</span>
+            <span *ngIf="nit.errors?.['minlength']">El número del documento debe contener al menos 7 caracteres</span>
         </div>
 
         <!-- Añadir Ubicación -->

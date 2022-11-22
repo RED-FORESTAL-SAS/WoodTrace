@@ -12,7 +12,7 @@ import { UtilsService } from 'src/app/services/utils.service';
 })
 export class ProfilePage implements OnInit {
 
-  user = {} as User;
+
 
   constructor(
     private firebaseSvc: FirebaseService,
@@ -24,24 +24,29 @@ export class ProfilePage implements OnInit {
   }
 
   ionViewWillEnter() {
-    this.user = this.utilsSvc.getCurrentUser();
+this.getLicenseRemainingDays();
   }
 
-  ionViewDidEnter() {
-    this.user = this.utilsSvc.getCurrentUser();
-    this.getLicenseRemainingDays();
+  currentUser(): User{
+    return this.utilsSvc.getCurrentUser()
   }
 
   /**
  * It calculates the difference between two dates and returns the number of days
  */
-  getLicenseRemainingDays() {
-    if (this.user.license && this.user.license.dateInit) {
-      let currentDate = this.utilsSvc.getCurrentDate();
-      this.user.license.remainingDays = this.utilsSvc.getDiffDays(currentDate, this.user.license.dateEnd);
+  async getLicenseRemainingDays() {
+    let currentUser: User = this.currentUser();
 
-      if (this.user.license.remainingDays <= 0) {
-        this.firebaseSvc.deleteFromCollection('licenses', this.user.license.id);
+    if (currentUser.license && currentUser.license.dateInit) {
+      let currentDate = this.utilsSvc.getCurrentDate();
+      currentUser.license.remainingDays = this.utilsSvc.getDiffDays(currentDate, currentUser.license.dateEnd);
+      this.utilsSvc.saveLocalStorage('user', currentUser)
+
+      if (currentUser.license.remainingDays <= 0) {
+        await this.firebaseSvc.deleteFromCollection('licenses', currentUser.license.id);
+
+        currentUser.license = null;
+        this.utilsSvc.saveLocalStorage('user', currentUser)
       }
     }
   }

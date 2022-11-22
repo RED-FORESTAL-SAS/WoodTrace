@@ -1,9 +1,23 @@
 .option-icon{
-    font-size: 23px;
+    font-size: 25px;
+}
+
+.wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.msg{
+    text-align: center;
+    border: 1px solid #dddbdb;
+    padding: 15px;
+    border-radius: 15px;
+    margin: 10px 10px 20px 10px;
 }
 
 .table-container{
-    padding: 35px 5px 5px 5px;
+    padding: 20px 5px 5px 5px;
 }
 
 ion-icon{
@@ -17,11 +31,13 @@ ion-icon{
     padding-left: 10px;
     padding-right: 10px;
 
-    ion-button{
-        width: 150px;
-        height: 35px;
-        font-size: 13px;
-    }
+   
+}
+
+ion-button{
+    width: 150px;
+    height: 35px;
+    font-size: 13px;
 }
 
 table{
