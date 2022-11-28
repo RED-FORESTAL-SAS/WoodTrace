@@ -32,6 +32,10 @@ export class HelpSliderComponent implements OnInit {
     this.helpSlides = helpSlides;
   }
 
+  openUrl(url: string){
+    this.utilsSvc.openUrl(url);
+  }
+
   onSlideChange(event) {
     this.slideActive = event[0].activeIndex
   }

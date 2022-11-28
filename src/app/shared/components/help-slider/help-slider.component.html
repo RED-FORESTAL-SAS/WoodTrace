@@ -11,57 +11,78 @@
     <ng-template *ngFor="let h of helpSlides" swiperSlide>
       <div class="wrapper">
 
-<div>
-      <h1>{{h.title}}</h1>
-      <h4>{{h.subtitle}}</h4>
-      <h6 class="ion-padding-top">{{h.indication}}</h6>
-      <ion-icon class="icon-slide" [src]="h.icon"></ion-icon>
-      <h6>{{h.message}}</h6>
+        <div>
+          <h1>{{h.title}}</h1>
+          <h4>{{h.subtitle}}</h4>
+          <h6 class="ion-padding-top">{{h.indication}}</h6>
+          <ion-icon class="icon-slide" [src]="h.icon"></ion-icon>
+          <h6>{{h.message}}</h6>
 
-</div>
-  
+        </div>
+
       </div>
 
     </ng-template>
+    <ng-template swiperSlide>
+      <div class="wrapper">
+<div>
+
+ <h3 class="ion-padding-bottom">Si requiere ayuda para solucionar problemas técnicos nos puede contactar en:</h3> 
+
+  <ion-item (click)="openUrl('https://www.mifink.com.co')">
+    <ion-icon color="primary" slot="start" name="globe-outline"></ion-icon>
+    <ion-label>www.mifink.com.co</ion-label>
+  </ion-item>
+
+  <ion-item>
+    <ion-icon color="primary" slot="start" name="mail-outline"></ion-icon>
+    <ion-label>info@mifink.com.co</ion-label>
+  </ion-item>
+
+  <ion-item>
+    <ion-icon color="primary" slot="start" name="call-outline"></ion-icon>
+    <ion-label>(+57) 3102461958 </ion-label>
+  </ion-item>
+
+  <ion-item>
+    <ion-icon color="primary" slot="start" name="call-outline"></ion-icon>
+    <ion-label>(+57) 3165338564</ion-label>
+      
+   
+  </ion-item>
+</div>
+
+       
+
+      </div>
+    </ng-template>
+    
   </swiper>
 
 
 
-  <!-- Button Next Slide-->
-
-  <div *ngIf="!slideActive" class="btn-gradient btn-gradient animate__animated animate__fadeIn">
-    <ion-button (click)="slideNext()" mode="ios">
-      <span>Siguiente</span>
-    </ion-button>
-  </div>
 
   <!-- Buttons Next and Prev Slide-->
-  <div *ngIf="slideActive == 1" class="btn-container animate__animated animate__fadeIn">
-    <div class="btn-gradient">
+  <div class="btn-container animate__animated animate__fadeIn">
+    <div *ngIf="slideActive"  class="btn-gradient">
       <ion-button (click)="slidePrev()" mode="ios">
         <span>Volver</span>
       </ion-button>
     </div>
-    <div class="btn-gradient">
+    <div *ngIf="slideActive !== 3" class="btn-gradient">
       <ion-button (click)="slideNext()" mode="ios">
         <span>Siguiente</span>
       </ion-button>
     </div>
-  </div>
 
-  <!-- Buttons Prev Slide and Finish-->
-  <div *ngIf="slideActive == 2" class="btn-container animate__animated animate__fadeIn">
-    <div class="btn-gradient">
-      <ion-button (click)="slidePrev()" mode="ios">
-        <span>Volver</span>
-      </ion-button>
-    </div>
-    <div class="btn-gradient">
+    <div *ngIf="slideActive == 3" class="btn-gradient">
       <ion-button (click)="goToRoot()" mode="ios">
         <span>Entendido </span>
       </ion-button>
     </div>
   </div>
+
+
 
   <div class="safe-p-bottom"></div>
 </div>

@@ -22,7 +22,7 @@ export class TakePhotosPage implements OnInit {
   sides = ['Izquierda', 'Derecha', 'Adelante', 'Atrás'];
 
 
-  treeId: string = Date.now().toString();
+  treeId: string;
 
   constructor(
     private utilsSvc: UtilsService
@@ -30,6 +30,10 @@ export class TakePhotosPage implements OnInit {
 
   ngOnInit() {
     this.setTreeArrays();
+  }
+
+  ionViewWillEnter(){
+    this.treeId = Date.now().toString();
   }
 
   currentUser(): User {
@@ -96,11 +100,17 @@ export class TakePhotosPage implements OnInit {
       path: `${this.treeId}/${imgData.side}.jpg`,
       data: imgData.file,
       directory: Directory.Data
-    });
+    })
 
   }
 
-  saveTree() {
+ async saveTree() {
+
+
+    await Filesystem.mkdir({
+      path: this.treeId,
+      directory: Directory.Data
+    });
  
     for(let p of this.photos){
       this.saveImage(p)

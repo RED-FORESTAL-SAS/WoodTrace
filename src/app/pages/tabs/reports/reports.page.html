@@ -5,19 +5,18 @@
     <div *ngIf="reports.length && !loading" class="table-container">
         <table>
             <thead>
-                <th>Especie <ion-icon name="chevron-down"></ion-icon>
-                </th>
-                <th>Operario <ion-icon name="chevron-down"></ion-icon>
-                </th>
-                <th>Fecha <ion-icon name="chevron-down"></ion-icon>
-                </th>
+                <th>Especie</th>
+                <th>Operario</th>
+                <th>Hora y Fecha</th>
                 <th>ㅤ</th>
                 <th>ㅤ</th>
             </thead>
             <tr *ngFor="let r of reports">
                 <td>Limón Común</td>
                 <td>{{r.operator}}</td>
-                <td>{{r.id | date: 'dd/MM/yyyy'}}</td>
+                <td>{{r.id | date: 'h:mm a'}} <br>
+                    {{r.id | date: 'dd/MM/yyyy'}}
+                </td>
                 <td>
                     <ion-icon (click)="dowloadReport(r)" class="option-icon" name="download-outline"></ion-icon>
                 </td>
@@ -31,11 +30,21 @@
     <div *ngIf="loading" class="table-container">
         <table>
             <tr *ngFor="let item of [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]">
-                <td><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></td>
-                <td><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></td>
-                <td><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></td>
-                <td><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></td>
-                <td><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></td>
+                <td>
+                    <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+                </td>
+                <td>
+                    <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+                </td>
+                <td>
+                    <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+                </td>
+                <td>
+                    <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+                </td>
+                <td>
+                    <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+                </td>
             </tr>
         </table>
     </div>

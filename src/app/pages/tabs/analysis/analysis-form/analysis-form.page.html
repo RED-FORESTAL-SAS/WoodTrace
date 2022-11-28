@@ -21,11 +21,11 @@
     </div>
 
 
-    <!-- Predio -->
-    <app-input-gradient [selectOptions]="properties" label="Predio" type="select" [formControlValue]="property">
+    <!-- Lote -->
+    <app-input-gradient [selectOptions]="properties" label="Lote" type="select" [formControlValue]="property">
     </app-input-gradient>
     <div class="validators" *ngIf="property.touched && property.errors">
-      <span *ngIf="property.errors?.['required']">Selecciona el predio donde se realiza este análisis</span>
+      <span *ngIf="property.errors?.['required']">Selecciona el lote donde se realiza este análisis</span>
     </div>
 
     <!-- Cantidad de árboles en producción -->
@@ -63,10 +63,10 @@
   </div>
 
 </div>
-  <!-- Si no existen Operadores o Predios -->
+  <!-- Si no existen Operadores o Lotes -->
   <div *ngIf="!operators.length || !properties.length" class="ion-padding-horizontal" style="padding-top: 20vh;">
     <app-empty-array iconSrc="assets/icon/icon-perfil.svg"
-      text="Debes tener registrados operadores y predios para hacer un análisis. Ve a la sección de administrar cuenta en tu perfil para agregarlos">
+      text="Debes tener registrados operadores y lotes para hacer un análisis. Ve a la sección de administrar cuenta en tu perfil para agregarlos">
     </app-empty-array>
 
     <!-- Ir al perfil -->

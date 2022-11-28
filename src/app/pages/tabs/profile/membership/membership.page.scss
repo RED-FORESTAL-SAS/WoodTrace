@@ -1,12 +1,19 @@
-.wrapper {
+.wrapper-form {
     height: 90vh;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
+.wrapper {
+    height: 70vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .form{
-    width: 320px;
+    width: 85vw;
 
     .line-w{
         width: 100%;

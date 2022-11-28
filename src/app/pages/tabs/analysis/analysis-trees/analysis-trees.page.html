@@ -1,4 +1,4 @@
-<app-header backButton="/tabs/analysis" title="Análisis: Limón"></app-header>
+<app-header backButton="/tabs/analysis/take-photos" title="Análisis: Limón"></app-header>
 
 
 <ion-content>
@@ -14,7 +14,7 @@
 
     <!-- Generar Reporte -->
     <div *ngIf="!loading" class="btn-gradient">
-      <ion-button (click)="generateFiles()" [disabled]="pendingTrees.length || !analysisFormData().trees.length" mode="ios">
+      <ion-button (click)="generateFiles()" [disabled]="analysisFormData().pendingTrees.length || !analysisFormData().trees.length" mode="ios">
         <span>Generar reporte</span>
       </ion-button>
     </div>
@@ -32,7 +32,7 @@
 
   <!-- =========================== Árboles Pendientes ========================== -->
 
-  <div *ngIf="segment == 'pending' && (pendingTrees.length && !loading)" class="table-container">
+  <div *ngIf="segment == 'pending' && (analysisFormData().pendingTrees.length && !loading)" class="table-container">
 
     <div class="msg">
       Cada análisis puede tomar entre 13 y 15 minutos. Recuerda tener una buena conexión antes de realizar un análisis
@@ -48,36 +48,33 @@
     <table>
       <thead>
         <th>Número</th>
-        <th>Imágenes</th>
+        <th>Fecha</th>
+        <th>Hora</th>
         <th>Analizar</th>
         <th>Eliminar</th>
       </thead>
 
-      <tr *ngFor="let p of pendingTrees; index as i">
-        <td>{{i+1+analysisFormData().trees.length}}</td>
+      <tr *ngFor="let p of analysisFormData().pendingTrees; index as i">
+        <td>{{i + analysisFormData().trees.length}}</td>
         <td>
-          <div class="wrapper">
-            <div class="avatar-group pb-item">
-              <div *ngFor="let img of p.images" class="avatar">
-                <img [src]="img.file" />
-              </div>
-            </div>
-          </div>
+         {{ p | date: 'dd/MM/yyyy' }}
+        </td>
+        <td>
+          {{ p | date: 'h:mm a' }}
+         </td>
+        <td>
+          <ion-icon (click)="loadFiles(p)" class="option-icon" src="assets/icon/icon-analisis.svg"></ion-icon>
         </td>
 
         <td>
-          <ion-icon (click)="uploadPhotosToFireStorage(p)" class="option-icon" src="assets/icon/icon-analisis.svg"></ion-icon>
-        </td>
-
-        <td>
-          <ion-icon (click)="deletePendingTree(p.id)" class="option-icon" name="trash-outline"></ion-icon>
+          <ion-icon (click)="confirmDeletePendingTree(p)" class="option-icon" name="trash-outline"></ion-icon>
         </td>
       </tr>
     </table>
   </div>
 
   <!-- =========================== Sin Árboles Pendientes ========================== -->
-  <div style="padding-top: 15vh;" *ngIf="segment == 'pending' && (!pendingTrees.length && !loading)">
+  <div style="padding-top: 15vh;" *ngIf="segment == 'pending' && (!analysisFormData().pendingTrees.length && !loading)">
     <app-empty-array iconSrc="assets/icon/icon-analisis.svg" text="No hay árboles pendientes por analizar">
     </app-empty-array>
   </div>
@@ -93,13 +90,13 @@
     <table>
       <thead>
         <th>Número</th>
-        <th>Acierto</th>
+        <th>Detección</th>
         <th>Ver</th>
         <th>Rehacer</th>
       </thead>
       <tr *ngFor="let t of analysisFormData().trees; index as i">
         <td>{{i + 1}}</td>
-        <td>{{t.lemons.confidenceAvergae.toFixed(2)}} %</td>
+        <td>{{t.lemons.confidenceAvergae.toFixed(2) * 100}}%</td>
         <td>
           <ion-icon routerLink="/tabs/analysis/analysis-resumen/{{i}}" class="option-icon"
             src="assets/icon/icon-reportes.svg"></ion-icon>

@@ -1,11 +1,21 @@
 <app-header backButton="/tabs/profile" title="Membresía"></app-header>
 <ion-content>
 
-    <div class="wrapper">
+
+<div class="wrapper" *ngIf="licencia_vitalicia">
+  <div  class="ion-text-center" >
+        <ion-icon style="font-size: 170px;" color="primary" name="shield-checkmark-outline"></ion-icon>
+        <h1>Licencia Vitalicia</h1>
+    </div>   
+</div>
+   
+
+    <div *ngIf="!licencia_vitalicia" class="wrapper-form">
 
         <div>
 
-            <div class="form">
+
+            <div  class="form">
 
                 <!-- Activo desde -->
                 <div class="ion-padding-bottom">

@@ -22,8 +22,8 @@ export class UtilsService {
   ) { }
 
   async openUrl(url: string) {
-     await Browser.open({ url })
-   };
+    await Browser.open({ url })
+  };
 
   /**
    * 
@@ -52,13 +52,13 @@ export class UtilsService {
     localStorage.setItem(name, JSON.stringify(object))
   }
 
-  deleteFromLocalStorage(name: string){
-   localStorage.removeItem(name);
+  deleteFromLocalStorage(name: string) {
+    localStorage.removeItem(name);
   }
 
   //======= Loading =======
   async presentLoading(message?: string) {
-    const loading = await this.loadingController.create({message, mode: 'ios'});
+    const loading = await this.loadingController.create({ message, mode: 'ios' });
     await loading.present();
   }
 
@@ -112,8 +112,8 @@ export class UtilsService {
 
   async presentAlertConfirm(opt: AlertOptions) {
     const alert = await this.alertController.create(opt);
-  
-  return  await alert.present();
+
+    return await alert.present();
   }
 
   /**
@@ -141,7 +141,9 @@ export class UtilsService {
     const modal = await this.modalController.create({
       component: DownloadTypeComponent,
       cssClass: 'modal-fink-app',
-      componentProps: { report }
+      componentProps: { report },
+      showBackdrop: true,
+      backdropDismiss: false
     });
 
     await modal.present();
@@ -158,6 +160,12 @@ export class UtilsService {
   //======= Close Modal =======
   closeModal() {
     this.modalController.dismiss();
+  }
+  
+
+  //============== Generar número aleatorio ===========
+  randomIntFromInterval(min: number, max: number) {
+    return Math.floor(Math.random() * (max - min + 1) + min)
   }
 
 

@@ -12,7 +12,7 @@ export class ImagesService {
 
 
   analyzeImages(data: Urls) {
-    return this.http.post('http://34.122.159.190/v1/predict', data);
+    return this.http.post('http://35.203.31.144/v1/predict', data);
   }
 
 

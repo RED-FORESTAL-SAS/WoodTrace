@@ -51,6 +51,30 @@ export class AnalysisPage implements OnInit {
     }
   }
 
+  confirmNewAnalysisOverContinue(){
+    let currentAnalysis = this.utilsSvc.getFromLocalStorage('analysis');
+    if(currentAnalysis){
+      this.utilsSvc.presentAlertConfirm({
+        header: 'Advertencia',
+        message: 'Tienes un análisis en proceso. Al iniciar un análisis nuevo estarás reemplazando el anterior',
+        buttons: [
+          {
+            text: 'Cancelar',
+            handler: () => {
+  
+            }
+          }, {
+            text: 'Confirmar',
+            handler: () => {
+             this.newAnalysis()
+            }
+          }
+        ]
+      })
+    }else{
+      this.newAnalysis();
+    }
+  }
 
   continueAnalysis(){
     let currentAnalysis = this.utilsSvc.getFromLocalStorage('analysis');

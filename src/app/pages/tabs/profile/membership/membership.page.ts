@@ -22,6 +22,8 @@ export class MembershipPage implements OnInit {
   user = {} as User;
   loading: boolean;
 
+  licencia_vitalicia: boolean;
+
   constructor(
     private firebaseSvc: FirebaseService,
     private utilsSvc: UtilsService
@@ -54,6 +56,13 @@ export class MembershipPage implements OnInit {
 
     if (this.user.license && this.user.license.dateInit) {
       this.getRemainingDays();
+      
+      if(this.user.license.months == 999999){
+       this.licencia_vitalicia = true;
+      }else{
+        this.licencia_vitalicia = false;
+      }
+      
     }
   }
 
@@ -126,6 +135,7 @@ export class MembershipPage implements OnInit {
     let license: License = {
       id: this.licenseId.value,
       userId: this.user.id,
+      months,
       dateInit: moment(Date.now()).format('LLL'),
       dateEnd: moment().add(months, 'months').format('LLL'),
     }

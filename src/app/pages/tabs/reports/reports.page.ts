@@ -44,7 +44,7 @@ export class ReportsPage implements OnInit {
     let ref = this.firebaseSvc.getCollectionConditional('reports',
       ref => ref
         .where('userId', '==', currentUser.id)
-        .orderBy('date', 'asc')
+        .orderBy('date', 'desc')
     ).subscribe(data => {
 
       this.reports = data.map(e => {
@@ -71,7 +71,13 @@ export class ReportsPage implements OnInit {
     let passwordValid = await this.utilsSvc.passwordRequired();
 
     if (passwordValid) {
-      this.utilsSvc.downloadReport(report);
+      this.utilsSvc.presentLoading();
+
+      setTimeout(() => {
+        this.utilsSvc.dismissLoading();
+        this.utilsSvc.downloadReport(report);
+      }, 1000);
+
     }
 
   }

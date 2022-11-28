@@ -1,4 +1,4 @@
-<app-header backButton="/tabs/analysis" title="{{'Reporte: Arbol '+(tree + 1)}}"></app-header>
+<app-header backButton="/tabs/analysis/analysis-trees/ready" title="{{'Reporte: Arbol '+(tree + 1)}}"></app-header>
 
 <ion-content>
   <div *ngIf="analysis">
@@ -6,7 +6,7 @@
     <ion-item class="ion-padding-horizontal ion-padding-top">
       <ion-label>
         <div><strong>Fecha:</strong> {{date | date: 'dd/MM/YYYY'}}</div>
-        <div><strong>Hora:</strong> {{date | date: 'shortTime'}}</div>
+        <div><strong>Hora:</strong> {{date | date: 'h:mm a'}}</div>
       </ion-label>
     </ion-item>
 
@@ -18,8 +18,8 @@
             <div>{{analysisFormData().species}}</div>
           </ion-col>
           <ion-col class="border-start border-end" size="4">
-            <div><strong>Acierto</strong></div>
-            <div>{{analysis.lemons.confidenceAvergae.toFixed(2)}} %</div>
+            <div><strong>Detección</strong></div>
+            <div>{{analysis.lemons.confidenceAvergae.toFixed(2) * 100}}%</div>
           </ion-col>
           <ion-col size="4">
             <div><strong>Operario</strong></div>
@@ -73,8 +73,14 @@
     </ion-card>
 
     <div class="d-flex">
+
       <h2 class="total">
-        <div><strong>Total</strong></div>
+        <div><strong>Total Flores</strong></div>
+        <div>{{analysis.flowers}}</div>
+      </h2>
+
+      <h2 class="total">
+        <div><strong>Total Frutos</strong></div>
         <div>{{analysis.lemons.total}}</div>
       </h2>
 

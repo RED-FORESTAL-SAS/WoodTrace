@@ -6,7 +6,6 @@ import { Urls } from 'src/app/models/urls.model';
 import { ImagesService } from 'src/app/services/images.service';
 import { ActivatedRoute } from '@angular/router';
 import { PdfService } from 'src/app/services/pdf.service';
-import { ExcelService } from 'src/app/services/excel.service';
 
 @Component({
   selector: 'app-analysis-trees',
@@ -27,7 +26,6 @@ export class AnalysisTreesPage implements OnInit {
     private pdfSvc: PdfService
   ) {
 
-    this.segment = this.actRoute.snapshot.paramMap.get('segment')
   }
 
   ngOnInit() {
@@ -35,16 +33,8 @@ export class AnalysisTreesPage implements OnInit {
   }
 
 
-
-
   ionViewWillEnter() {
-
     this.segment = this.actRoute.snapshot.paramMap.get('segment')
-
-    if (this.analysisFormData().pendingTrees.length) {
-      this.loadFiles();
-    }
-
   }
 
   analysisFormData() {
@@ -60,6 +50,29 @@ export class AnalysisTreesPage implements OnInit {
     this.pdfSvc.createDoc(id);
 
   }
+
+
+//================== Rehacer Análisis =================
+
+confirmDeletePendingTree(id: string) {
+  this.utilsSvc.presentAlertConfirm({
+    header: '¿Estás seguro/a de eliminar este árbol',
+    message: 'Luego de ser eliminado no podrás recuperar las fotos tomadas',
+    buttons: [
+      {
+        text: 'Cancelar',
+        handler: () => {
+
+        }
+      }, {
+        text: 'Eliminar',
+        handler: () => {
+          this.deletePendingTree(id, true)
+        }
+      }
+    ]
+  })
+}
 
 
   //================== Rehacer Análisis =================
@@ -94,7 +107,9 @@ export class AnalysisTreesPage implements OnInit {
   }
 
 
-
+  startAnalysis(id: string){
+    this.loadFiles(id);
+  }
 
   /**
     * It takes the photos from the array, uploads them to Firebase Storage, and then uploads the URLs to model API
@@ -122,8 +137,8 @@ export class AnalysisTreesPage implements OnInit {
       url_4: urls[3],
     }
 
-    // this.analysisRandom(tree.id);
-    this.analyzeTree(tree.id, data)
+    this.analysisRandom(tree.id);
+    // this.analyzeTree(tree.id, data)
   }
 
   /**
@@ -153,7 +168,7 @@ export class AnalysisTreesPage implements OnInit {
     }, error => {
       console.log(error);
 
-      this.utilsSvc.presentToast('Ha ocurrido un error, intent')
+      this.utilsSvc.presentToast('Ha ocurrido un error, intenta de nuevo')
       this.utilsSvc.dismissLoading();
     })
   }
@@ -162,29 +177,28 @@ export class AnalysisTreesPage implements OnInit {
 
 
   // ================= Obtener archivos almacenados en una ruta =====================
-  async loadFiles() {
-    this.loading = true;
-    for (let p of this.analysisFormData().pendingTrees) {
+  async loadFiles(id: string) {
 
+    
+    this.loading = true;
       await Filesystem.readdir({
-        path: p,
+        path: id,
         directory: Directory.Data
       })
         .then(
           (result) => {
-
             this.loading = false;
-            this.loadFileData(p, result.files);
+            this.loadFileData(id, result.files);
           },
           async (err) => {
-
+            console.log(err);
+            
+            this.utilsSvc.presentToast('Ha ocurrido un error, intenta de nuevo.')
             this.loading = false;
-            this.loadFiles()
-
 
           }
         )
-    }
+    
   }
 
   // ================= Obtener la información de las imagenes =====================
@@ -197,7 +211,7 @@ export class AnalysisTreesPage implements OnInit {
       images: []
     };
 
-    this.pendingTrees = [];
+    
 
     for (let f of fileNames) {
       const filePath = `${path}/${f.name}`;
@@ -215,13 +229,13 @@ export class AnalysisTreesPage implements OnInit {
     }
 
     this.loading = false;
-    this.pendingTrees.push(tree);
+    this.uploadPhotosToFireStorage(tree)
 
   }
 
 
   // ================= Eliminar imagenes del almacenamiento local =====================
-  async deleteImages(treeId: string) {
+  async deleteImages(treeId: string, fromPending: boolean) {
 
     let sides = ['Izquierda.jpg', 'Derecha.jpg', 'Adelante.jpg', 'Atrás.jpg'];
 
@@ -232,11 +246,12 @@ export class AnalysisTreesPage implements OnInit {
       });
     }
 
-    this.deleteImagesFromFireStorage(treeId);
-
-    if (this.analysisFormData().pendingTrees.length) {
-      this.loadFiles();
+    if(!fromPending){
+       this.deleteImagesFromFireStorage(treeId);
     }
+   
+
+   
   }
 
   // ================= Eliminar imagenes del almacenamiento de Firebase =====================
@@ -258,16 +273,16 @@ export class AnalysisTreesPage implements OnInit {
       currentAnalysis.trees = [];
     }
 
-    let flowers = this.randomIntFromInterval(1, 15);
-    let estadio_1 = this.randomIntFromInterval(1, 15);
-    let estadio_2 = this.randomIntFromInterval(1, 15);
-    let estadio_3 = this.randomIntFromInterval(1, 15);
+    let flowers = this.utilsSvc.randomIntFromInterval(1, 15);
+    let estadio_1 = this.utilsSvc.randomIntFromInterval(1, 15);
+    let estadio_2 = this.utilsSvc.randomIntFromInterval(1, 15);
+    let estadio_3 = this.utilsSvc.randomIntFromInterval(1, 15);
 
     currentAnalysis.trees.push({
       id: currentAnalysis.trees.length + 1,
       flowers,
       lemons: {
-        confidenceAvergae: this.randomIntFromInterval(1, 100),
+        confidenceAvergae: this.utilsSvc.randomIntFromInterval(0.10, 0.85),
         estadio_1,
         estadio_2,
         estadio_3,
@@ -283,7 +298,7 @@ export class AnalysisTreesPage implements OnInit {
   }
 
 
-  deletePendingTree(treeId: string) {
+  deletePendingTree(treeId: string, fromPending?: boolean) {
     let currentAnalysis = this.utilsSvc.getFromLocalStorage('analysis');
 
     currentAnalysis.pendingTrees = currentAnalysis.pendingTrees.filter(tree => tree !== treeId);
@@ -291,11 +306,16 @@ export class AnalysisTreesPage implements OnInit {
     this.pendingTrees = currentAnalysis.pendingTrees;
 
     this.utilsSvc.saveLocalStorage('analysis', currentAnalysis);
-    this.deleteImages(treeId);
+
+    if(fromPending){
+      this.utilsSvc.presentToast('Árbol eliminado exitosamente');
+      this.deleteImages(treeId, fromPending);
+    }else{
+      this.deleteImages(treeId, false);
+    }
+    
+   
   }
 
-  //============== Generar número aleatorio ===========
-  randomIntFromInterval(min: number, max: number) {
-    return Math.floor(Math.random() * (max - min + 1) + min)
-  }
+
 }
