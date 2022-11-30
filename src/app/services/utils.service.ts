@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, AlertOptions, LoadingController, ModalController, ToastController } from '@ionic/angular';
+import { AlertController, AlertOptions, LoadingController, ModalController, ModalOptions, ToastController } from '@ionic/angular';
 import * as moment from 'moment';
 import { AlertFinkApp } from '../models/alert.model';
 import { DownloadTypeComponent } from '../shared/components/download-type/download-type.component';
@@ -24,6 +24,25 @@ export class UtilsService {
   async openUrl(url: string) {
     await Browser.open({ url })
   };
+
+
+
+  /**
+   * It creates a modal, presents it, and returns the data from the modal when it's dismissed
+   * @param {ModalOptions} opts - ModalOptions - This is the options object that we pass to the modal.
+   * @returns The data that is returned from the modal.
+   */
+  async presentModal(opts: ModalOptions) {
+    const modal = await this.modalController.create(opts);
+
+    modal.present();
+
+    const { data } = await modal.onWillDismiss();
+
+    if (data) {
+      return data;
+    }
+  }
 
   /**
    * 
@@ -158,10 +177,10 @@ export class UtilsService {
 
 
   //======= Close Modal =======
-  closeModal() {
-    this.modalController.dismiss();
+  closeModal(data?: any) {
+    this.modalController.dismiss(data);
   }
-  
+
 
   //============== Generar número aleatorio ===========
   randomIntFromInterval(min: number, max: number) {

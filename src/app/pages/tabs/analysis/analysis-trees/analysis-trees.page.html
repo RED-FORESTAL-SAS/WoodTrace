@@ -14,7 +14,7 @@
 
     <!-- Generar Reporte -->
     <div *ngIf="!loading" class="btn-gradient">
-      <ion-button (click)="generateFiles()" [disabled]="analysisFormData().pendingTrees.length || !analysisFormData().trees.length" mode="ios">
+      <ion-button (click)="getLote()" [disabled]="!analysisFormData().trees.length" mode="ios">
         <span>Generar reporte</span>
       </ion-button>
     </div>
@@ -55,7 +55,7 @@
       </thead>
 
       <tr *ngFor="let p of analysisFormData().pendingTrees; index as i">
-        <td>{{i + analysisFormData().trees.length}}</td>
+        <td>{{analysisFormData().trees.length ? (i + analysisFormData().trees.length) : (i + 1)}}</td>
         <td>
          {{ p | date: 'dd/MM/yyyy' }}
         </td>
@@ -63,7 +63,7 @@
           {{ p | date: 'h:mm a' }}
          </td>
         <td>
-          <ion-icon (click)="loadFiles(p)" class="option-icon" src="assets/icon/icon-analisis.svg"></ion-icon>
+          <ion-icon (click)="startAnalysis(p)" class="option-icon" src="assets/icon/icon-analisis.svg"></ion-icon>
         </td>
 
         <td>

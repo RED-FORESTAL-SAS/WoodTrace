@@ -21,13 +21,6 @@
     </div>
 
 
-    <!-- Lote -->
-    <app-input-gradient [selectOptions]="properties" label="Lote" type="select" [formControlValue]="property">
-    </app-input-gradient>
-    <div class="validators" *ngIf="property.touched && property.errors">
-      <span *ngIf="property.errors?.['required']">Selecciona el lote donde se realiza este análisis</span>
-    </div>
-
     <!-- Cantidad de árboles en producción -->
     <app-input-gradient max="5" label="Cantidad de árboles en producción" type="number"
       [formControlValue]="treeQuantity">

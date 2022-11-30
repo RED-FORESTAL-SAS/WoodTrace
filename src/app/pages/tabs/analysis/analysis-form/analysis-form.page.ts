@@ -4,6 +4,7 @@ import { User } from 'src/app/models/user.model';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
 
+
 @Component({
   selector: 'app-analysis-form',
   templateUrl: './analysis-form.page.html',
@@ -13,7 +14,7 @@ export class AnalysisFormPage implements OnInit {
 
   operator = new FormControl('', [Validators.required])
   species = new FormControl('Limón Común', [Validators.required])
-  property = new FormControl('', [Validators.required])
+  // property = new FormControl('', [Validators.required])
   treeQuantity = new FormControl('', [Validators.required, Validators.min(1)])
   priceKg = new FormControl('', [Validators.required])
 
@@ -45,6 +46,7 @@ export class AnalysisFormPage implements OnInit {
   }
 
 
+
   getOperators() {
     this.operators = this.user.operators.map(operator => {
       return {
@@ -66,7 +68,7 @@ export class AnalysisFormPage implements OnInit {
   submit() {
    let data = {
     operator: this.operator.value,
-    property: this.property.value,
+    // property: this.property.value,
     treeQuantity: this.treeQuantity.value,
     priceKg: this.priceKg.value,
     species: this.species.value,
@@ -80,7 +82,7 @@ export class AnalysisFormPage implements OnInit {
 
   resetForm() {
     this.operator.reset();
-    this.property.reset();
+    // this.property.reset();
     this.treeQuantity.reset();
     this.priceKg.reset();
   }
@@ -94,9 +96,9 @@ export class AnalysisFormPage implements OnInit {
       return false;
     }
 
-    if (this.property.invalid) {
-      return false;
-    }
+    // if (this.property.invalid) {
+    //   return false;
+    // }
 
     if (this.treeQuantity.invalid) {
       return false;

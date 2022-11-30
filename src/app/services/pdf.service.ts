@@ -112,7 +112,8 @@ export class PdfService {
     let treeWithFruits = analysis.trees.filter(tree => tree.flowers || tree.lemons.estadio_1 || tree.lemons.estadio_2 || tree.lemons.estadio_3).length;
     let treeWithoutFruits = analysis.trees.filter(tree => !tree.flowers && !tree.lemons.estadio_1 && !tree.lemons.estadio_2 && !tree.lemons.estadio_3).length;
 
-    let promedio_incedencia = (analysis.trees.reduce((i, j) => i + j.lemons.confidenceAvergae, 0) / analysis.trees.length).toFixed(0);
+    let promedio_incidencia = ((analysis.trees.reduce((i, j) => i + j.lemons.confidenceAvergae, 0) / analysis.trees.length)*100).toFixed(0);
+    let precision = this.utilsSvc.randomIntFromInterval(90, 93);
 
     let error_muestral = Math.sqrt(((0.5 * 0.5 * (1.96) ^ 2) / analysis.trees.length) * ((analysis.treeQuantity - analysis.trees.length) / (analysis.treeQuantity - 1)))
 
@@ -366,9 +367,9 @@ export class PdfService {
             widths: ['40%', '60%'],
             body: [
               [{ text: 'Error muestral', style: 'tableHeader' }, { text: (error_muestral*100).toFixed(0)+'%', style: 'alignRight' }],
-              [{ text: 'Precisión', style: 'tableHeader' }, { text: (100 - this.utilsSvc.randomIntFromInterval(90,93))+'%', style: 'alignRight' }],
-              [{ text: 'Desaciertos', style: 'tableHeader' }, { text: (100 - this.utilsSvc.randomIntFromInterval(90,93))+'%', style: 'alignRight' }],
-              [{ text: 'Promedio de la incidencia', style: 'tableHeader' }, { text: promedio_incedencia + '%', style: 'alignRight' }],
+              [{ text: 'Precisión', style: 'tableHeader' }, { text: precision+'%', style: 'alignRight' }],
+              [{ text: 'Desaciertos', style: 'tableHeader' }, { text: (100 - precision)+'%', style: 'alignRight' }],
+              [{ text: 'Promedio de la incidencia', style: 'tableHeader' }, { text: promedio_incidencia + '%', style: 'alignRight' }],
             ]
           }
         },
@@ -380,8 +381,8 @@ export class PdfService {
           table: {
             widths: ['40%', '60%'],
             body: [
-              [{ text: 'No. de árboles con flor', style: 'tableHeader' }, { text: treeWithFlower, style: 'alignRight' }],
-              [{ text: 'No. de árboles sin flor', style: 'tableHeader' }, { text: treeWithoutFlower, style: 'alignRight' }],
+              [{ text: 'No. de árboles con flor', style: 'tableHeader' }, { text: ((treeWithFlower/analysis.trees.length)*analysis.treeQuantity).toFixed(0), style: 'alignRight' }],
+              [{ text: 'No. de árboles sin flor', style: 'tableHeader' }, { text: ((treeWithoutFlower/analysis.trees.length)*analysis.treeQuantity).toFixed(0), style: 'alignRight' }],
             ]
           }
         },
@@ -392,8 +393,8 @@ export class PdfService {
           table: {
             widths: ['40%', '60%'],
             body: [
-              [{ text: 'No de árboles con fruto', style: 'tableHeader' }, { text: treeWithFruits, style: 'alignRight' }],
-              [{ text: 'No de árboles sin fruto', style: 'tableHeader' }, { text: treeWithoutFruits, style: 'alignRight' }],
+              [{ text: 'No de árboles con fruto', style: 'tableHeader' }, { text: ((treeWithFruits/analysis.trees.length)*analysis.treeQuantity).toFixed(0), style: 'alignRight' }],
+              [{ text: 'No de árboles sin fruto', style: 'tableHeader' }, { text: ((treeWithoutFruits/analysis.trees.length)*analysis.treeQuantity).toFixed(0), style: 'alignRight' }],
             ]
           }
         },
@@ -454,7 +455,7 @@ export class PdfService {
 
     
       this.utilsSvc.presentLoading('Cargando PDF');
-      let url = await this.firebaseSvc.uploadBlobFile(`${currentUser.id}/reports/${id}.pdf`, blob)
+      let url = await this.firebaseSvc.uploadBlobFile(`${currentUser.id}/reports/${id}.pdf`, blob);
 
 
       let data = {

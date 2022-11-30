@@ -6,6 +6,7 @@ import { Urls } from 'src/app/models/urls.model';
 import { ImagesService } from 'src/app/services/images.service';
 import { ActivatedRoute } from '@angular/router';
 import { PdfService } from 'src/app/services/pdf.service';
+import { LoteModalComponent } from 'src/app/shared/components/lote-modal/lote-modal.component';
 
 @Component({
   selector: 'app-analysis-trees',
@@ -40,6 +41,21 @@ export class AnalysisTreesPage implements OnInit {
   analysisFormData() {
     return this.utilsSvc.getFromLocalStorage('analysis');
   }
+
+
+  async getLote(){
+  let selected = await this.utilsSvc.presentModal({
+      component: LoteModalComponent,
+      cssClass: 'modal-fink-app'
+      })
+
+    if(selected){
+      this.generateFiles()
+      this.segment = 'pending';
+    }
+      
+  }
+
 
 
   //================= Generar reporte ===================
@@ -108,6 +124,7 @@ confirmDeletePendingTree(id: string) {
 
 
   startAnalysis(id: string){
+    // this.analysisRandom(id);
     this.loadFiles(id);
   }
 
@@ -137,8 +154,8 @@ confirmDeletePendingTree(id: string) {
       url_4: urls[3],
     }
 
-    this.analysisRandom(tree.id);
-    // this.analyzeTree(tree.id, data)
+    
+    this.analyzeTree(tree.id, data)
   }
 
   /**
@@ -153,6 +170,7 @@ confirmDeletePendingTree(id: string) {
     this.utilsSvc.presentLoading(`Analizando Imagenes`);
     this.imagesSvc.analyzeImages(urls).subscribe((res: any) => {
 
+      
       if (!currentAnalysis.trees) {
         currentAnalysis.trees = [];
       }
@@ -282,7 +300,7 @@ confirmDeletePendingTree(id: string) {
       id: currentAnalysis.trees.length + 1,
       flowers,
       lemons: {
-        confidenceAvergae: this.utilsSvc.randomIntFromInterval(0.10, 0.85),
+        confidenceAvergae: this.utilsSvc.randomIntFromInterval(0.20, 0.95),
         estadio_1,
         estadio_2,
         estadio_3,

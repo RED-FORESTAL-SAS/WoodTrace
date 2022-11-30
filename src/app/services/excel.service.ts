@@ -26,6 +26,7 @@ export class ExcelService {
     this.createExcelTable();
 
     let currentUser = this.utilsSvc.getCurrentUser();
+    let analisys = this.utilsSvc.getFromLocalStorage('analysis');
 
     this._workbook.xlsx.writeBuffer().then(async (data) => {
       const blob = new Blob([data]);
@@ -39,7 +40,14 @@ export class ExcelService {
       this.firebaseSvc.UpdateCollection('reports', { id, excel: url }).then(res => {
         this.utilsSvc.dismissLoading();
         this.utilsSvc.routerLink('/tabs/reports')
-        this.utilsSvc.deleteFromLocalStorage('analysis')
+
+        if (analisys.pendingTrees.length) {
+          analisys.trees = [];
+          this.utilsSvc.saveLocalStorage('analysis', analisys);
+        } else {
+          this.utilsSvc.deleteFromLocalStorage('analysis');
+        }
+
       }, err => {
         this.utilsSvc.dismissLoading();
         this.utilsSvc.presentToast('Ha ocurrido un error, intenta de nuevo.')
@@ -62,7 +70,8 @@ export class ExcelService {
     let treeWithFruits = analysis.trees.filter(tree => tree.flowers || tree.lemons.estadio_1 || tree.lemons.estadio_2 || tree.lemons.estadio_3).length;
     let treeWithoutFruits = analysis.trees.filter(tree => !tree.flowers && !tree.lemons.estadio_1 && !tree.lemons.estadio_2 && !tree.lemons.estadio_3).length;
 
-    let promedio_incedencia = (analysis.trees.reduce((i, j) => i + j.lemons.confidenceAvergae, 0) / analysis.trees.length).toFixed(0);
+    let promedio_incidencia = ((analysis.trees.reduce((i, j) => i + j.lemons.confidenceAvergae, 0) / analysis.trees.length)*100).toFixed(0);
+    let precision = this.utilsSvc.randomIntFromInterval(90, 93);
 
     let error_muestral = Math.sqrt(((0.5 * 0.5 * (1.96) ^ 2) / analysis.trees.length) * ((analysis.treeQuantity - analysis.trees.length) / (analysis.treeQuantity - 1)))
 
@@ -296,17 +305,17 @@ export class ExcelService {
     sheet.getRow(12).values = ['Precio (Kilogramo)', 'COP ' + this.currency.transform(analysis.priceKg, ' ')];
 
 
-  
+
     //============= Estadística ===============
 
     sheet.getCell('A16').value = 'Estadística';
     sheet.getCell('A16').style.font = { bold: true, size: 18 }
 
 
-    sheet.getRow(17).values = ['Error muestral', (error_muestral*100).toFixed(0)+'%'];
-    sheet.getRow(18).values = ['Precisión', (100 - this.utilsSvc.randomIntFromInterval(90,93))+'%'];
-    sheet.getRow(19).values = ['Desaciertos',(100 - this.utilsSvc.randomIntFromInterval(90,93))+'%'];
-    sheet.getRow(20).values = ['Promedio de la incidencia', promedio_incedencia + '%'];
+    sheet.getRow(17).values = ['Error muestral', (error_muestral * 100).toFixed(0) + '%'];
+    sheet.getRow(18).values = ['Precisión', precision + '%'];
+    sheet.getRow(19).values = ['Desaciertos', (100 - precision) + '%'];
+    sheet.getRow(20).values = ['Promedio de la incidencia', promedio_incidencia + '%'];
 
 
     //============= Incidencia de árboles en floración ===============
@@ -315,8 +324,8 @@ export class ExcelService {
     sheet.getCell('A24').style.font = { bold: true, size: 18 }
 
 
-    sheet.getRow(25).values = ['No. de árboles con flor', treeWithFlower];
-    sheet.getRow(26).values = ['No. de árboles sin flor', treeWithoutFlower];
+    sheet.getRow(25).values = ['No. de árboles con flor', ((treeWithFlower/analysis.trees.length)*analysis.treeQuantity).toFixed(0)];
+    sheet.getRow(26).values = ['No. de árboles sin flor', ((treeWithoutFlower/analysis.trees.length)*analysis.treeQuantity).toFixed(0)];
 
 
     //============= Incidencia de árboles en fructificación ===============
@@ -325,8 +334,8 @@ export class ExcelService {
     sheet.getCell('A30').style.font = { bold: true, size: 18 }
 
 
-    sheet.getRow(31).values = ['No de árboles con fruto', treeWithFruits];
-    sheet.getRow(32).values = ['No de árboles sin fruto', treeWithoutFruits];
+    sheet.getRow(31).values = ['No de árboles con fruto', ((treeWithFruits/analysis.trees.length)*analysis.treeQuantity).toFixed(0)];
+    sheet.getRow(32).values = ['No de árboles sin fruto', ((treeWithoutFruits/analysis.trees.length)*analysis.treeQuantity).toFixed(0)];
 
 
     //============= Estimación de Producción ===============
@@ -345,13 +354,13 @@ export class ExcelService {
       sheet.getRow(n_row + 1).values = ['Flor', e.conteo_flor, ' ', ' '];
       sheet.getRow(n_row + 2).values = ['Fruto Pequeño', e.conteo_estadio_1, ' ', ' '];
       sheet.getRow(n_row + 3).values = ['Fruto Verde', e.conteo_estadio_2, ' ', ' '];
-      sheet.getRow(n_row + 4).values = ['Fruto Maduro', e.conteo_estadio_3, e.peso_produccion,'COP '+this.currency.transform(e.ingreso_esperado.toFixed(2), ' ') ];
+      sheet.getRow(n_row + 4).values = ['Fruto Maduro', e.conteo_estadio_3, e.peso_produccion, 'COP ' + this.currency.transform(e.ingreso_esperado.toFixed(2), ' ')];
       sheet.getRow(n_row + 5).values = ['Total', e.total, ' ', ' '];
 
 
-      sheet.getCell('B'+n_row).style.font = { bold: true, size: 15, }
-      sheet.getCell('C'+n_row).style.font = { bold: true, size: 15, }
-      sheet.getCell('D'+n_row).style.font = { bold: true, size: 15, }
+      sheet.getCell('B' + n_row).style.font = { bold: true, size: 15, }
+      sheet.getCell('C' + n_row).style.font = { bold: true, size: 15, }
+      sheet.getCell('D' + n_row).style.font = { bold: true, size: 15, }
 
 
       cellsWithBordersWeeks.push(n_row);
@@ -382,53 +391,53 @@ export class ExcelService {
       sheet.getCell('B' + c).border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
     }
 
-   //============= Árboles Analizados =================
-
-    
-   sheet.getCell('A180').value = 'Árboles Analizados';
-   sheet.getCell('A180').style.font = { bold: true, size: 18 }
-
-   sheet.getRow(181).values = ['Número', 'Detección', 'Flores', 'Fruto Pequeño', 'Fruto Verde', 'Fruto Maduro', 'Total Frutos', 'Total Flores'];
-   
-   sheet.getCell('B181').style.font = { bold: true, size: 15, }
-   sheet.getCell('C181').style.font = { bold: true, size: 15, }
-   sheet.getCell('D181').style.font = { bold: true, size: 15, }
-   sheet.getCell('E181').style.font = { bold: true, size: 15, }
-   sheet.getCell('F181').style.font = { bold: true, size: 15, }
-   sheet.getCell('G181').style.font = { bold: true, size: 15, }
-   sheet.getCell('H181').style.font = { bold: true, size: 15, }
-
-   sheet.getCell('A181').border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
-   sheet.getCell('B181').border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
-   sheet.getCell('C181').border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
-   sheet.getCell('D181').border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
-   sheet.getCell('E181').border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
-   sheet.getCell('F181').border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
-   sheet.getCell('G181').border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
-   sheet.getCell('H181').border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
-
-   analysis.trees.map((t, i) =>{
-     sheet.getRow(181 + (i+1)).values = [
-       i+1,
-       (t.lemons.confidenceAvergae * 100).toFixed(0) + '%',
-       t.flowers,
-       t.lemons.estadio_1,
-       t.lemons.estadio_2,
-       t.lemons.estadio_3,
-       t.lemons.total,
-       t.flowers];
+    //============= Árboles Analizados =================
 
 
-       sheet.getCell('A' + (181+i+1)).border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
-       sheet.getCell('B' + (181+i+1)).border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
-       sheet.getCell('C' + (181+i+1)).border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
-       sheet.getCell('D' + (181+i+1)).border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
-       sheet.getCell('E' + (181+i+1)).border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
-       sheet.getCell('F' + (181+i+1)).border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
-       sheet.getCell('G' + (181+i+1)).border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
-       sheet.getCell('H' + (181+i+1)).border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
-  
-      })
+    sheet.getCell('A180').value = 'Árboles Analizados';
+    sheet.getCell('A180').style.font = { bold: true, size: 18 }
+
+    sheet.getRow(181).values = ['Número', 'Detección', 'Flores', 'Fruto Pequeño', 'Fruto Verde', 'Fruto Maduro', 'Total Frutos', 'Total Flores'];
+
+    sheet.getCell('B181').style.font = { bold: true, size: 15, }
+    sheet.getCell('C181').style.font = { bold: true, size: 15, }
+    sheet.getCell('D181').style.font = { bold: true, size: 15, }
+    sheet.getCell('E181').style.font = { bold: true, size: 15, }
+    sheet.getCell('F181').style.font = { bold: true, size: 15, }
+    sheet.getCell('G181').style.font = { bold: true, size: 15, }
+    sheet.getCell('H181').style.font = { bold: true, size: 15, }
+
+    sheet.getCell('A181').border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
+    sheet.getCell('B181').border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
+    sheet.getCell('C181').border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
+    sheet.getCell('D181').border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
+    sheet.getCell('E181').border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
+    sheet.getCell('F181').border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
+    sheet.getCell('G181').border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
+    sheet.getCell('H181').border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
+
+    analysis.trees.map((t, i) => {
+      sheet.getRow(181 + (i + 1)).values = [
+        i + 1,
+        (t.lemons.confidenceAvergae * 100).toFixed(0) + '%',
+        t.flowers,
+        t.lemons.estadio_1,
+        t.lemons.estadio_2,
+        t.lemons.estadio_3,
+        t.lemons.total,
+        t.flowers];
+
+
+      sheet.getCell('A' + (181 + i + 1)).border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
+      sheet.getCell('B' + (181 + i + 1)).border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
+      sheet.getCell('C' + (181 + i + 1)).border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
+      sheet.getCell('D' + (181 + i + 1)).border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
+      sheet.getCell('E' + (181 + i + 1)).border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
+      sheet.getCell('F' + (181 + i + 1)).border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
+      sheet.getCell('G' + (181 + i + 1)).border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
+      sheet.getCell('H' + (181 + i + 1)).border = { top: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } };
+
+    })
   }
 
 

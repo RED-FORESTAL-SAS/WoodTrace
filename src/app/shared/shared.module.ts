@@ -12,6 +12,7 @@ import { PasswordRequiredComponent } from './components/password-required/passwo
 import { FinkAlertComponent } from './components/fink-alert/fink-alert.component';
 import { DownloadTypeComponent } from './components/download-type/download-type.component';
 import { NgxCurrencyModule } from 'ngx-currency';
+import { LoteModalComponent } from './components/lote-modal/lote-modal.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { NgxCurrencyModule } from 'ngx-currency';
     EmptyArrayComponent,
     PasswordRequiredComponent,
     FinkAlertComponent,
-    DownloadTypeComponent
+    DownloadTypeComponent,
+    LoteModalComponent
   ],
   exports: [
     HeaderComponent,
@@ -32,7 +34,8 @@ import { NgxCurrencyModule } from 'ngx-currency';
     EmptyArrayComponent,
     PasswordRequiredComponent,
     FinkAlertComponent,
-    DownloadTypeComponent
+    DownloadTypeComponent,
+    LoteModalComponent
   ],
   imports: [
     CommonModule,
