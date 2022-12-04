@@ -43,17 +43,17 @@ export class AnalysisTreesPage implements OnInit {
   }
 
 
-  async getLote(){
-  let selected = await this.utilsSvc.presentModal({
+  async getLote() {
+    let selected = await this.utilsSvc.presentModal({
       component: LoteModalComponent,
       cssClass: 'modal-fink-app'
-      })
+    })
 
-    if(selected){
+    if (selected) {
       this.generateFiles()
       this.segment = 'pending';
     }
-      
+
   }
 
 
@@ -68,27 +68,27 @@ export class AnalysisTreesPage implements OnInit {
   }
 
 
-//================== Rehacer Análisis =================
+  //================== Rehacer Análisis =================
 
-confirmDeletePendingTree(id: string) {
-  this.utilsSvc.presentAlertConfirm({
-    header: '¿Estás seguro/a de eliminar este árbol',
-    message: 'Luego de ser eliminado no podrás recuperar las fotos tomadas',
-    buttons: [
-      {
-        text: 'Cancelar',
-        handler: () => {
+  confirmDeletePendingTree(id: string) {
+    this.utilsSvc.presentAlertConfirm({
+      header: '¿Estás seguro/a de eliminar este árbol',
+      message: 'Luego de ser eliminado no podrás recuperar las fotos tomadas',
+      buttons: [
+        {
+          text: 'Cancelar',
+          handler: () => {
 
+          }
+        }, {
+          text: 'Eliminar',
+          handler: () => {
+            this.deletePendingTree(id, true)
+          }
         }
-      }, {
-        text: 'Eliminar',
-        handler: () => {
-          this.deletePendingTree(id, true)
-        }
-      }
-    ]
-  })
-}
+      ]
+    })
+  }
 
 
   //================== Rehacer Análisis =================
@@ -122,8 +122,38 @@ confirmDeletePendingTree(id: string) {
     this.utilsSvc.routerLink('tabs/analysis/take-photos');
   }
 
+  //================== Eliminar árbol analizado =================
 
-  startAnalysis(id: string){
+  confirmDeleteTree(index: number) {
+    this.utilsSvc.presentAlertConfirm({
+      header: '¿Estás seguro/a de eliminar este análisis?',
+      message: 'Una vez eliminado no podrás recuperar el análisis',
+      buttons: [
+        {
+          text: 'Cancelar',
+          handler: () => {
+
+          }
+        }, {
+          text: 'Eliminar',
+          handler: () => {
+            this.deleteAnalizedTree(index);
+          }
+        }
+      ]
+    })
+  }
+
+  deleteAnalizedTree(index: number) {
+
+    let analisys = this.analysisFormData();
+    analisys.trees.splice(index, 1);
+
+    this.utilsSvc.saveLocalStorage('analysis', analisys);
+  }
+
+
+  startAnalysis(id: string) {
     // this.analysisRandom(id);
     this.loadFiles(id);
   }
@@ -154,7 +184,7 @@ confirmDeletePendingTree(id: string) {
       url_4: urls[3],
     }
 
-    
+
     this.analyzeTree(tree.id, data)
   }
 
@@ -170,7 +200,7 @@ confirmDeletePendingTree(id: string) {
     this.utilsSvc.presentLoading(`Analizando Imagenes`);
     this.imagesSvc.analyzeImages(urls).subscribe((res: any) => {
 
-      
+
       if (!currentAnalysis.trees) {
         currentAnalysis.trees = [];
       }
@@ -197,26 +227,26 @@ confirmDeletePendingTree(id: string) {
   // ================= Obtener archivos almacenados en una ruta =====================
   async loadFiles(id: string) {
 
-    
-    this.loading = true;
-      await Filesystem.readdir({
-        path: id,
-        directory: Directory.Data
-      })
-        .then(
-          (result) => {
-            this.loading = false;
-            this.loadFileData(id, result.files);
-          },
-          async (err) => {
-            console.log(err);
-            
-            this.utilsSvc.presentToast('Ha ocurrido un error, intenta de nuevo.')
-            this.loading = false;
 
-          }
-        )
-    
+    this.loading = true;
+    await Filesystem.readdir({
+      path: id,
+      directory: Directory.Data
+    })
+      .then(
+        (result) => {
+          this.loading = false;
+          this.loadFileData(id, result.files);
+        },
+        async (err) => {
+          console.log(err);
+
+          this.utilsSvc.presentToast('Ha ocurrido un error, intenta de nuevo.')
+          this.loading = false;
+
+        }
+      )
+
   }
 
   // ================= Obtener la información de las imagenes =====================
@@ -229,7 +259,7 @@ confirmDeletePendingTree(id: string) {
       images: []
     };
 
-    
+
 
     for (let f of fileNames) {
       const filePath = `${path}/${f.name}`;
@@ -264,12 +294,12 @@ confirmDeletePendingTree(id: string) {
       });
     }
 
-    if(!fromPending){
-       this.deleteImagesFromFireStorage(treeId);
+    if (!fromPending) {
+      this.deleteImagesFromFireStorage(treeId);
     }
-   
 
-   
+
+
   }
 
   // ================= Eliminar imagenes del almacenamiento de Firebase =====================
@@ -325,14 +355,14 @@ confirmDeletePendingTree(id: string) {
 
     this.utilsSvc.saveLocalStorage('analysis', currentAnalysis);
 
-    if(fromPending){
+    if (fromPending) {
       this.utilsSvc.presentToast('Árbol eliminado exitosamente');
       this.deleteImages(treeId, fromPending);
-    }else{
+    } else {
       this.deleteImages(treeId, false);
     }
-    
-   
+
+
   }
 
 

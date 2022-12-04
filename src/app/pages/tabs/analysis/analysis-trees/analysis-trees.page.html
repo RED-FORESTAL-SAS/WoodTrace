@@ -55,7 +55,7 @@
       </thead>
 
       <tr *ngFor="let p of analysisFormData().pendingTrees; index as i">
-        <td>{{analysisFormData().trees.length ? (i + analysisFormData().trees.length) : (i + 1)}}</td>
+        <td>{{analysisFormData().trees.length ? (1 + analysisFormData().trees.length) : (i + 1)}}</td>
         <td>
          {{ p | date: 'dd/MM/yyyy' }}
         </td>
@@ -93,6 +93,7 @@
         <th>Detección</th>
         <th>Ver</th>
         <th>Rehacer</th>
+        <th>Eliminar</th>
       </thead>
       <tr *ngFor="let t of analysisFormData().trees; index as i">
         <td>{{i + 1}}</td>
@@ -103,6 +104,9 @@
         </td>
         <td>
           <ion-icon (click)="confirmRedoAnalysis(i)" class="option-icon" src="assets/icon/icon-analisis.svg"></ion-icon>
+        </td>
+        <td>
+          <ion-icon (click)="confirmDeleteTree(i)" class="option-icon" name="trash-outline"></ion-icon>
         </td>
       </tr>
     </table>

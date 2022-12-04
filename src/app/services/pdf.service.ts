@@ -39,7 +39,7 @@ export class PdfService {
           body: [
             [{ text: `Semana ${n++}`, style: 'tableHeaderTop' },
             { text: 'Conteo', style: 'tableHeaderTop' },
-            { text: 'Peso Producción', style: 'tableHeaderTop' },
+            { text: 'Peso Producción (Kg)', style: 'tableHeaderTop' },
             { text: 'Ingreso Esperado', style: 'tableHeaderTop' }],
 
 
@@ -154,7 +154,7 @@ export class PdfService {
         conteo_estadio_1,
         conteo_estadio_2,
         conteo_estadio_3,
-        peso_produccion: conteo_estadio_3 * peso_limon,
+        peso_produccion: (conteo_estadio_3 * peso_limon).toFixed(0),
         ingreso_esperado: (conteo_estadio_3 * peso_limon) * analysis.priceKg,
         total: conteo_flor + conteo_estadio_1 + conteo_estadio_2 + conteo_estadio_3
       },
@@ -214,7 +214,7 @@ export class PdfService {
         conteo_estadio_1: conteo_flor + conteo_estadio_1,
         conteo_estadio_2: 0,
         conteo_estadio_3: conteo_estadio_2,
-        peso_produccion: conteo_estadio_2 * peso_limon,
+        peso_produccion: (conteo_estadio_2 * peso_limon).toFixed(0),
         ingreso_esperado: (conteo_estadio_2 * peso_limon) * analysis.priceKg,
         total: conteo_flor + conteo_estadio_1 + conteo_estadio_2 + 0
       },
@@ -284,7 +284,7 @@ export class PdfService {
         conteo_estadio_1: 0,
         conteo_estadio_2: conteo_flor,
         conteo_estadio_3: conteo_estadio_1,
-        peso_produccion: conteo_estadio_1 * peso_limon,
+        peso_produccion: (conteo_estadio_1 * peso_limon).toFixed(0),
         ingreso_esperado: (conteo_estadio_1 * peso_limon) * analysis.priceKg,
         total: conteo_flor + conteo_estadio_1
       },
@@ -304,7 +304,7 @@ export class PdfService {
         conteo_estadio_1: 0,
         conteo_estadio_2: 0,
         conteo_estadio_3: conteo_flor,
-        peso_produccion: conteo_flor * peso_limon,
+        peso_produccion: (conteo_flor * peso_limon).toFixed(0),
         ingreso_esperado: (conteo_flor * peso_limon) * analysis.priceKg,
         total: conteo_flor
       },
