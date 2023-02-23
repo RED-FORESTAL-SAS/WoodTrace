@@ -5,13 +5,14 @@
 export const environment = {
   production: false,
   firebaseConfig: {
-    apiKey: "AIzaSyCez_Y504RReecGfIi_OVgWrVG6gUwOX3g",
-    authDomain: "finkapp-des.firebaseapp.com",
-    projectId: "finkapp-des",
-    storageBucket: "finkapp-des.appspot.com",
-    messagingSenderId: "475936816341",
-    appId: "1:475936816341:web:eba22321fd50f6d0d4765c",
-    measurementId: "G-RM5T3V1BPL"
+    apiKey: "AIzaSyC2ObxfQBz9bscDyAyMQUqmzD8bbiUqV8k",
+    authDomain: "ecommerce-red-forestal-des-1.firebaseapp.com",
+    databaseURL: "https://ecommerce-red-forestal-des-1.firebaseio.com",
+    projectId: "ecommerce-red-forestal-des-1",
+    storageBucket: "ecommerce-red-forestal-des-1.appspot.com",
+    messagingSenderId: "704125813765",
+    appId: "1:704125813765:web:10aa243a082a1ebe5ec86c",
+    measurementId: "G-Z24P4HK35T",
   }
 };
 
