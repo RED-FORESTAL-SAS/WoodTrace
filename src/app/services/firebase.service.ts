@@ -1,36 +1,65 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { AngularFireStorage } from '@angular/fire/compat/storage';
-import { Router } from '@angular/router';
-import * as firebase from 'firebase/compat';
-import { User } from '../models/user.model';
-import { getStorage, ref, uploadString, uploadBytes, deleteObject } from "firebase/storage";
-import { getAuth, updatePassword } from "firebase/auth";
+import { Injectable } from "@angular/core";
+import { AngularFireAuth } from "@angular/fire/compat/auth";
+import { AngularFirestore } from "@angular/fire/compat/firestore";
+import { AngularFireStorage } from "@angular/fire/compat/storage";
+import { Router } from "@angular/router";
+import { User } from "../models/user.model";
+import {
+  getStorage,
+  ref,
+  uploadString,
+  uploadBytes,
+  deleteObject,
+} from "firebase/storage";
+import { getAuth, updatePassword, User as FirebaseUser } from "firebase/auth";
+import { Observable, of } from "rxjs";
+import { map, switchMap } from "rxjs/operators";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class FirebaseService {
-
   user = {} as User;
   constructor(
     private auth: AngularFireAuth,
     private storage: AngularFireStorage,
     private db: AngularFirestore,
     private router: Router
-  ) { }
-
+  ) {}
 
   //=========Autenticación==========
 
-  /** login
-   * @param user
-   * autentica al usuario en firebase auth
+  /**
+   * Returns authenticated User (from domain) or null if not authenticated.
+   *
+   * @returns Observable<User | null>
+   * @throws FirestoreFailure
    */
+  get authState(): Observable<User | null> {
+    return this.auth.authState.pipe(
+      switchMap((firebaseUser: FirebaseUser | null) => {
+        return firebaseUser !== null
+          ? this.getDataById("wt_users", firebaseUser.uid)
+              .valueChanges()
+              .pipe(
+                map((user: User) => {
+                  return user
+                    ? { ...user, emailVerified: firebaseUser.emailVerified }
+                    : user;
+                })
+              )
+          : of(null);
+      })
+    );
+  }
 
-  Login(user: User) {
+  /**
+   * Signs in user with email and password.
+   *
+   * @param user Username.
+   * @param password Password.
+   */
+  Login(user: User): Promise<any> {
     return this.auth.signInWithEmailAndPassword(user.email, user.password);
   }
 
@@ -42,7 +71,6 @@ export class FirebaseService {
   createUser(user: User) {
     return this.auth.createUserWithEmailAndPassword(user.email, user.password);
   }
-
 
   /**
    * Enviar email para recuperar contraseña
@@ -56,10 +84,8 @@ export class FirebaseService {
    * Enviar email para verificación
    */
   async sendEmailVerification() {
-    return (await this.auth.currentUser).sendEmailVerification()
+    return (await this.auth.currentUser).sendEmailVerification();
   }
-
-
 
   /**
    * It takes a new password as a parameter, gets the current user from the auth object, and then calls
@@ -77,16 +103,15 @@ export class FirebaseService {
   //========= Funciones Comunes para consultar Firestore==========
   /**
    * @param id Es el id del documento almacenado en una colección.
-   * @param collectionName Es el nombre de una colección. 
+   * @param collectionName Es el nombre de una colección.
    * @param condition Es la condición para consultar una colección. Ejemplo: ref => ref.where('id', '==', user_id)
    * @param object Es un objeto que contiene datos para guardar o actualizar.
    * @param field Es el campo perteneciente a un documento.
    */
 
-
   /**Retorna datos de un documento por su id*/
   getDataById(collectionName: string, id: string) {
-    return this.db.doc(collectionName + '/' + id);
+    return this.db.doc(collectionName + "/" + id);
   }
 
   /**Retorna todos los documentos pertenecientes a una colección*/
@@ -117,33 +142,40 @@ export class FirebaseService {
 
   /**Elimina un documento existente en una colección*/
   deleteFromCollection(collectionName: string, id: string) {
-    return this.db.doc(collectionName + '/' + id).delete();
+    return this.db.doc(collectionName + "/" + id).delete();
   }
 
   /**Elimina todos los elementos con un campo similar
    * Se utiliza para hacer eliminaciones relacionales
-   * Ejemplo: Todos los productos pertenecientes a una categoría. 
+   * Ejemplo: Todos los productos pertenecientes a una categoría.
    **/
-  deleteFromCollectionCascade(collectionName: string, field: string, id: string) {
-
-    return this.db.firestore.collection(collectionName).get().then(function (querySnapshot) {
-      querySnapshot.query.where(field, '==', id).get().then(function (querySnapshot) {
-        querySnapshot.forEach(function (doc) {
-          doc.ref.delete()
-        })
-      })
-    });
-
+  deleteFromCollectionCascade(
+    collectionName: string,
+    field: string,
+    id: string
+  ) {
+    return this.db.firestore
+      .collection(collectionName)
+      .get()
+      .then(function (querySnapshot) {
+        querySnapshot.query
+          .where(field, "==", id)
+          .get()
+          .then(function (querySnapshot) {
+            querySnapshot.forEach(function (doc) {
+              doc.ref.delete();
+            });
+          });
+      });
   }
-
 
   //============Subir imagenes=================
   async uploadPhoto(id, file): Promise<any> {
     const storage = getStorage();
     const storageRef = ref(storage, id);
-    return uploadString(storageRef, file, 'data_url').then(res => {
+    return uploadString(storageRef, file, "data_url").then((res) => {
       return this.storage.ref(id).getDownloadURL().toPromise();
-    })
+    });
   }
 
   //============Subir Archivos=================
@@ -153,31 +185,27 @@ export class FirebaseService {
 
     // 'file' comes from the Blob or File API
     return uploadBytes(storageRef, file).then((snapshot) => {
-      console.log('Uploaded a blob or file!');
+      console.log("Uploaded a blob or file!");
       return this.storage.ref(id).getDownloadURL().toPromise();
     });
-
   }
 
   //============Eliminar de FireStorage=================
   deleteFromStorage(path: string) {
     const storage = getStorage();
     const desertRef = ref(storage, path);
-    
-   return deleteObject(desertRef)
-  }
 
+    return deleteObject(desertRef);
+  }
 
   // =========Cerrar Sesión===========
   /* Cierra sesión y borra datos almacenados en localstorage. */
 
   async logout() {
     await this.auth.signOut();
-    localStorage.removeItem('user');
-    localStorage.removeItem('analysis');
-    localStorage.removeItem('reports');
-    this.router.navigate(['login']);
+    localStorage.removeItem("user");
+    localStorage.removeItem("analysis");
+    localStorage.removeItem("reports");
+    this.router.navigate(["login"]);
   }
-
-
 }
