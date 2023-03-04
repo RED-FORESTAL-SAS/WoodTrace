@@ -21,11 +21,8 @@ export class LoginPage implements OnInit, OnDestroy {
   /**
    * @todo: Borrar valores para testing.
    */
-  email = new FormControl("mario@webintegral.com.co", [
-    Validators.required,
-    Validators.email,
-  ]);
-  password = new FormControl("Asdf1234+", [Validators.required]);
+  email = new FormControl("", [Validators.required, Validators.email]);
+  password = new FormControl("", [Validators.required]);
 
   loading: boolean;
 
