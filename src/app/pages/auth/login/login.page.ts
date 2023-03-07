@@ -18,9 +18,6 @@ import {
   styleUrls: ["./login.page.scss"],
 })
 export class LoginPage implements OnInit, OnDestroy {
-  /**
-   * @todo: Borrar valores para testing.
-   */
   email = new FormControl("", [Validators.required, Validators.email]);
   password = new FormControl("", [Validators.required]);
 
@@ -85,8 +82,6 @@ export class LoginPage implements OnInit, OnDestroy {
               this.loading = false;
               this.loginIn.next(false);
 
-              console.log(user);
-
               if (!user.emailVerified) {
                 this.utilsSvc.routerLink("/email-verification");
                 this.firebaseSvc.sendEmailVerification();
@@ -95,22 +90,27 @@ export class LoginPage implements OnInit, OnDestroy {
                 this.resetForm();
               }
             },
-            error: (e) => {
+            error: async (e) => {
               const failure = FailureUtils.errorToFailure(e);
               FailureUtils.log(failure, "LoginPage.ngOnInit");
               if (failure instanceof NoNetworkFailure) {
                 this.utilsSvc.presentToast(
                   "Parece que tienes problemas con la conexión a internet. Por favor intente de nuevo."
                 );
+
+                // If user exists in Firebase Auth, but not in user collection (already registered
+                // in Red Forestal).
               } else if (failure instanceof NotFoundFailure) {
                 this.utilsSvc.presentToast(
-                  "No encontramos el usuario en la app. Por favor regístrate para continuar."
+                  "Por favor regístrate para acceder."
                 );
-                this.firebaseSvc.logout();
+                await this.firebaseSvc.logout();
+                this.resetForm();
               } else if (failure instanceof PermissionDeniedFailure) {
                 this.utilsSvc.presentToast(
                   "Usuario sin privilegios para ejecutar esta acción."
                 );
+                this.firebaseSvc.logout();
               } else {
                 this.utilsSvc.presentToast(
                   "Ocurrió un Error desconocido. Por favor intente de nuevo."

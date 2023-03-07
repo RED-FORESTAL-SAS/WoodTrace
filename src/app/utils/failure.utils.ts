@@ -166,6 +166,9 @@ export class FailureUtils {
           f = new UnknownFailure(e.message);
           break;
       }
+      // Just rethrow same Failure.
+    } else if (e instanceof Failure) {
+      f = e;
     } else if (e instanceof Error) {
       const message = e.message;
       switch (message) {
