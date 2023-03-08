@@ -1,5 +1,7 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormControl, Validators } from "@angular/forms";
+import { BehaviorSubject, Subscription } from "rxjs";
+import { filter, switchMap, take, tap } from "rxjs/operators";
 import { User } from "src/app/models/user.model";
 import { FirebaseService } from "src/app/services/firebase.service";
 import { UtilsService } from "src/app/services/utils.service";
@@ -10,6 +12,9 @@ import {
   AuthNetworkRequestFailedFailure,
   AuthWrongPasswordFailure,
   FailureUtils,
+  NoNetworkFailure,
+  NotFoundFailure,
+  PermissionDeniedFailure,
 } from "src/app/utils/failure.utils";
 import { docTypes } from "src/assets/data/document-types";
 
@@ -18,7 +23,7 @@ import { docTypes } from "src/assets/data/document-types";
   templateUrl: "./sign-up.page.html",
   styleUrls: ["./sign-up.page.scss"],
 })
-export class SignUpPage implements OnInit {
+export class SignUpPage implements OnInit, OnDestroy {
   fullName = new FormControl("", [
     Validators.required,
     Validators.minLength(4),
@@ -38,6 +43,12 @@ export class SignUpPage implements OnInit {
 
   docTypes = [];
 
+  /** Flag to indicate than registration process finished. */
+  private registered = new BehaviorSubject<boolean>(false);
+
+  /** Suscriptions handler. */
+  private sbs: Subscription[] = [];
+
   constructor(
     private firebaseSvc: FirebaseService,
     private utilsSvc: UtilsService
@@ -51,8 +62,61 @@ export class SignUpPage implements OnInit {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.docTypes = docTypes;
+
+    // Watch Firebase AuthState. When registration finishes, redirect user to 'email verification'
+    // (if required) or to an internal app screen.
+    this.sbs.push(
+      this.registered
+        .asObservable()
+        .pipe(
+          filter((registered) => registered === true),
+          switchMap(() => this.firebaseSvc.authState),
+          filter((user) => user !== null),
+          tap({
+            next: async (user) => {
+              // Save registered user to local Storage.
+              this.utilsSvc.saveLocalStorage("user", user);
+
+              // If not verified yet, redirect to email verification, instead redirect to app.
+              if (user.emailVerified === false) {
+                await this.firebaseSvc.sendEmailVerification().catch((e) => {});
+                this.utilsSvc.routerLink("/email-verification");
+                this.resetForm();
+              } else {
+                this.utilsSvc.routerLink("/tabs/profile");
+                this.resetForm();
+              }
+            },
+            error: (e) => {
+              const failure = FailureUtils.errorToFailure(e);
+              FailureUtils.log(failure, "LoginPage.ngOnInit");
+              if (failure instanceof NoNetworkFailure) {
+                this.utilsSvc.presentToast(
+                  "Parece que tienes problemas con la conexión a internet. Por favor intente de nuevo."
+                );
+              } else if (failure instanceof NotFoundFailure) {
+                this.utilsSvc.presentToast(
+                  "No encontramos el usuario en la app. Por favor regístrate para continuar."
+                );
+                this.firebaseSvc.logout();
+              } else if (failure instanceof PermissionDeniedFailure) {
+                this.utilsSvc.presentToast(
+                  "Usuario sin privilegios para ejecutar esta acción."
+                );
+                this.firebaseSvc.logout();
+              } else {
+                this.utilsSvc.presentToast(
+                  "Ocurrió un Error desconocido. Por favor intente de nuevo."
+                );
+              }
+              this.registered.next(false);
+            },
+          })
+        )
+        .subscribe()
+    );
   }
 
   /**
@@ -126,31 +190,33 @@ export class SignUpPage implements OnInit {
           }
         });
 
-      // Create user on 'wt_users' collection and local storage.
-      delete user.password;
-      await this.firebaseSvc
-        .addToCollectionById("wt_users", {
-          ...user,
-          id: userCredential.user.uid,
-        })
-        // If user creation fails, logout and ask user to retry.
-        .catch(async (e) => {
-          this.firebaseSvc.logout().catch((e) => {});
-          throw new Error(
-            "Ocurrión un error durante el proceso de registro. Por favor intente de nuevo."
-          );
-        });
-      this.utilsSvc.saveLocalStorage("user", user);
+      // Validate if user already exists to prevent registration form to serve as an 'update' form.
+      const userExists = await this.firebaseSvc
+        .getDataById("wt_users", userCredential.user.uid)
+        .valueChanges()
+        .pipe(take(1))
+        .toPromise()
+        .catch((e) => null);
 
-      // If not verified yet, redirect to email verification, instead redirect to app.
-      if (userCredential.user.emailVerified === false) {
-        await this.firebaseSvc.sendEmailVerification().catch((e) => {});
-        this.utilsSvc.routerLink("/email-verification");
-        this.resetForm();
-      } else {
-        this.utilsSvc.routerLink("/tabs");
-        this.resetForm();
+      if (!userExists) {
+        // Create user on 'wt_users' collection and local storage.
+        delete user.password;
+        await this.firebaseSvc
+          .addToCollectionById("wt_users", {
+            ...user,
+            id: userCredential.user.uid,
+          })
+          // If user creation fails, logout and ask user to retry.
+          .catch(async (e) => {
+            this.firebaseSvc.logout().catch((e) => {});
+            throw new Error(
+              "Ocurrión un error durante el proceso de registro. Por favor intente de nuevo."
+            );
+          });
       }
+
+      // Mark flag 'registered' to trigger AuthState subscription.
+      this.registered.next(true);
     } catch (e) {
       this.utilsSvc.presentToast(e);
     }
@@ -190,5 +256,12 @@ export class SignUpPage implements OnInit {
     }
 
     return true;
+  }
+
+  /**
+   * Unsubscribe.
+   */
+  ngOnDestroy(): void {
+    this.sbs.forEach((s) => s.unsubscribe());
   }
 }

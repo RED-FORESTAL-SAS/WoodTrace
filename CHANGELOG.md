@@ -5,6 +5,10 @@
 - Ajuste de colores -Ionic CSS Variables, estilos globales.
 -
 
+## [MARIO/RED-10-AUTH] - 2023-03-07
+
+- Ajustar para que el registro y el login funcionen con casos de borde.
+
 ## [MARIO/RED-10-AUTH] - 2023-03-04
 
 - Add FailureUtils for better error handling and flow control.

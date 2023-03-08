@@ -14,6 +14,7 @@ import {
 import { getAuth, updatePassword, User as FirebaseUser } from "firebase/auth";
 import { Observable, of } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
+import { NotFoundFailure } from "../utils/failure.utils";
 
 @Injectable({
   providedIn: "root",
@@ -42,10 +43,14 @@ export class FirebaseService {
           ? this.getDataById("wt_users", firebaseUser.uid)
               .valueChanges()
               .pipe(
-                map((user: User) => {
-                  return user
-                    ? { ...user, emailVerified: firebaseUser.emailVerified }
-                    : user;
+                map((user: User | undefined) => {
+                  // If user doesn't exist in user collection, fail.
+                  if (user === undefined) {
+                    throw new NotFoundFailure(
+                      "El usuario no existe en la base de datos."
+                    );
+                  }
+                  return { ...user, emailVerified: firebaseUser.emailVerified };
                 })
               )
           : of(null);
