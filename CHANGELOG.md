@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [MARIO/RED-10-AUTH] - 2023-03-08
+
+- Ajuste de colores -Ionic CSS Variables, estilos globales.
+-
+
 ## [MARIO/RED-10-AUTH] - 2023-03-04
 
 - Add FailureUtils for better error handling and flow control.
