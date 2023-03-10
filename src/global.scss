@@ -64,13 +64,13 @@ ion-segment-button{
 
 .modal-fink-app{
     --height: 410px;
-    --border-radius: 15px;
+    --border-radius: 25px;
     padding: 15px;
 }
 
 .alert-fink-app{
     --height: 360px;
-    --border-radius: 15px;
+    --border-radius: 25px;
     padding: 15px;
 }
 
@@ -81,11 +81,11 @@ ion-segment-button{
     height: 10px;
 }
 
-.text-gradient {
-    background: linear-gradient(var(--ion-color-secondary), var(--ion-color-primary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
+// .text-gradient {
+//     background: linear-gradient(var(--ion-color-secondary), var(--ion-color-primary));
+//     -webkit-background-clip: text;
+//     -webkit-text-fill-color: transparent;
+// }
 
 .validators {
     padding: 0px 0px 10px 0px;
@@ -120,9 +120,9 @@ ion-segment-button{
     ion-button {
         text-transform: capitalize;
         font-weight: 400;
-        --background: linear-gradient(to right, var(--ion-color-secondary), var(--ion-color-primary));
-        --background-activated: linear-gradient(to left, var(--ion-color-secondary), var(--ion-color-primary));
-        --border-radius: 15px;
+        --background: var(--ion-color-primary);
+        --background-activated: var(--ion-color-primary);
+        --border-radius: 25px;
 
         span {
             padding: 15px;

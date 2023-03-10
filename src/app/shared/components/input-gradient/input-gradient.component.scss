@@ -6,9 +6,9 @@
 .gradient-input {
     width: 100%;
     position: relative;
-    background: linear-gradient(to right, var(--ion-color-secondary), var(--ion-color-primary));
-    padding: 1px;
-    border-radius: 10px;
+    background: var(--ion-color-tertiary);
+    padding: 1.5px;
+    border-radius: 25px;
 
 input{
     border: 0;
@@ -19,8 +19,8 @@ input{
     ion-select,
     ion-item {
         width: 100%;
-        border-radius: 10px;
-        --border-radius: 10px; 
+        border-radius: 25px;
+        --border-radius: 25px; 
         font-size: 13px;
         background: white;
         color: var(--ion-color-dark);
