@@ -213,4 +213,14 @@ export class FirebaseService {
     localStorage.removeItem("reports");
     this.router.navigate(["login"]);
   }
+
+  /**
+   * Sign out user and deletes local storage data.
+   */
+  async signOut(): Promise<void> {
+    await this.auth.signOut();
+    localStorage.removeItem("user");
+    localStorage.removeItem("analysis");
+    localStorage.removeItem("reports");
+  }
 }

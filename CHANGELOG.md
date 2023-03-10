@@ -1,7 +1,8 @@
 # CHANGELOG
 
-## [MARIO/RED-10-AUTH] - 2023-03-09
+## [MARIO/RED-10-AUTH] - 2023-03-10
 
+- Fix bugs with Login observables.
 - Estilos help-slider.
 
 ## [MARIO/RED-10-AUTH] - 2023-03-08

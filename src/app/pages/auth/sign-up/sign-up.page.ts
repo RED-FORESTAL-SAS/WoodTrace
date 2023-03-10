@@ -82,6 +82,7 @@ export class SignUpPage implements OnInit, OnDestroy {
               // If not verified yet, redirect to email verification, instead redirect to app.
               if (user.emailVerified === false) {
                 await this.firebaseSvc.sendEmailVerification().catch((e) => {});
+                this.firebaseSvc.signOut();
                 this.utilsSvc.routerLink("/email-verification");
                 this.resetForm();
               } else {
@@ -100,12 +101,12 @@ export class SignUpPage implements OnInit, OnDestroy {
                 this.utilsSvc.presentToast(
                   "No encontramos el usuario en la app. Por favor regístrate para continuar."
                 );
-                this.firebaseSvc.logout();
+                this.firebaseSvc.signOut();
               } else if (failure instanceof PermissionDeniedFailure) {
                 this.utilsSvc.presentToast(
                   "Usuario sin privilegios para ejecutar esta acción."
                 );
-                this.firebaseSvc.logout();
+                this.firebaseSvc.signOut();
               } else {
                 this.utilsSvc.presentToast(
                   "Ocurrió un Error desconocido. Por favor intente de nuevo."
@@ -209,7 +210,7 @@ export class SignUpPage implements OnInit, OnDestroy {
           })
           // If user creation fails, logout and ask user to retry.
           .catch(async (e) => {
-            this.firebaseSvc.logout().catch((e) => {});
+            this.firebaseSvc.signOut().catch((e) => {});
             throw new Error(
               "Ocurrión un error durante el proceso de registro. Por favor intente de nuevo."
             );

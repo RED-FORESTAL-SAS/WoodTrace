@@ -1,11 +1,18 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy } from "@angular/core";
 import { FormControl, Validators } from "@angular/forms";
 import { User } from "src/app/models/user.model";
 import { FirebaseService } from "src/app/services/firebase.service";
 import { UtilsService } from "src/app/services/utils.service";
-import { BehaviorSubject, Subscription } from "rxjs";
+import { BehaviorSubject, combineLatest, Subscription } from "rxjs";
 import { filter, tap } from "rxjs/operators";
 import {
+  AuthInvalidEmailFailure,
+  AuthNetworkRequestFailedFailure,
+  AuthTimeoutFailure,
+  AuthTooManyRequestsFailure,
+  AuthUserDisabledFailure,
+  AuthUserNotFoundFailure,
+  AuthWrongPasswordFailure,
   FailureUtils,
   NoNetworkFailure,
   NotFoundFailure,
@@ -17,7 +24,7 @@ import {
   templateUrl: "./login.page.html",
   styleUrls: ["./login.page.scss"],
 })
-export class LoginPage implements OnInit, OnDestroy {
+export class LoginPage implements OnDestroy {
   email = new FormControl("", [Validators.required, Validators.email]);
   password = new FormControl("", [Validators.required]);
 
@@ -26,8 +33,8 @@ export class LoginPage implements OnInit, OnDestroy {
   /** Flag to indicate that user is currently login In. */
   private loginIn = new BehaviorSubject<boolean>(false);
 
-  /** Suscriptions handler. */
-  private sbs: Subscription[] = [];
+  /** Subscription to AuthState */
+  private authStateSbs: Subscription | null = null;
 
   constructor(
     private firebaseSvc: FirebaseService,
@@ -46,6 +53,11 @@ export class LoginPage implements OnInit, OnDestroy {
    * Sign In user with email and password. If it fails, show toast to user.
    */
   login(): void {
+    // Whatch Firesbase Auth State from first login click.
+    if (!this.authStateSbs) {
+      this.watchAuthState();
+    }
+
     this.loginIn.next(true);
     this.loading = true;
 
@@ -57,11 +69,41 @@ export class LoginPage implements OnInit, OnDestroy {
     };
 
     this.firebaseSvc.Login(user).catch((e) => {
+      const failure = FailureUtils.errorToFailure(e);
+      FailureUtils.log(failure, "LoginPage.ngOnInit");
+
       this.loginIn.next(false);
       this.loading = false;
-      let error = this.utilsSvc.getError(e);
-      if (error !== "El correo electrónico que ingresaste ya está registrado") {
-        this.utilsSvc.presentToast(error);
+
+      if (
+        failure instanceof AuthNetworkRequestFailedFailure ||
+        failure instanceof AuthTimeoutFailure
+      ) {
+        this.utilsSvc.presentToast(
+          "Parece que tienes problemas con la conexión a internet. Por favor intente de nuevo."
+        );
+      } else if (
+        failure instanceof AuthWrongPasswordFailure ||
+        failure instanceof AuthInvalidEmailFailure
+      ) {
+        this.utilsSvc.presentToast(
+          "Credenciales inválidas. Por favor intenta de nuevo."
+        );
+      } else if (failure instanceof AuthUserNotFoundFailure) {
+        this.utilsSvc.presentToast(
+          "Este usuario no existe. Regístrate para acceder."
+        );
+      } else if (
+        failure instanceof AuthTooManyRequestsFailure ||
+        failure instanceof AuthUserDisabledFailure
+      ) {
+        this.utilsSvc.presentToast(
+          "Parece que hay problemas con tu usuario. Por favor contacta al administrador."
+        );
+      } else {
+        this.utilsSvc.presentToast(
+          "Ocurrió un Error desconocido. Por favor intente de nuevo."
+        );
       }
     });
   }
@@ -70,27 +112,37 @@ export class LoginPage implements OnInit, OnDestroy {
    * Watches Firebase AuthState. When it turns authenticated, redirects user to 'email verification'
    * (if required) or to an internal app screen.
    */
-  ngOnInit(): void {
-    this.sbs.push(
-      this.firebaseSvc.authState
-        .pipe(
-          // Only hear authState during active/valid user login action.
-          filter((user) => user !== null && this.loginIn.value),
-          tap({
-            next: (user) => {
-              this.utilsSvc.saveLocalStorage("user", user);
-              this.loading = false;
-              this.loginIn.next(false);
+  watchAuthState(): void {
+    this.authStateSbs = combineLatest([
+      this.firebaseSvc.authState,
+      this.loginIn.asObservable(),
+    ])
+      // this.firebaseSvc.authState
+      .pipe(
+        // Only hear authState during active/valid user login action.
+        filter(([user, loginIn]: [User, boolean]) => {
+          // filter((user) => {
+          return user !== null && loginIn === true;
+        }),
+        tap({
+          next: ([user, loginIn]: [User, boolean]) => {
+            // next: (user) => {
+            this.utilsSvc.saveLocalStorage("user", user);
+            this.loading = false;
+            this.loginIn.next(false);
 
-              if (!user.emailVerified) {
-                this.utilsSvc.routerLink("/email-verification");
-                this.firebaseSvc.sendEmailVerification();
-              } else {
-                this.utilsSvc.routerLink("/tabs/profile");
-                this.resetForm();
-              }
-            },
-            error: async (e) => {
+            if (!user.emailVerified) {
+              this.unwatchAuthState();
+              this.utilsSvc.routerLink("/email-verification");
+              this.firebaseSvc.sendEmailVerification();
+            } else {
+              this.unwatchAuthState();
+              this.utilsSvc.routerLink("/tabs/profile");
+              this.resetForm();
+            }
+          },
+          error: async (e) => {
+            if (this.loginIn.value) {
               const failure = FailureUtils.errorToFailure(e);
               FailureUtils.log(failure, "LoginPage.ngOnInit");
               if (failure instanceof NoNetworkFailure) {
@@ -104,25 +156,38 @@ export class LoginPage implements OnInit, OnDestroy {
                 this.utilsSvc.presentToast(
                   "Por favor regístrate para acceder."
                 );
-                await this.firebaseSvc.logout();
+                await this.firebaseSvc.signOut();
                 this.resetForm();
               } else if (failure instanceof PermissionDeniedFailure) {
                 this.utilsSvc.presentToast(
                   "Usuario sin privilegios para ejecutar esta acción."
                 );
-                this.firebaseSvc.logout();
+                this.firebaseSvc.signOut();
               } else {
                 this.utilsSvc.presentToast(
                   "Ocurrió un Error desconocido. Por favor intente de nuevo."
                 );
               }
+
               this.loading = false;
               this.loginIn.next(false);
-            },
-          })
-        )
-        .subscribe()
-    );
+            }
+          },
+        })
+      )
+      .subscribe();
+  }
+
+  /**
+   * Stops watching Firebase AuthState.
+   *
+   * This is required, since this component never gets destroy when SingUpPage is open. This
+   * replaces ngOnInit and ngOnDestroy component behaviour.
+   */
+  unwatchAuthState() {
+    this.authStateSbs.unsubscribe();
+    this.authStateSbs = null;
+    this.loginIn.next(false);
   }
 
   /**
@@ -153,8 +218,6 @@ export class LoginPage implements OnInit, OnDestroy {
    * Unsubscribe.
    */
   ngOnDestroy(): void {
-    this.loginIn.next(false);
-    this.loginIn.complete();
-    this.sbs.forEach((s) => s.unsubscribe());
+    this.unwatchAuthState();
   }
 }
