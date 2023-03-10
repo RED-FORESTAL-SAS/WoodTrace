@@ -1,4 +1,4 @@
-.wrapper{
+.wrapper {
   text-align: center;
   display: flex;
   align-items: center;
@@ -6,39 +6,42 @@
   height: 70vh;
 }
 
-ion-item ion-label{
-    font-size: 18px;
+ion-item ion-label {
+  font-size: 18px;
 }
 
-
-.swiper{
-    padding-bottom: 30px;
+.swiper {
+  padding-bottom: 30px;
 }
 
-.btn-container{
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.btn-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.icon-slide{
-    font-size: 170px;
+.icon-slide {
+  font-size: 170px;
+  background: #c4ddd1;
+  filter: blur(150px);
 }
 
-h1{
-    font-weight: bold;
+h1 {
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 36px;
 }
 
-h4{
-    font-weight: 450;
+h4 {
+  font-weight: 450;
 }
 
-h6{
-    font-weight: 400;
-    padding: 20px 20px 10px 20px;
-    margin: 0;
+h6 {
+  font-weight: 400;
+  padding: 20px 20px 10px 20px;
+  margin: 0;
 }
 
-.btn-gradient{
-    padding-top: 0;
+.btn-gradient {
+  padding-top: 0;
 }

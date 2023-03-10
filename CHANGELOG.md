@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [MARIO/RED-10-AUTH] - 2023-03-09
+
+- Estilos help-slider.
+
 ## [MARIO/RED-10-AUTH] - 2023-03-08
 
 - Ajuste de colores -Ionic CSS Variables, estilos globales.

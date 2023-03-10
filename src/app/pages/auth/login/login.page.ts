@@ -153,6 +153,8 @@ export class LoginPage implements OnInit, OnDestroy {
    * Unsubscribe.
    */
   ngOnDestroy(): void {
+    this.loginIn.next(false);
+    this.loginIn.complete();
     this.sbs.forEach((s) => s.unsubscribe());
   }
 }

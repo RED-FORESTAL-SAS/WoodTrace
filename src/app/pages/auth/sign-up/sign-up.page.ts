@@ -91,7 +91,7 @@ export class SignUpPage implements OnInit, OnDestroy {
             },
             error: (e) => {
               const failure = FailureUtils.errorToFailure(e);
-              FailureUtils.log(failure, "LoginPage.ngOnInit");
+              FailureUtils.log(failure, "SignUp.ngOnInit");
               if (failure instanceof NoNetworkFailure) {
                 this.utilsSvc.presentToast(
                   "Parece que tienes problemas con la conexión a internet. Por favor intente de nuevo."
@@ -200,6 +200,7 @@ export class SignUpPage implements OnInit, OnDestroy {
 
       if (!userExists) {
         // Create user on 'wt_users' collection and local storage.
+        console.log(user, userCredential.user.uid);
         delete user.password;
         await this.firebaseSvc
           .addToCollectionById("wt_users", {
@@ -262,6 +263,8 @@ export class SignUpPage implements OnInit, OnDestroy {
    * Unsubscribe.
    */
   ngOnDestroy(): void {
+    this.registered.next(false);
+    this.registered.complete();
     this.sbs.forEach((s) => s.unsubscribe());
   }
 }
