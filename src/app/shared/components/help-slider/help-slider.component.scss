@@ -10,8 +10,14 @@ ion-item ion-label {
   font-size: 18px;
 }
 
-.swiper {
-  padding-bottom: 30px;
+.swiper-pagination-bullet {
+  background-color: red;
+  opacity: 1;
+}
+
+span.swiper-pagination-bullet.swiper-pagination-bullet-active {
+  background-color: blue;
+  opacity: 1;
 }
 
 .btn-container {
@@ -22,7 +28,6 @@ ion-item ion-label {
 
 .icon-slide {
   font-size: 170px;
-  background: #c4ddd1;
   filter: blur(150px);
 }
 

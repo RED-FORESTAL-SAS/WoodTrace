@@ -1,29 +1,55 @@
 .wrapper {
-    padding-top: constant(safe-area-inset-top); // for ios 13+
-    padding-top: env(safe-area-inset-top); // for previous ios versions
-    height: 90vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  padding-top: constant(safe-area-inset-top); // for ios 13+
+  padding-top: env(safe-area-inset-top); // for previous ios versions
+  height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .user-info {
+  height: 300px;
+  background: var(--ion-color-primary);
+  border-radius: 0px 0px 100px 100px;
+  text-align: center;
 
-    text-align: center;
+  .name {
+    padding-top: 10px;
+  }
 
-    .name {
-        padding-top: 10px;
-    }
-
-    .active {
-        padding-top: 1px;
-        font-size: 14px;
-        font-weight: bold;
-    }
-
+  .active {
+    padding-top: 1px;
+    font-size: 14px;
+    font-weight: bold;
+  }
 }
 
 .btn-container {
-    padding-top: 20px;
-    width: 85vw;
+  padding-top: 30px;
+  width: 85vw;
+}
+
+.btn {
+  width: 100%;
+  height: 40px;
+  background-color: var(--ion-color-primary);
+  border-radius: 25px;
+  margin-bottom: 10px;
+}
+
+.bg-icon-btn {
+  width: 17%;
+  height: 40px;
+  background-color: var(--ion-color-secondary);
+  border-radius: 25px;
+  padding: 9px 15px;
+}
+
+.icon-btn {
+  color: #fff;
+  font-size: 20px;
+}
+
+.label-btn {
+  padding: 9px 15px;
 }

@@ -1,10 +1,13 @@
-ion-tab-bar{
-    --background: linear-gradient(to right, var(--ion-color-secondary), var(--ion-color-primary));
+ion-tab-bar {
+  margin: 10px;
+  --background: var(--ion-color-primary);
+  border-radius: 40px;
+  width: 95%;
+  height: 80px;
 
-    ion-tab-button{
-        --background: transparent;
-        --color: var(--ion-color-dark);
-        --color-selected: var(--ion-color-light-tint);
-    }
+  ion-tab-button {
+    --background: transparent;
+    --color: #201a18;
+    --color-selected: var(--ion-color-light-tint);
+  }
 }
-

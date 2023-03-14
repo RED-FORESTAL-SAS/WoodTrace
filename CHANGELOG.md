@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [MARIO/RED-10-AUTH] - 2023-03-14
+
+- Login page.
+- Tabs page.
+- admin-account page.
+
 ## [MARIO/RED-10-AUTH] - 2023-03-10
 
 - Fix bugs with Login observables.

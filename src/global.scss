@@ -72,11 +72,18 @@ ion-segment-button {
   padding: 15px;
 }
 
-.bullet-active {
-  background: var(--ion-color-secondary);
-  opacity: 100%;
-  width: 10px;
-  height: 10px;
+/* change the size of the bullet and active color */
+
+.swiper-pagination-bullet {
+  width: 15px;
+  height: 15px;
+  background: #004f40;
+  opacity: 1;
+
+  bullet-active {
+    background: #fff !important;
+    opacity: 1;
+  }
 }
 
 // .text-gradient {
@@ -92,7 +99,7 @@ ion-segment-button {
 }
 
 .line-gradient {
-  background: var(--ion-color-secundary);
+  background: var(--ion-color-secondary);
   width: 100vw;
   height: 1px;
 }
@@ -116,6 +123,7 @@ ion-segment-button {
 
   ion-button {
     text-transform: capitalize;
+    height: 40px;
     font-weight: 400;
     --background: var(--ion-color-primary);
     --background-activated: var(--ion-color-primary);
@@ -170,4 +178,9 @@ ion-segment-button {
 
 .avatar-group .avatar:hover:not(:last-of-type) {
   transform: translate(-5px);
+}
+
+.tab-selected {
+  background: var(--ion-color-secondary);
+  border-radius: 50px;
 }
