@@ -1,14 +1,25 @@
 <div *ngIf="!closeModal" class="safe-p-top"></div>
+
 <ion-toolbar *ngIf="backButton || closeModal" class="back-toolbar">
   <ion-buttons slot="start">
-    <ion-back-button *ngIf="backButton" [defaultHref]="backButton" text="Volver" icon="chevron-back"></ion-back-button>
-    <ion-button *ngIf="closeModal" color="primary" (click)="close()" shape="round">
-      <ion-icon style="font-size: 25px;" name="chevron-back"></ion-icon>
+    <ion-back-button
+      *ngIf="backButton"
+      [defaultHref]="backButton"
+      text="Volver"
+      icon="chevron-back"
+    ></ion-back-button>
+    <ion-button
+      *ngIf="closeModal"
+      color="primary"
+      (click)="close()"
+      shape="round"
+    >
+      <ion-icon style="font-size: 25px" name="chevron-back"></ion-icon>
       Volver
     </ion-button>
   </ion-buttons>
 </ion-toolbar>
-<ion-toolbar *ngIf="title" [ngClass]="{'toolbar-sm': backButton}">
-  <ion-title>{{title}}</ion-title>
+<ion-toolbar *ngIf="title" [ngClass]="{ 'toolbar-sm': backButton }">
+  <ion-title>{{ title }}</ion-title>
 </ion-toolbar>
 <div *ngIf="!closeModal" class="line-gradient"></div>

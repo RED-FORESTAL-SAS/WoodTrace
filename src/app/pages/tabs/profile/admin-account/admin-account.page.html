@@ -1,8 +1,39 @@
 <app-header backButton="/tabs/profile" title="Administrar cuenta"></app-header>
+
 <ion-content>
   <div class="form">
+    <ion-list>
+      <ion-item>
+        <ion-label position="stacked">Nombre</ion-label>
+        <ion-input>{{ fullName.value }}</ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Email</ion-label>
+        <ion-input>{{ email.value }}</ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked"> Celular</ion-label>
+        <ion-input>{{ movil.value }}</ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Fecha de nacimiento</ion-label>
+        <ion-input>{{ fNacimiento.value }}</ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Tipo de documento</ion-label>
+        <ion-input>{{ docType.value }}</ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Documento</ion-label>
+        <ion-input>{{ docNumber.value }}</ion-input>
+      </ion-item>
+    </ion-list>
     <!-- Nombre completo  -->
-    <app-input-gradient
+    <!-- <app-input-gradient
       max="50"
       label="Nombre Completo"
       type="text"
@@ -16,10 +47,10 @@
       <span *ngIf="fullName.errors?.['minlength']"
         >El nombre debe contener mínimo 4 caracteres</span
       >
-    </div>
+    </div> -->
 
     <!-- Email  -->
-    <app-input-gradient
+    <!-- <app-input-gradient
       max="50"
       label="Correo Electrónico"
       type="email"
@@ -29,10 +60,10 @@
     <div class="validators" *ngIf="email.dirty && email.errors">
       <span *ngIf="email.errors?.['required']">Ingresa tu email</span>
       <span *ngIf="email.errors?.['email']">Ingresa un email válido</span>
-    </div>
+    </div> -->
 
     <!-- Tipo de documento  -->
-    <app-input-gradient
+    <!-- <app-input-gradient
       [selectOptions]="docTypes"
       label="Tipo de documento"
       type="select"
@@ -42,10 +73,10 @@
       <span *ngIf="docType.errors?.['required']"
         >Selecciona el tipo de documento de identidad</span
       >
-    </div>
+    </div> -->
 
     <!-- Número de documento  -->
-    <app-input-gradient
+    <!-- <app-input-gradient
       max="15"
       min="6"
       label="No. de documento"
@@ -60,7 +91,7 @@
       <span *ngIf="docNumber.errors?.['minlength']"
         >El número del documento debe contener mínimo 6 caracteres</span
       >
-    </div>
+    </div> -->
 
     <!-- Button -->
     <!-- <div *ngIf="!loading && !loadingPhoto" class="btn-gradient">
@@ -70,66 +101,44 @@
     </div> -->
 
     <!-- Button Loading-->
-    <div *ngIf="loading" class="btn-gradient">
+    <!-- <div *ngIf="loading" class="btn-gradient">
       <ion-button class="btn-loading" disabled mode="ios">
         <span><ion-spinner slot="end" color="dark"></ion-spinner></span>
       </ion-button>
-    </div>
+    </div> -->
 
     <!-- <div class="change-password" (click)="updatePassword()">
       Cambiar Contraseña
     </div> -->
   </div>
 </ion-content>
-<ion-content>
-  <div class="wrapper">
-    <div>
-      <div class="btn-container">
-        <!-- Propietario -->
-        <app-input-gradient
-          routerLink="owner"
-          icon="create-outline"
-          label="Propietario"
-          type="button"
-        >
-        </app-input-gradient>
 
-        <!-- Company -->
-        <app-input-gradient
-          routerLink="company"
-          icon="create-outline"
-          label="Empresa"
-          type="button"
-        >
-        </app-input-gradient>
+<div class="btn-container">
+  <ion-grid>
+    <ion-row class="btn" routerLink="membership">
+      <ion-col align-items-center class="bg-icon-btn" size="2">
+        <ion-icon class="icon-btn" name="create-outline"></ion-icon>
+      </ion-col>
 
-        <!-- Operators -->
-        <app-input-gradient
-          routerLink="operators"
-          icon="create-outline"
-          label="Operadores"
-          type="button"
-        >
-        </app-input-gradient>
+      <ion-col align-items-start class="label-btn">
+        Estado de la membresía
+      </ion-col>
+    </ion-row>
+    <ion-row class="btn" routerLink="owner">
+      <ion-col align-items-center class="bg-icon-btn" size="2">
+        <ion-icon class="icon-btn" name="create-outline"></ion-icon>
+      </ion-col>
 
-        <!-- Properties -->
-        <app-input-gradient
-          routerLink="properties"
-          icon="create-outline"
-          label="Lotes"
-          type="button"
-        >
-        </app-input-gradient>
+      <ion-col align-items-start class="label-btn"> Editar perfil </ion-col>
+    </ion-row>
+    <ion-row class="btn" routerLink="reset-password">
+      <ion-col align-items-center class="bg-icon-btn" size="2">
+        <ion-icon class="icon-btn" name="help-circle-outline"></ion-icon>
+      </ion-col>
 
-        <!-- Devices -->
-        <app-input-gradient
-          routerLink="devices"
-          icon="create-outline"
-          label="Dispositivos Vinculados"
-          type="button"
-        >
-        </app-input-gradient>
-      </div>
-    </div>
-  </div>
-</ion-content>
+      <ion-col align-items-start class="label-btn">
+        Cambiar contraseña
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</div>

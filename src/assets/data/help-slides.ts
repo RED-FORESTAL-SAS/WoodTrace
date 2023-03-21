@@ -9,12 +9,11 @@ export const helpSlides = [
   },
   {
     title: "Fotografía de madera",
-    subtitle: "",
-    indication:
-      "Recuerda que el análisis de la madera depende del uso de esta lupa",
+    subtitle: "Utiliza una lupa con un aumento mínimo de x60",
+    indication: "",
     icon: "",
     message:
-      "Recuerda que el análisis de la madera depende del uso de esta lupaPodrás conocer el número de frutos totales y sus diferentes estados de madurez!",
+      "Recuerda que el análisis de la madera depende del uso de esta lupa",
   },
   {
     title: "Análisis",

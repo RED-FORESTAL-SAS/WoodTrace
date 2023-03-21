@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## [MARIO/RED-10-AUTH] - 2023-03-21
+
+- Crear componente Change-password.
+- Ajustar estilos del login.
+- Agregar campos faltantes para el sign-up (fNacimiento, genero, movil).
+- Ajustar interface de profile, admin-account y membership.
+- Modificar estolos del header y help-slider.
+- Cambiar logo.
+- Splash.
+
 ## [MARIO/RED-10-AUTH] - 2023-03-14
 
 - Login page.

@@ -17,6 +17,7 @@ import {
   PermissionDeniedFailure,
 } from "src/app/utils/failure.utils";
 import { docTypes } from "src/assets/data/document-types";
+import { generoTypes } from "src/assets/data/genero-types";
 
 @Component({
   selector: "app-sign-up",
@@ -40,8 +41,12 @@ export class SignUpPage implements OnInit, OnDestroy {
     Validators.required,
     Validators.minLength(6),
   ]);
+  genero = new FormControl("", [Validators.required]);
+  fNacimiento = new FormControl(null, [Validators.required]);
+  movil = new FormControl("", [Validators.required, Validators.minLength(10)]);
 
   docTypes = [];
+  generoTypes = [];
 
   /** Flag to indicate than registration process finished. */
   private registered = new BehaviorSubject<boolean>(false);
@@ -64,6 +69,7 @@ export class SignUpPage implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.docTypes = docTypes;
+    this.generoTypes = generoTypes;
 
     // Watch Firebase AuthState. When registration finishes, redirect user to 'email verification'
     // (if required) or to an internal app screen.
@@ -142,6 +148,9 @@ export class SignUpPage implements OnInit, OnDestroy {
         docType: this.docType.value,
         docNumber: this.docNumber.value,
         emailVerified: false,
+        genero: this.genero.value,
+        fNacimiento: this.fNacimiento.value,
+        movil: this.movil.value,
         devices: [this.utilsSvc.getFromLocalStorage("currentDevice")],
       };
 
@@ -234,6 +243,9 @@ export class SignUpPage implements OnInit, OnDestroy {
     this.fullName.reset();
     this.docType.reset();
     this.docNumber.reset();
+    this.genero.reset();
+    this.fNacimiento.reset();
+    this.movil.reset();
   }
 
   /**
@@ -256,7 +268,15 @@ export class SignUpPage implements OnInit, OnDestroy {
     if (this.docNumber.invalid) {
       return false;
     }
-
+    if (this.genero.invalid) {
+      return false;
+    }
+    if (this.fNacimiento.invalid) {
+      return false;
+    }
+    if (this.movil.invalid) {
+      return false;
+    }
     return true;
   }
 

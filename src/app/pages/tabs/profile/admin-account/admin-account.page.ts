@@ -1,11 +1,10 @@
 import { Component, OnInit } from "@angular/core";
-import { FormControl, Validators } from "@angular/forms";
+import { FormControl } from "@angular/forms";
 import { ModalController } from "@ionic/angular";
 import { User } from "src/app/models/user.model";
 import { FirebaseService } from "src/app/services/firebase.service";
 import { UtilsService } from "src/app/services/utils.service";
 import { docTypes } from "src/assets/data/document-types";
-import { UpdatePasswordComponent } from "./owner/components/update-password/update-password.component";
 
 @Component({
   selector: "app-admin-account",
@@ -13,16 +12,12 @@ import { UpdatePasswordComponent } from "./owner/components/update-password/upda
   styleUrls: ["./admin-account.page.scss"],
 })
 export class AdminAccountPage implements OnInit {
-  fullName = new FormControl("", [
-    Validators.required,
-    Validators.minLength(4),
-  ]);
-  email = new FormControl("", [Validators.required, Validators.email]);
-  docType = new FormControl("", [Validators.required]);
-  docNumber = new FormControl("", [
-    Validators.required,
-    Validators.minLength(6),
-  ]);
+  fullName = new FormControl("", []);
+  email = new FormControl("", []);
+  movil = new FormControl("", []);
+  fNacimiento = new FormControl("", []);
+  docType = new FormControl("", []);
+  docNumber = new FormControl("", []);
 
   docTypes = [];
 
@@ -54,11 +49,23 @@ export class AdminAccountPage implements OnInit {
     this.email.disable();
     this.fullName.setValue(this.user.fullName);
     this.fullName.disable();
+    /**
+     * @todo hacer que se vea el content y no el value.
+     */
     this.docType.setValue(this.user.docType);
     this.docType.disable();
     this.docNumber.setValue(this.user.docNumber);
     this.docNumber.disable();
+    this.movil.setValue(this.user.movil);
+    this.movil.disable();
+    /**
+     * @todo hacer que la fecha de nacimiento se pueda ver. Hay un conflicto con los tipos de datos.
+     */
+    // this.fNacimiento.setValue(this.user.fNacimiento);
+    this.fNacimiento.disable();
   }
+
+  updatePassword() {}
 
   /**
    * If the form field are invalid, return false. Otherwise, return true
@@ -75,6 +82,12 @@ export class AdminAccountPage implements OnInit {
       return false;
     }
     if (this.docNumber.invalid) {
+      return false;
+    }
+    if (this.movil.invalid) {
+      return false;
+    }
+    if (this.fNacimiento.invalid) {
       return false;
     }
 

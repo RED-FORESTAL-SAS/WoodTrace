@@ -1,33 +1,35 @@
 .wrapper {
-    height: 90vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.p-logo{
-    padding-bottom: 40px;
+.p-logo {
+  padding-bottom: 40px;
 }
 
 .header {
-    text-align: center;
+  text-align: center;
 }
 
-.form{
-    padding-top: 10px;
-    width: 320px;
+.form {
+  text-align: center;
+  padding: 20px;
 }
 
-.btn-loading{
-    width: 150px;
+.btn-loading {
+  width: 150px;
 }
 
-.footer{
-    padding-top: 60px;
-    text-align: center;
+.footer {
+  padding-top: 60px;
+  text-align: center;
 
-    ion-text{
-        padding-top: 20px;
-    }
+  ion-text {
+    padding-top: 20px;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 19px;
+  }
 }
-
