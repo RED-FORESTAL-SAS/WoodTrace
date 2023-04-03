@@ -1,23 +1,19 @@
 <ion-content>
-  <div class="gradient-border">
+  <div>
     <div class="wrapper">
       <app-header closeModal="true"></app-header>
 
       <div class="ion-padding ion-text-center">
-        <h2 *ngIf="info.title">{{info.title}}</h2>
-        <div *ngIf="info.content">{{info.content}}</div>
+        <h2 *ngIf="info.title">{{ info.title }}</h2>
+        <div *ngIf="info.content">{{ info.content }}</div>
       </div>
-
 
       <!-- Confirm Button -->
       <div class="btn-gradient">
         <ion-button (click)="confirm()" mode="ios">
-          <span>{{info.btnText ? info.btnText : 'Confirmar'}}</span>
+          <span>{{ info.btnText ? info.btnText : "Confirmar" }}</span>
         </ion-button>
       </div>
-
-
     </div>
   </div>
-
 </ion-content>

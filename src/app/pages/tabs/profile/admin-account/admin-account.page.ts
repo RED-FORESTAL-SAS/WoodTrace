@@ -5,6 +5,7 @@ import { User } from "src/app/models/user.model";
 import { FirebaseService } from "src/app/services/firebase.service";
 import { UtilsService } from "src/app/services/utils.service";
 import { docTypes } from "src/assets/data/document-types";
+import { UpdatePasswordComponent } from "./owner/components/update-password/update-password.component";
 
 @Component({
   selector: "app-admin-account",
@@ -49,23 +50,24 @@ export class AdminAccountPage implements OnInit {
     this.email.disable();
     this.fullName.setValue(this.user.fullName);
     this.fullName.disable();
-    /**
-     * @todo hacer que se vea el content y no el value.
-     */
     this.docType.setValue(this.user.docType);
     this.docType.disable();
     this.docNumber.setValue(this.user.docNumber);
     this.docNumber.disable();
     this.movil.setValue(this.user.movil);
     this.movil.disable();
-    /**
-     * @todo hacer que la fecha de nacimiento se pueda ver. Hay un conflicto con los tipos de datos.
-     */
-    // this.fNacimiento.setValue(this.user.fNacimiento);
+    this.fNacimiento.setValue(this.user.fNacimiento);
     this.fNacimiento.disable();
   }
 
-  updatePassword() {}
+  async updatePassword() {
+    const modal = await this.modalController.create({
+      component: UpdatePasswordComponent,
+      cssClass: "modal-fink-app",
+    });
+
+    await modal.present();
+  }
 
   /**
    * If the form field are invalid, return false. Otherwise, return true

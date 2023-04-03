@@ -1,102 +1,66 @@
-<app-header backButton="/tabs/profile/admin-account" title="Empresa"></app-header>
+<app-header
+  backButton="/tabs/profile/admin-account"
+  title="Empresa"
+></app-header>
 <ion-content>
-    <div class="form">
+  <div class="form">
+    <!-- Photo -->
+    <div class="ion-text-center ion-padding-bottom">
+      <ion-spinner
+        *ngIf="loadingPhoto"
+        class="photo-spinner"
+        color="secondary"
+      ></ion-spinner>
 
+      <ion-icon
+        *ngIf="!photo.value && !loadingPhoto"
+        class="default-photo"
+        name="person-circle-outline"
+      >
+      </ion-icon>
 
-        <!-- Photo -->
-        <div class="ion-text-center ion-padding-bottom">
-
-            <ion-spinner *ngIf="loadingPhoto" class="photo-spinner" color="secondary"></ion-spinner>
-
-            <ion-icon *ngIf="!photo.value && !loadingPhoto" class="default-photo" name="person-circle-outline">
-            </ion-icon>
-
-            <ion-avatar class="photo" *ngIf="photo.value && !loadingPhoto">
-                <img [src]="photo.value" />
-            </ion-avatar>
-
-            <div style="padding-top: 0;" class="btn-gradient">
-                <ion-button (click)="uploadPhoto()" size="small" mode="ios">
-                    <span>Tomar/Seleccionar</span>
-                </ion-button>
-            </div>
-        </div>
-
-
-
-        <!-- Nombre de la empresa  -->
-        <app-input-gradient max="50" label="Nombre de la empresa" type="text" [formControlValue]="companyName">
-        </app-input-gradient>
-        <div class="validators" *ngIf="companyName.dirty && companyName.errors">
-            <span *ngIf="companyName.errors?.['required']">Ingresa el nombre de la empresa</span>
-            <span *ngIf="companyName.errors?.['minlength']">El nombre debe contener mínimo 4 caracteres</span>
-        </div>
-
-        <!-- Dirección de la empresa  -->
-        <app-input-gradient max="50" label="Dirección de la empresa" type="text" [formControlValue]="companyAddress">
-        </app-input-gradient>
-        <div class="validators" *ngIf="companyAddress.dirty && companyAddress.errors">
-            <span *ngIf="companyAddress.errors?.['required']">Ingresa la dirección de la empresa</span>
-            <span *ngIf="companyAddress.errors?.['minlength']">Ingresa una dirección válida</span>
-        </div>
-
-        <!-- País  -->
-        <app-input-gradient label="País" type="text" [formControlValue]="country"></app-input-gradient>
-
-        <div class="validators" *ngIf="country.touched && country.errors">
-            <span *ngIf="country.errors?.['required']">Selecciona el país donde está ubicada la empresa</span>
-        </div>
-
-        <!-- Departamento  -->
-        <app-input-gradient (ionChange)="getTowns()"  [selectOptions]="departments" label="Departamento" type="select"
-            [formControlValue]="department"></app-input-gradient>
-        <div class="validators" *ngIf="department.touched && department.errors">
-            <span *ngIf="department.errors?.['required']">Selecciona el departamento donde está ubicada la
-                empresa</span>
-        </div>
-
-        <!-- Municipio  -->
-        <div *ngIf="department.value">
-            <app-input-gradient [selectOptions]="towns" label="Municipio" type="select" [formControlValue]="town">
-            </app-input-gradient>
-            <div class="validators" *ngIf="town.touched && town.errors">
-                <span *ngIf="town.errors?.['required']">Selecciona el municipio donde está ubicada la empresa</span>
-            </div>
-        </div>
-
-
-
-        <!-- Nit  -->
-        <app-input-gradient max="10" label="Nit" type="tel" [formControlValue]="nit">
-        </app-input-gradient>
-        <div class="validators" *ngIf="nit.dirty && nit.errors">
-            <span *ngIf="nit.errors?.['required']">Ingresa el número del Nit</span>
-            <span *ngIf="nit.errors?.['minlength']">El número del documento debe contener al menos 7 caracteres</span>
-        </div>
-
-        <!-- Añadir Ubicación -->
-        <div *ngIf="longitude && latitude" class="animate__animated animate__fadeIn label">Ubicación</div>
-        <app-input-gradient (click)="getCurrentPosition()" icon="location-outline"
-            label="{{longitude && latitude ? latitude+', '+longitude : 'Añadir Ubicación'}}" type="button">
-        </app-input-gradient>
-
-
-        <!-- Button -->
-        <div *ngIf="!loading && !loadingPhoto" class="btn-gradient">
-            <ion-button (click)="updateUser()" [disabled]="!validator()" mode="ios">
-                <span>Actualizar</span>
-            </ion-button>
-        </div>
-
-        <!-- Button Loading-->
-        <div *ngIf="loading" class="btn-gradient">
-            <ion-button class="btn-loading" disabled mode="ios">
-                <span>
-                    <ion-spinner slot="end" color="dark"></ion-spinner>
-                </span>
-            </ion-button>
-        </div>
-
-
+      <ion-avatar class="photo" *ngIf="photo.value && !loadingPhoto">
+        <img [src]="photo.value" />
+      </ion-avatar>
     </div>
+    <ion-list>
+      <ion-item>
+        <ion-label position="stacked">Nombre de la empresa</ion-label>
+        <ion-input>{{ companyName.value }}</ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">NIT</ion-label>
+        <ion-input>{{ nit.value }}</ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Dirección</ion-label>
+        <ion-input>{{ companyAddress.value }}</ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">País</ion-label>
+        <ion-input>{{ country.value | date:'dd/MM/yyyy' }}</ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Departamento</ion-label>
+        <ion-input>{{ department.value }}</ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Ciudad</ion-label>
+        <ion-input>{{ town.value }}</ion-input>
+      </ion-item>
+    </ion-list>
+
+    <!-- Button Loading-->
+    <div *ngIf="loading" class="btn-gradient">
+      <ion-button class="btn-loading" disabled mode="ios">
+        <span>
+          <ion-spinner slot="end" color="dark"></ion-spinner>
+        </span>
+      </ion-button>
+    </div>
+  </div>
 </ion-content>

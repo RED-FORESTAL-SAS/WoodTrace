@@ -1,18 +1,23 @@
-.form{
-    padding: 20px 20px 0px 20px;
+.form {
+  padding: 20px 20px 0px 20px;
 }
 
-.photo-spinner{
-    border: 2px solid var(--ion-color-primary);
-    border-radius: 100%;
-    padding: 55px;
+.photo-spinner {
+  border: 2px solid var(--ion-color-primary);
+  border-radius: 100%;
+  padding: 55px;
 }
 
 .label {
-    font-size: 13px;
-    padding-bottom: 5px;
+  font-size: 13px;
+  padding-bottom: 5px;
 }
 
-.btn-loading{
-    width: 130px;
+.btn-loading {
+  width: 130px;
+}
+
+ion-item {
+  --border-width: 0 0 2px 0;
+  --border-color: var(--ion-color-secondary);
 }

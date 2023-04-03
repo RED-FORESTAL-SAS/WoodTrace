@@ -1,31 +1,45 @@
-<app-header title="Análisis"></app-header>
+<!-- <app-header title="Analizar"></app-header> -->
 
 <ion-content>
+  <div class="wrapper">
+    <div>
+      <div class="user-info row">
+        <ion-grid>
+          <ion-row size="auto">
+            <ion-col style="vertical-align: bottom">
+              <h4>Analizar</h4>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
+      <div class="btn-container">
+        <ion-grid>
+          <ion-row class="btn" (click)="continueAnalysis()">
+            <ion-col align-items-center class="bg-icon-btn" size="2">
+              <ion-icon class="icon-btn" name="create-outline"></ion-icon>
+            </ion-col>
 
-    <div class="wrapper">
-        <div>
-
-            <!-- Nuevo análisis -->
-            <div class="ion-padding-bottom">
-                <ion-card (click)="confirmNewAnalysisOverContinue()">
-                    <div>
-                        <ion-icon src="assets/icon/icon-analisis.svg"></ion-icon>
-                        <h2 class="ion-no-margin">Nuevo Análisis</h2>
-                    </div>
-                </ion-card>
-            </div>
-
-             <!-- Continuar análisis -->
-             <div class="ion-padding-bottom">
-                <ion-card (click)="continueAnalysis()">
-                    <div>
-                        <ion-icon src="assets/icon/icon-reportes.svg"></ion-icon>
-                        <h2 class="ion-no-margin">Continuar Análisis</h2>
-                    </div>
-                </ion-card>
-            </div>
-
-        </div>
+            <ion-col align-items-start class="label-btn">
+              Administrar cuenta
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <div>
+                <ion-icon src="assets/icon/icon-analisis.svg"></ion-icon>
+              </div>
+              <div class="btn-gradient">
+                <ion-button
+                  (click)="confirmNewAnalysisOverContinue()"
+                  mode="ios"
+                >
+                  <span>Actualizar</span>
+                </ion-button>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
     </div>
-
+  </div>
 </ion-content>

@@ -17,7 +17,7 @@ export interface User {
   docType?: string;
   docNumber?: string;
   genero?: string;
-  fNacimiento?: Timestamp | null;
+  fNacimiento?: string;
   movil?: string;
   license?: License;
 

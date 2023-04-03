@@ -22,7 +22,9 @@
 }
 
 ion-item {
-  font-size: 13px;
+  //font-size: 13px;
+  --border-width: 0 0 2px 0;
+  --border-color: var(--ion-color-secondary);
 }
 
 .date {

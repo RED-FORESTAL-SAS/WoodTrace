@@ -9,22 +9,11 @@
   padding: 20px 20px 0px 20px;
 }
 
-// .photo-spinner {
-//   border: 2px solid var(--ion-color-primary);
-//   border-radius: 100%;
-//   padding: 55px;
-// }
-
-// .btn-loading {
-//   width: 130px;
-// }
-
-// .change-password {
-//   text-align: center;
-//   padding-top: 40px;
-//   color: var(--ion-color-primary);
-//   text-decoration: underline;
-// }
+.photo-spinner {
+  border: 2px solid var(--ion-color-primary);
+  border-radius: 100%;
+  padding: 55px;
+}
 
 .btn-container {
   padding: 30px 20px 30px 20px;
@@ -54,4 +43,9 @@
 
 .label-btn {
   padding: 9px 15px;
+}
+
+ion-item {
+  --border-width: 0 0 2px 0;
+  --border-color: var(--ion-color-secondary);
 }

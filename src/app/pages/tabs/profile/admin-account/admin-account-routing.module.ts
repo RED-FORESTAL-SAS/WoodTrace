@@ -9,12 +9,6 @@ const routes: Routes = [
     component: AdminAccountPage,
   },
   {
-    path: "owner",
-    loadChildren: () =>
-      import("./owner/owner.module").then((m) => m.OwnerPageModule),
-  },
-
-  {
     path: "membership",
     loadChildren: () =>
       import("../membership/membership.module").then(
@@ -22,12 +16,17 @@ const routes: Routes = [
       ),
   },
   {
-    path: "reset-password",
+    path: "owner",
     loadChildren: () =>
-      import("../../../auth/reset-password/reset-password.module").then(
-        (m) => m.ResetPasswordPageModule
-      ),
+      import("./owner/owner.module").then((m) => m.OwnerPageModule),
   },
+  // {
+  //   path: "update-password",
+  //   loadChildren: () =>
+  //     import("../../../auth/reset-password/reset-password.module").then(
+  //       (m) => m.ResetPasswordPageModule
+  //     ),
+  // },
   // {
   //   path: 'company',
   //   loadChildren: () => import('./company/company.module').then( m => m.CompanyPageModule)

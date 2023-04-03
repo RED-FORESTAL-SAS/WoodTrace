@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## [MARIO/RED-10-AUTH] - 2023-0-03
+
+- global.scss: ajustar estilos del popup.
+- Agregar iconos de WoodTraver.
+- Cambiar textos del email verifications en la autenticación.
+- Ajustar estilos de demás páginas y los routing.
+- Ajustar estilos del header y del nav-bar.
+- Agregar componentes faltantes del help.
+- Cambiar el icono de la app.
+
 ## [MARIO/RED-10-AUTH] - 2023-03-21
 
 - Crear componente Change-password.

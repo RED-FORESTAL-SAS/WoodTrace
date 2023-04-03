@@ -1,24 +1,23 @@
-<app-header (click)="logOut()" backButton="/login" title="Verificar Email"></app-header>
+<app-header
+  (click)="logOut()"
+  backButton="/login"
+  title="Verificar Email"
+></app-header>
 
 <ion-content>
-
   <div class="wrapper ion-text-center">
-    <div>
-      <h4 class="ion-text-center ion-padding">Te hemos enviado un correo a <strong>{{user.email}} </strong> con un
-        enlace para poder verificarlo</h4>
-       <h6>El correo podría haber llegado en la bandeja de Spam o No deseados</h6>
-        <!-- Cerrar sesión -->
-   
-      <div class="btn-gradient">
-        <ion-button (click)="logOut()"  mode="ios">
-          <span>Volver</span>
-        </ion-button>
-      </div>
-
+    <div class="row">
+      <h1>Se ha enviado un correo de confirmación</h1>
+      <h6>
+        Por favor revisa en la bandeja de spam en caso de no recibir el correo
+      </h6>
+      <!-- <h6>El correo podría haber llegado en la bandeja de Spam o No deseados</h6> -->
+      <!-- Cerrar sesión -->
     </div>
-
+    <div class="btn-gradient">
+      <ion-button (click)="logOut()" mode="ios">
+        <span>Aceptar</span>
+      </ion-button>
+    </div>
   </div>
-
-
-
 </ion-content>

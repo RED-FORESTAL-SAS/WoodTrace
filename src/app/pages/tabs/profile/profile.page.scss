@@ -15,11 +15,12 @@
   background: var(--ion-color-primary);
   border-radius: 0px 0px 100px 100px;
   text-align: center;
-  padding-top: 80px;
+  padding-top: 70px;
   margin-bottom: 50px;
 
   .name {
-    padding-top: 10px;
+    display: inline-block;
+    vertical-align: top;
   }
 
   .active {
@@ -49,14 +50,27 @@
   height: 40px;
   background-color: var(--ion-color-secondary);
   border-radius: 25px;
-  padding: 10px 17px;
+  padding-left: 12px;
 }
 
 .icon-btn {
-  color: #fff;
-  font-size: 20px;
+  //color: #fff;
+  font-size: 30px;
 }
 
 .label-btn {
   padding: 9px 15px;
+}
+
+.change-photo {
+  display: inline-block;
+  vertical-align: top;
+  position: relative;
+  font-size: 13px;
+  color: var(--ion-color-secondary);
+}
+
+.content {
+  border-radius: 50px;
+  border-color: var(--ion-color-secondary);
 }

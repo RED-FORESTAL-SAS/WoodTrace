@@ -20,7 +20,7 @@
 
       <ion-item>
         <ion-label position="stacked">Fecha de nacimiento</ion-label>
-        <ion-input>{{ fNacimiento.value }}</ion-input>
+        <ion-input>{{ fNacimiento.value | date:'dd/MM/yyyy' }}</ion-input>
       </ion-item>
 
       <ion-item>
@@ -32,84 +32,6 @@
         <ion-input>{{ docNumber.value }}</ion-input>
       </ion-item>
     </ion-list>
-    <!-- Nombre completo  -->
-    <!-- <app-input-gradient
-      max="50"
-      label="Nombre Completo"
-      type="text"
-      [formControlValue]="fullName"
-    >
-    </app-input-gradient>
-    <div class="validators" *ngIf="fullName.dirty && fullName.errors">
-      <span *ngIf="fullName.errors?.['required']"
-        >Ingresa tu nombre completo</span
-      >
-      <span *ngIf="fullName.errors?.['minlength']"
-        >El nombre debe contener mínimo 4 caracteres</span
-      >
-    </div> -->
-
-    <!-- Email  -->
-    <!-- <app-input-gradient
-      max="50"
-      label="Correo Electrónico"
-      type="email"
-      [formControlValue]="email"
-    >
-    </app-input-gradient>
-    <div class="validators" *ngIf="email.dirty && email.errors">
-      <span *ngIf="email.errors?.['required']">Ingresa tu email</span>
-      <span *ngIf="email.errors?.['email']">Ingresa un email válido</span>
-    </div> -->
-
-    <!-- Tipo de documento  -->
-    <!-- <app-input-gradient
-      [selectOptions]="docTypes"
-      label="Tipo de documento"
-      type="select"
-      [formControlValue]="docType"
-    ></app-input-gradient>
-    <div class="validators" *ngIf="docType.touched && docType.errors">
-      <span *ngIf="docType.errors?.['required']"
-        >Selecciona el tipo de documento de identidad</span
-      >
-    </div> -->
-
-    <!-- Número de documento  -->
-    <!-- <app-input-gradient
-      max="15"
-      min="6"
-      label="No. de documento"
-      type="tel"
-      [formControlValue]="docNumber"
-    >
-    </app-input-gradient>
-    <div class="validators" *ngIf="docNumber.dirty && docNumber.errors">
-      <span *ngIf="docNumber.errors?.['required']"
-        >Ingresa el número del documento de identidad</span
-      >
-      <span *ngIf="docNumber.errors?.['minlength']"
-        >El número del documento debe contener mínimo 6 caracteres</span
-      >
-    </div> -->
-
-    <!-- Button -->
-    <!-- <div *ngIf="!loading && !loadingPhoto" class="btn-gradient">
-      <ion-button (click)="updateUser()" [disabled]="!validator()" mode="ios">
-        <span>Actualizar</span>
-      </ion-button>
-    </div> -->
-
-    <!-- Button Loading-->
-    <!-- <div *ngIf="loading" class="btn-gradient">
-      <ion-button class="btn-loading" disabled mode="ios">
-        <span><ion-spinner slot="end" color="dark"></ion-spinner></span>
-      </ion-button>
-    </div> -->
-
-    <!-- <div class="change-password" (click)="updatePassword()">
-      Cambiar Contraseña
-    </div> -->
   </div>
 </ion-content>
 
@@ -136,7 +58,7 @@
         <ion-icon class="icon-btn" name="help-circle-outline"></ion-icon>
       </ion-col>
 
-      <ion-col align-items-start class="label-btn">
+      <ion-col align-items-start class="label-btn" (click)="updatePassword()">
         Cambiar contraseña
       </ion-col>
     </ion-row>
