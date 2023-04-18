@@ -5,19 +5,27 @@
 ></app-header>
 
 <ion-content>
-  <div class="wrapper ion-text-center">
-    <div class="row">
-      <h1>Se ha enviado un correo de confirmación</h1>
-      <h6>
-        Por favor revisa en la bandeja de spam en caso de no recibir el correo
-      </h6>
-      <!-- <h6>El correo podría haber llegado en la bandeja de Spam o No deseados</h6> -->
-      <!-- Cerrar sesión -->
-    </div>
-    <div class="btn-gradient">
-      <ion-button (click)="logOut()" mode="ios">
-        <span>Aceptar</span>
-      </ion-button>
-    </div>
-  </div>
+  <ion-grid class="wrapper">
+    <ion-row style="height: 40vh">
+      <ion-col align-items-center>
+        <h3>Se ha enviado un correo de confirmación</h3>
+      </ion-col>
+    </ion-row>
+    <ion-row style="margin-top: 50px">
+      <ion-col align-items-center>
+        <p>
+          Por favor revisa en la bandeja de spam en caso de no recibir el correo
+        </p>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col align-items-center>
+        <div class="btn-gradient">
+          <ion-button (click)="logOut()" mode="ios">
+            <span>Aceptar</span>
+          </ion-button>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

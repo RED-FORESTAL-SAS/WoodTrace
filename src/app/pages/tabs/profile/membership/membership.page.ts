@@ -26,7 +26,7 @@ export class MembershipPage implements OnInit {
   licencia_vitalicia: boolean;
 
   // @todo solo para probar los estilos. Borrar cuando se tenga la lógica de la licencia
-  licencia: boolean = true;
+  licencia: boolean = false;
 
   constructor(
     private firebaseSvc: FirebaseService,

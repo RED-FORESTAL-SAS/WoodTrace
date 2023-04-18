@@ -84,7 +84,7 @@ export class OwnerPage implements OnInit {
     this.utilsSvc.saveLocalStorage("user", this.user);
 
     this.loading = true;
-    this.firebaseSvc.UpdateCollection("users", this.user).then(
+    this.firebaseSvc.UpdateCollection("wt_users", this.user).then(
       (res) => {
         this.utilsSvc.presentToast("Actualizado con éxito");
         this.loading = false;

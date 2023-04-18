@@ -14,7 +14,7 @@
 }
 
 .form {
-  text-align: center;
+  // text-align: center;
   padding: 20px;
 }
 
@@ -32,4 +32,8 @@
     font-size: 16px;
     line-height: 19px;
   }
+}
+
+.invalid {
+  background: var(--ion-color-warning);
 }

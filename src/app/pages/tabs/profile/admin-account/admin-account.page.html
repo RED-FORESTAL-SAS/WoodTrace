@@ -5,31 +5,38 @@
     <ion-list>
       <ion-item>
         <ion-label position="stacked">Nombre</ion-label>
-        <ion-input>{{ fullName.value }}</ion-input>
+        <ion-input [disabled]="true">{{ fullName.value }}</ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked">Email</ion-label>
-        <ion-input>{{ email.value }}</ion-input>
+        <ion-input [disabled]="true">{{ email.value }}</ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked"> Celular</ion-label>
-        <ion-input>{{ movil.value }}</ion-input>
+        <ion-input [disabled]="true">{{ movil.value }}</ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked">Fecha de nacimiento</ion-label>
-        <ion-input>{{ fNacimiento.value | date:'dd/MM/yyyy' }}</ion-input>
+        <ion-input [disabled]="true"
+          >{{ fNacimiento.value | date:'dd/MM/yyyy' }}</ion-input
+        >
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked">Tipo de documento</ion-label>
-        <ion-input>{{ docType.value }}</ion-input>
+        <!-- <ion-select>
+          <ion-select-option value="1">Apples</ion-select-option>
+          <ion-select-option value="2">Oranges</ion-select-option>
+          <ion-select-option value="3">Bananas</ion-select-option>
+        </ion-select> -->
+        <ion-input type="select">{{ docType.value }}</ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="stacked">Documento</ion-label>
-        <ion-input>{{ docNumber.value }}</ion-input>
+        <ion-input [disabled]="true">{{ docNumber.value }}</ion-input>
       </ion-item>
     </ion-list>
   </div>
@@ -39,7 +46,10 @@
   <ion-grid>
     <ion-row class="btn" routerLink="membership">
       <ion-col align-items-center class="bg-icon-btn" size="2">
-        <ion-icon class="icon-btn" name="create-outline"></ion-icon>
+        <ion-icon
+          class="icon-btn"
+          src="../../../../assets/icon/wt_Icon list=Legal.svg"
+        ></ion-icon>
       </ion-col>
 
       <ion-col align-items-start class="label-btn">
@@ -48,14 +58,20 @@
     </ion-row>
     <ion-row class="btn" routerLink="owner">
       <ion-col align-items-center class="bg-icon-btn" size="2">
-        <ion-icon class="icon-btn" name="create-outline"></ion-icon>
+        <ion-icon
+          class="icon-btn"
+          src="../../../../assets/icon/wt_Icon list=Edit.svg"
+        ></ion-icon>
       </ion-col>
 
       <ion-col align-items-start class="label-btn"> Editar perfil </ion-col>
     </ion-row>
-    <ion-row class="btn" routerLink="reset-password">
+    <ion-row class="btn">
       <ion-col align-items-center class="bg-icon-btn" size="2">
-        <ion-icon class="icon-btn" name="help-circle-outline"></ion-icon>
+        <ion-icon
+          class="icon-btn"
+          src="../../../../assets/icon/wt_Icon list=Edit.svg"
+        ></ion-icon>
       </ion-col>
 
       <ion-col align-items-start class="label-btn" (click)="updatePassword()">

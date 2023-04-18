@@ -1,6 +1,11 @@
 # CHANGELOG
 
-## [MARIO/RED-10-AUTH] - 2023-0-03
+## [MARIO/RED-10-AUTH] - 2023-04-18
+
+- Estilos email-verification, reset-password, sign-up, update-password, admin-account, help-desk, profile.
+  -Agregar interface de wt-licenses.
+
+## [MARIO/RED-10-AUTH] - 2023-04-03
 
 - global.scss: ajustar estilos del popup.
 - Agregar iconos de WoodTraver.

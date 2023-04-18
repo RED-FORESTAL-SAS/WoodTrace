@@ -17,6 +17,8 @@ export class ProfilePage implements OnInit {
 
   user = {} as User;
 
+  loading: boolean;
+
   constructor(
     private firebaseSvc: FirebaseService,
     private utilsSvc: UtilsService
@@ -27,7 +29,6 @@ export class ProfilePage implements OnInit {
   ionViewWillEnter() {
     this.user = this.utilsSvc.getCurrentUser();
     this.getUser();
-    console.log(this.user);
   }
 
   currentUser(): User {
@@ -47,7 +48,6 @@ export class ProfilePage implements OnInit {
    * database
    */
   async uploadPhoto() {
-    console.log("entró aquí");
     const image = await Camera.getPhoto({
       quality: 70,
       allowEditing: true,
@@ -62,6 +62,7 @@ export class ProfilePage implements OnInit {
 
     this.photo.setValue(image.dataUrl);
     this.loadingPhoto = false;
+    this.updateUser();
   }
 
   /**
@@ -73,7 +74,25 @@ export class ProfilePage implements OnInit {
         "wt_users/" + this.user.id + "/profile",
         this.photo.value
       );
+      console.log(this.user.photo);
     }
+
+    this.loading = true;
+    this.firebaseSvc.UpdateCollection("wt_users", this.user).then(
+      (res) => {
+        this.utilsSvc.presentToast("Actualizado con éxito");
+        this.utilsSvc.routerLink("/tabs/profile/admin-account");
+        this.loading = false;
+      },
+      (err) => {
+        console.log(err);
+
+        this.utilsSvc.presentToast(
+          "No tienes conexión actualmente los datos se subiran una vez se restablesca la conexión"
+        );
+        this.loading = false;
+      }
+    );
   }
 
   /**

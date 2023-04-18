@@ -24,7 +24,7 @@
     --border-radius: 25px;
     font-size: 16px;
     background: white;
-    color: var(--ion-color-dark);
+    color: var(--ion-color-medium);
     --placeholder-opacity: 50%;
     --min-height: 48px;
   }
@@ -35,5 +35,9 @@
     width: 60px;
     height: 40px;
     border-radius: 25px;
+  }
+
+  ion-item.invalid {
+    --border-color: var(--ion-color-warning);
   }
 }

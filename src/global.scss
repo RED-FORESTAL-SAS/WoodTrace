@@ -69,7 +69,7 @@ ion-segment-button {
 }
 
 .modal-fink-app {
-  --height: 410px;
+  --height: 510px;
   --border-radius: 25px;
   padding: 15px;
 }
@@ -131,6 +131,7 @@ span.swiper-pagination-bullet.bullet-active {
 .btn-gradient {
   text-align: center;
   padding-top: 20px;
+  padding-bottom: 20px;
 
   ion-button {
     text-transform: capitalize;
@@ -194,4 +195,8 @@ span.swiper-pagination-bullet.bullet-active {
 .tab-selected {
   background: var(--ion-color-secondary);
   border-radius: 50px;
+}
+
+.native-input.sc-ion-input-md {
+  color: var(--ion-color-medium);
 }
