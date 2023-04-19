@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## [MARIO/RED-10-AUTH-1] - 2023-04-19 - Al terminar hacer merge al MARIO/RED-10-AUTH
+
+- Configurar app y environments para usar angular/fire modular. Se conserva el angular/fire compat.
+- Agregar date.utils.
+- Mejorar failure.utils.
+- Agregar types para FieldValue, Timestamp y "query constraints".
+- Agregar/ajustar modelos y servicios para licences, reports y woods.
+- FirebaseService: Add methods collection$, fetchCollection$, doc$ y fetchDoc, usando angular/fire modular.
+- FirebaseService: Marcar deprecated las clases de angular/fire compat para cambiarlas a futuro.
+- Agregar constantes para los keys del localstorage y las colecciones de Firebase.
+
 ## [MARIO/RED-10-AUTH] - 2023-04-18
 
 - Estilos email-verification, reset-password, sign-up, update-password, admin-account, help-desk, profile.

@@ -15,17 +15,37 @@ import { getAuth, updatePassword, User as FirebaseUser } from "firebase/auth";
 import { Observable, of } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
 import { NotFoundFailure } from "../utils/failure.utils";
+import { QueryConstraint } from "../types/query-constraint.type";
+import {
+  Firestore,
+  collection,
+  collectionData,
+  doc,
+  docData,
+  getDoc,
+  getDocs,
+  limit,
+  query,
+} from "@angular/fire/firestore";
 
+/**
+ * @todo @diana Esta clase contiene dependencias a módulos de angular fire en modo compat. Esto
+ * debería de migrarse al modo modular y eliminarse la inicialización del archivo app.module.ts.
+ */
 @Injectable({
   providedIn: "root",
 })
 export class FirebaseService {
   user = {} as User;
   constructor(
+    private firestore: Firestore,
+    private router: Router,
+    /** @deprecated: Should use firebase modular imports instead. */
     private auth: AngularFireAuth,
+    /** @deprecated: Should use firebase modular imports instead. */
     private storage: AngularFireStorage,
-    private db: AngularFirestore,
-    private router: Router
+    /** @deprecated: Should use firebase modular imports instead. */
+    private db: AngularFirestore
   ) {}
 
   //=========Autenticación==========
@@ -114,7 +134,12 @@ export class FirebaseService {
    * @param field Es el campo perteneciente a un documento.
    */
 
-  /**Retorna datos de un documento por su id*/
+  /**
+   * Retorna datos de un documento por su id
+   *
+   * @deprecated No usar (evitar usar la versión compat de angular fire).
+   * Usar fetchDoc de esta misma clase.
+   */
   getDataById(collectionName: string, id: string) {
     return this.db.doc(collectionName + "/" + id);
   }
@@ -222,5 +247,112 @@ export class FirebaseService {
     localStorage.removeItem("user");
     localStorage.removeItem("analysis");
     localStorage.removeItem("reports");
+  }
+
+  /**
+   * Devuelve un Observable con una la colección de Documentos, a partir de un array de QueryConstraint.
+   *
+   * @param path El path de la colección.
+   * @param queryConstraints Un array con las cláusulas necesarias para construir el query.
+   * @param options Un objeto con la opción idField, que indica en qué campo debería de poblarse el
+   * id de cada documento. Default undefined, para no poblar ningún campo con el id.
+   */
+  public collection$<T>(
+    path: string,
+    queryConstraints: QueryConstraint[] = [limit(25)],
+    options?:
+      | {
+          idField?: string | undefined;
+        }
+      | undefined
+  ): Observable<T[]> {
+    return collectionData(
+      query(collection(this.firestore, path), ...queryConstraints),
+      options
+    ).pipe(map((r) => r as T[]));
+  }
+
+  /**
+   * Devuelve una promesa con un array de documentos, dada el path de una colección y  de un array
+   * de QueryConstraint.
+   *
+   * @param path El path de la colección.
+   * @param queryConstraints Un array con las cláusulas necesarias para construir el query.
+   * @param options Un objeto con la opción idField, que indica en qué campo debería de poblarse el
+   * id de cada documento. Default undefined, para no poblar ningún campo con el id.
+   */
+  public async fetchCollection<T>(
+    path: string,
+    queryConstraints: QueryConstraint[] = [limit(25)],
+    options?:
+      | {
+          idField?: string | undefined;
+        }
+      | undefined
+  ): Promise<T[]> {
+    return (
+      await getDocs(
+        query(collection(this.firestore, path), ...queryConstraints)
+      )
+    ).docs.map((snap) => {
+      const data = snap.data();
+      // Populate document 'idField' with snap.id, if possible.
+      if (
+        data !== undefined &&
+        options !== undefined &&
+        options.idField !== undefined
+      ) {
+        data[`${options.idField}`] = snap.id;
+      }
+      return data as T;
+    });
+  }
+
+  /**
+   * Observable con el documento de Firestore.
+   *
+   * @param path path del documento.
+   * @param options Un objeto con la opción idField, que indica en qué campo debería de poblarse el
+   * id del documento. Default undefined, para no poblar ningún campo con el id.
+   */
+  public doc$<T>(
+    path: string,
+    options?:
+      | {
+          idField?: string | undefined;
+        }
+      | undefined
+  ): Observable<T | undefined> {
+    return docData(doc(this.firestore, path), options).pipe(map((r) => r as T));
+  }
+
+  /**
+   * Devuelve una promesa con un documento, dado un ID. Si el documento no existe, devuelve
+   * undefined.
+   *
+   * @param path path del documento.
+   * @param options Un objeto con la opción idField, que indica en qué campo debería de poblarse el
+   * id del documento. Default undefined, para no poblar ningún campo con el id.
+   */
+  public async fetchDoc<T>(
+    path: string,
+    options?:
+      | {
+          idField?: string | undefined;
+        }
+      | undefined
+  ): Promise<T | undefined> {
+    return await getDoc(doc(this.firestore, path)).then((snap) => {
+      const data = snap.data();
+      // Populate document 'idField' with snap.id, if possible.
+      if (
+        data !== undefined &&
+        options !== undefined &&
+        options.idField !== undefined
+      ) {
+        data[`${options.idField}`] = snap.id;
+      }
+      return data as T;
+    });
   }
 }

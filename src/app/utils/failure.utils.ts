@@ -10,160 +10,164 @@ export class FailureUtils {
    * @returns Failure
    */
   public static errorToFailure(e: unknown): Failure {
-    let f;
+    let f: Failure;
     if (e instanceof FirebaseError || e instanceof FirestoreError) {
       const code = e.code;
       switch (code) {
         case "auth/account-exists-with-different-credential":
-          f = new AuthAccountExistsWithDifferentCredentialFailure(e.message);
+          f = new AuthAccountExistsWithDifferentCredentialFailure(
+            e.message,
+            e.code,
+            e.stack
+          );
           break;
         case "auth/credential-already-in-use":
-          f = new AuthCredentialAlreadyInUseFailure(e.message);
+          f = new AuthCredentialAlreadyInUseFailure(e.message, e.code, e.stack);
           break;
         case "auth/email-already-in-use":
-          f = new AuthEmailAlreadyInUseFailure(e.message);
+          f = new AuthEmailAlreadyInUseFailure(e.message, e.code, e.stack);
           break;
         case "auth/expired-action-code":
-          f = new AuthExpiredActionCodeFailure(e.message);
+          f = new AuthExpiredActionCodeFailure(e.message, e.code, e.stack);
           break;
         case "auth/invalid-action-code":
-          f = new AuthInvalidActionCodeFailure(e.message);
+          f = new AuthInvalidActionCodeFailure(e.message, e.code, e.stack);
           break;
         case "auth/invalid-argument":
-          f = new AuthInvalidArgumentFailure(e.message);
+          f = new AuthInvalidArgumentFailure(e.message, e.code, e.stack);
           break;
         case "auth/invalid-email":
-          f = new AuthInvalidEmailFailure(e.message);
+          f = new AuthInvalidEmailFailure(e.message, e.code, e.stack);
           break;
         case "auth/network-request-failed":
-          f = new AuthNetworkRequestFailedFailure(e.message);
+          f = new AuthNetworkRequestFailedFailure(e.message, e.code, e.stack);
           break;
         case "auth/operation-not-allowed":
-          f = new AuthOperationNotAllowedFailure(e.message);
+          f = new AuthOperationNotAllowedFailure(e.message, e.code, e.stack);
           break;
         case "auth/popup-closed-by-user":
-          f = new AuthPopupClosedByUserFailure(e.message);
+          f = new AuthPopupClosedByUserFailure(e.message, e.code, e.stack);
           break;
         case "auth/timeout":
-          f = new AuthTimeoutFailure(e.message);
+          f = new AuthTimeoutFailure(e.message, e.code, e.stack);
           break;
         case "auth/too-many-requests":
-          f = new AuthTooManyRequestsFailure(e.message);
+          f = new AuthTooManyRequestsFailure(e.message, e.code, e.stack);
           break;
         case "auth/user-disabled":
-          f = new AuthUserDisabledFailure(e.message);
+          f = new AuthUserDisabledFailure(e.message, e.code, e.stack);
           break;
         case "auth/user-not-found":
-          f = new AuthUserNotFoundFailure(e.message);
+          f = new AuthUserNotFoundFailure(e.message, e.code, e.stack);
           break;
         case "auth/weak-password":
-          f = new AuthWeakPasswordFailure(e.message);
+          f = new AuthWeakPasswordFailure(e.message, e.code, e.stack);
           break;
         case "auth/web-storage-unsupported":
-          f = new AuthWebStorageUnsupportedFailure(e.message);
+          f = new AuthWebStorageUnsupportedFailure(e.message, e.code, e.stack);
           break;
         case "auth/wrong-password":
-          f = new AuthWrongPasswordFailure(e.message);
+          f = new AuthWrongPasswordFailure(e.message, e.code, e.stack);
           break;
         case "aborted":
-          f = new AbortedFailure(e.message);
+          f = new AbortedFailure(e.message, e.code, e.stack);
           break;
         case "already-exists":
-          f = new AlreadyExistsFailure(e.message);
+          f = new AlreadyExistsFailure(e.message, e.code, e.stack);
           break;
         case "cancelled":
-          f = new CancelledFailure(e.message);
+          f = new CancelledFailure(e.message, e.code, e.stack);
           break;
         case "data-loss":
-          f = new DataLossFailure(e.message);
+          f = new DataLossFailure(e.message, e.code, e.stack);
           break;
         case "deadline-exceeded":
-          f = new DeadlineExceededFailure(e.message);
+          f = new DeadlineExceededFailure(e.message, e.code, e.stack);
           break;
         case "failed-precondition":
-          f = new FailedPreconditionFailure(e.message);
+          f = new FailedPreconditionFailure(e.message, e.code, e.stack);
           break;
         case "internal":
-          f = new InternalFailure(e.message);
+          f = new InternalFailure(e.message, e.code, e.stack);
           break;
         case "invalid-argument":
-          f = new InvalidArgumentFailure(e.message);
+          f = new InvalidArgumentFailure(e.message, e.code, e.stack);
           break;
         case "no-network":
-          f = new NoNetworkFailure(e.message);
+          f = new NoNetworkFailure(e.message, e.code, e.stack);
           break;
         case "not-found":
-          f = new NotFoundFailure(e.message);
+          f = new NotFoundFailure(e.message, e.code, e.stack);
           break;
         case "out-of-range":
-          f = new OutOfRangeFailure(e.message);
+          f = new OutOfRangeFailure(e.message, e.code, e.stack);
           break;
         case "permission-denied":
-          f = new PermissionDeniedFailure(e.message);
+          f = new PermissionDeniedFailure(e.message, e.code, e.stack);
           break;
         case "resource-exhausted":
-          f = new ResourceExhaustedFailure(e.message);
+          f = new ResourceExhaustedFailure(e.message, e.code, e.stack);
           break;
         case "unauthenticated":
-          f = new UnauthenticatedFailure(e.message);
+          f = new UnauthenticatedFailure(e.message, e.code, e.stack);
           break;
         case "unavailable":
-          f = new UnavailableFailure(e.message);
+          f = new UnavailableFailure(e.message, e.code, e.stack);
           break;
         case "unimplemented":
-          f = new UnimplementedFailure(e.message);
+          f = new UnimplementedFailure(e.message, e.code, e.stack);
           break;
         case "storage/unknown":
-          f = new StorageUnknownFailure(e.message);
+          f = new StorageUnknownFailure(e.message, e.code, e.stack);
           break;
         case "storage/object-not-found":
-          f = new StorageObjectNotFoundFailure(e.message);
+          f = new StorageObjectNotFoundFailure(e.message, e.code, e.stack);
           break;
         case "storage/bucket-not-found":
-          f = new StorageBucketNotFoundFailure(e.message);
+          f = new StorageBucketNotFoundFailure(e.message, e.code, e.stack);
           break;
         case "storage/project-not-found":
-          f = new StorageProjectNotFoundFailure(e.message);
+          f = new StorageProjectNotFoundFailure(e.message, e.code, e.stack);
           break;
         case "storage/quota-exceeded":
-          f = new StorageQuotaExceededFailure(e.message);
+          f = new StorageQuotaExceededFailure(e.message, e.code, e.stack);
           break;
         case "storage/unauthenticated":
-          f = new StorageUnauthenticatedFailure(e.message);
+          f = new StorageUnauthenticatedFailure(e.message, e.code, e.stack);
           break;
         case "storage/unauthorized":
-          f = new StorageUnauthorizedFailure(e.message);
+          f = new StorageUnauthorizedFailure(e.message, e.code, e.stack);
           break;
         case "storage/retry-limit-exceeded":
-          f = new StorageRetryLimitExceededFailure(e.message);
+          f = new StorageRetryLimitExceededFailure(e.message, e.code, e.stack);
           break;
         case "storage/invalid-checksum":
-          f = new StorageInvalidChecksumFailure(e.message);
+          f = new StorageInvalidChecksumFailure(e.message, e.code, e.stack);
           break;
         case "storage/canceled":
-          f = new StorageCanceledFailure(e.message);
+          f = new StorageCanceledFailure(e.message, e.code, e.stack);
           break;
         case "storage/invalid-event-name":
-          f = new StorageInvalidEventNameFailure(e.message);
+          f = new StorageInvalidEventNameFailure(e.message, e.code, e.stack);
           break;
         case "storage/invalid-url":
-          f = new StorageInvalidUrlFailure(e.message);
+          f = new StorageInvalidUrlFailure(e.message, e.code, e.stack);
           break;
         case "storage/invalid-argument":
-          f = new StorageInvalidArgumentFailure(e.message);
+          f = new StorageInvalidArgumentFailure(e.message, e.code, e.stack);
           break;
         case "storage/no-default-bucket":
-          f = new StorageNoDefaultBucketFailure(e.message);
+          f = new StorageNoDefaultBucketFailure(e.message, e.code, e.stack);
           break;
         case "storage/cannot-slice-blob":
-          f = new StorageCannotSliceBlobFailure(e.message);
+          f = new StorageCannotSliceBlobFailure(e.message, e.code, e.stack);
           break;
         case "storage/server-file-wrong-size":
-          f = new StorageServerFileWrongSizeFailure(e.message);
+          f = new StorageServerFileWrongSizeFailure(e.message, e.code, e.stack);
           break;
         case "unknown":
         default:
-          f = new UnknownFailure(e.message);
+          f = new UnknownFailure(e.message, "unknown", e.stack);
           break;
       }
       // Just rethrow same Failure.
@@ -173,13 +177,13 @@ export class FailureUtils {
       const message = e.message;
       switch (message) {
         case "no-network":
-          f = new NoNetworkFailure(e.message);
+          f = new NoNetworkFailure(e.message, "not-network", e.stack);
           break;
         case "not-found":
-          f = new NotFoundFailure(e.message);
+          f = new NotFoundFailure(e.message, "not-found", e.stack);
           break;
         default:
-          f = new UnknownFailure(e.message);
+          f = new UnknownFailure(e.message, "unknown", e.stack);
           break;
       }
     } else {
@@ -219,10 +223,17 @@ export class FailureUtils {
  */
 export class Failure extends Error {
   public code = "";
-  constructor(message: string, code: string | null = null) {
+  constructor(
+    message: string,
+    code: string | null = null,
+    stack?: string | undefined
+  ) {
     super(message);
     if (code) {
       this.code = code;
+    }
+    if (stack) {
+      this.stack = stack;
     }
     Object.setPrototypeOf(this, new.target.prototype);
   }
