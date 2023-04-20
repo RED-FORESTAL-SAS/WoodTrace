@@ -1,5 +1,4 @@
 import { Component, OnInit } from "@angular/core";
-import { User } from "src/app/models/user.model";
 import { UtilsService } from "src/app/services/utils.service";
 import {
   LicenseFailure,
@@ -14,7 +13,10 @@ import { ReportService } from "src/app/services/report.service";
   styleUrls: ["./analysis.page.scss"],
 })
 export class AnalysisPage implements OnInit {
-  user = {} as User;
+  /**
+   * Flag to enable/disable the buttons, depending on licence state.
+   */
+  public licenseActive: boolean = false;
 
   constructor(
     private utilsSvc: UtilsService,
@@ -23,22 +25,42 @@ export class AnalysisPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    /**
-     * @todo: @diana Esto es un mock que carga la licencia, para que esté disponible para su uso
-     * fuera de línea. Quitar esto cuando se implemente la carga de la licencia en la redemción y en el
-     * login.
-     *
-     * @todo: @diana Eliminar este ngOnInit, a lo que se quite el mock.
-     */
-    this.licenseService
-      .retrieveActiveLicense()
-      .then((license) => {
-        console.log(this.licenseService.fetchFromLocalStorage());
-      })
-      .catch((e) => {
-        console.log("👨‍🔧 Error al intentar recuperar la licencia.");
-        console.log(e);
-      });
+    this.checkLicense();
+  }
+
+  /**
+   * Checks if there is an active license for the current user and disables/enables the buttons.
+   */
+  async checkLicense(): Promise<void> {
+    try {
+      await this.licenseService.retrieveActiveLicense();
+      this.licenseActive = true;
+    } catch (e) {
+      if (e instanceof LicenseFailure) {
+        this.utilsSvc.presentFinkAlert({
+          title: "No hay Licencia activa",
+          content:
+            "Para realizar un análisis debes tener una licencia activa. Podrás encontrar más información sobre la licencia en tu perfil.",
+          btnText: "Aceptar",
+          route: "tabs/profile/membership",
+        });
+      } else if (e instanceof NoNetworkFailure) {
+        this.utilsSvc.presentFinkAlert({
+          title: "Sin acceso a internet",
+          content:
+            "Parece que no tienes conexión a internet. Por favor intenta de nuevo.",
+          btnText: "Aceptar",
+        });
+      } else {
+        this.utilsSvc.presentFinkAlert({
+          title: "Error",
+          content:
+            "Ha ocurrido un error al intentar validar la licencia. Intenta de nuevo.",
+          btnText: "Aceptar",
+        });
+      }
+      this.licenseActive = false;
+    }
   }
 
   /**

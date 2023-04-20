@@ -27,7 +27,7 @@ export interface WtWood {
    * Path local donde está almacenada la imagen. Permite conservar el reporte local para cuando no
    * haya conexión y borrar el archivo cuando se purgue el reporte de la colección "wt_reportes".
    */
-  localPathXls: string;
+  localPath: string;
   /** Path de Firestorage donde está almacenada la imagen. */
   path: string;
   /** URL de descarga de Firestorage, para la fotografía. */
@@ -62,7 +62,7 @@ export interface WtWood {
  */
 export interface LocalStorageWtWood {
   localId: string;
-  localPathXls: string;
+  localPath: string;
   path: string;
   url: string;
   especieDeclarada: string;
@@ -81,7 +81,7 @@ export interface LocalStorageWtWood {
 
 export const NEW_WT_WOOD: WtWood = {
   localId: new Date().getTime().toString(),
-  localPathXls: "",
+  localPath: "",
   path: "",
   url: "",
   especieDeclarada: "",

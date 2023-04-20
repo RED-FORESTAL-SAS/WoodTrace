@@ -32,8 +32,9 @@
               </div>
               <div class="btn-gradient">
                 <ion-button
-                  (click)="confirmNewReportBeforeContinue()"
                   mode="ios"
+                  [disabled]="!licenseActive"
+                  (click)="confirmNewReportBeforeContinue()"
                 >
                   <span>Nuevo análisis</span>
                 </ion-button>

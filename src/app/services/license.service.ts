@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import { FirebaseService } from "./firebase.service";
-import { UtilsService } from "./utils.service";
 import { LocaStorageWtLicense, WtLicense } from "../models/wt-license";
 import { LICENCES_FB_COLLECTION } from "../constants/licenses-fb-collection";
 import { limit, orderBy, where } from "../types/query-constraint.type";
@@ -8,6 +7,7 @@ import { ACTIVE_LICENSE_LS_KEY } from "../constants/active-license-ls-key.consta
 import { Failure, FailureUtils } from "../utils/failure.utils";
 import { Timestamp } from "../types/timestamp.type";
 import { LocalStorageRepository } from "../infrastructure/local-storage.repository";
+import { UserService } from "./user.service";
 
 /** Failure for License Domain. */
 export class LicenseFailure extends Failure {}
@@ -18,8 +18,8 @@ export class LicenseFailure extends Failure {}
 export class LicenseService {
   constructor(
     private firebase: FirebaseService,
-    private utils: UtilsService,
-    private localStorage: LocalStorageRepository
+    private localStorage: LocalStorageRepository,
+    private userService: UserService
   ) {}
 
   /**
@@ -43,10 +43,9 @@ export class LicenseService {
     }
 
     // Otherwise, query the database for an active license.
-    const user = this.utils.getCurrentUser();
     return this.firebase
       .fetchCollection<WtLicense>(LICENCES_FB_COLLECTION, [
-        where("wtUserId", "==", user.id),
+        where("wtUserId", "==", this.userService.currentUser.id),
         where("ends", ">=", new Date()),
         orderBy("ends", "desc"),
         limit(1),

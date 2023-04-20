@@ -43,7 +43,7 @@ export class WoodService {
   toLocalStorage(wood: WtWood): LocalStorageWtWood {
     return {
       localId: wood.localId,
-      localPathXls: wood.localPathXls,
+      localPath: wood.localPath,
       path: wood.path,
       url: wood.url,
       especieDeclarada: wood.especieDeclarada,
@@ -74,7 +74,7 @@ export class WoodService {
     return LocalStorageWtWood
       ? {
           localId: LocalStorageWtWood.localId,
-          localPathXls: LocalStorageWtWood.localPathXls,
+          localPath: LocalStorageWtWood.localPath,
           path: LocalStorageWtWood.path,
           url: LocalStorageWtWood.url,
           especieDeclarada: LocalStorageWtWood.especieDeclarada,
