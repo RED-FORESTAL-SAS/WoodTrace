@@ -60,7 +60,7 @@ export interface WtWood {
  * Todos los campos quedan iguales, excepto los campos "begins" y "ends" que se convierten a un objeto
  * con el que se pueda reconstruir el Timestamp.
  */
-export interface LocalstorageWtWood {
+export interface LocalStorageWtWood {
   localId: string;
   localPathXls: string;
   path: string;

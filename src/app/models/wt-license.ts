@@ -63,7 +63,7 @@ export interface WtLicense {
  * Todos los campos quedan iguales, excepto los campos "begins" y "ends" que se convierten a un objeto
  * con el que se pueda reconstruir el Timestamp.
  */
-export interface LocastorageWtLicense {
+export interface LocaStorageWtLicense {
   id: string;
   status: "active" | "inactive";
   entidadId: string;

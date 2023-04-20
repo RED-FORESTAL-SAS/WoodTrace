@@ -1,27 +1,46 @@
 import { Injectable } from "@angular/core";
-import { UtilsService } from "./utils.service";
-import { LocalstorageWtWood, WtWood } from "../models/wt-wood";
+import { LocalStorageWtWood, WtWood } from "../models/wt-wood";
 import { Timestamp } from "../types/timestamp.type";
+import { ACTIVE_WOOD_LS_KEY } from "../constants/active-wood-ls-key.constant";
+import { LocalStorageRepository } from "../infrastructure/local-storage.repository";
 
 @Injectable({
   providedIn: "root",
 })
 export class WoodService {
-  constructor(private utils: UtilsService) {}
+  constructor(private localStorage: LocalStorageRepository) {}
 
-  retrieveActiveWood() {
-    /**
-     * @todo @mario
-     */
+  /**
+   * Saves a WtWood to localStorage.
+   *
+   * @param report
+   */
+  saveToLocalStorage(wood: WtWood | null): void {
+    const woodToBeSaved = wood ? this.toLocalStorage(wood) : null;
+    this.localStorage.save<LocalStorageWtWood>(
+      ACTIVE_WOOD_LS_KEY,
+      woodToBeSaved
+    );
   }
 
   /**
-   * Transforms WtWood to localstorage apporpriate format (avoid losing Timestamps).
+   * Retrieves WtWood from localStorage ¡COULD RETURN NULL!.
+   *
+   * @returns
+   */
+  fetchFromLocalStorage(): WtWood | null {
+    const localStorageWood =
+      this.localStorage.fetch<LocalStorageWtWood>(ACTIVE_WOOD_LS_KEY);
+    return this.fromLocalStorage(localStorageWood);
+  }
+
+  /**
+   * Transforms WtWood to localStorage apporpriate format (avoid losing Timestamps).
    *
    * @param wood
    * @returns
    */
-  toLocalStorage(wood: WtWood): LocalstorageWtWood {
+  toLocalStorage(wood: WtWood): LocalStorageWtWood {
     return {
       localId: wood.localId,
       localPathXls: wood.localPathXls,
@@ -43,32 +62,32 @@ export class WoodService {
   }
 
   /**
-   * Transforms a LocastorageWtWood from localstorage to apporpriate WtWood format
+   * Transforms a LocaStorageWtWood from localStorage to apporpriate WtWood format
    * (reconstruct Timestamps).
    *
-   * @param LocalstorageWtWood
+   * @param LocalStorageWtWood
    * @returns
    */
   fromLocalStorage(
-    LocalstorageWtWood: LocalstorageWtWood | null
+    LocalStorageWtWood: LocalStorageWtWood | null
   ): WtWood | null {
-    return LocalstorageWtWood
+    return LocalStorageWtWood
       ? {
-          localId: LocalstorageWtWood.localId,
-          localPathXls: LocalstorageWtWood.localPathXls,
-          path: LocalstorageWtWood.path,
-          url: LocalstorageWtWood.url,
-          especieDeclarada: LocalstorageWtWood.especieDeclarada,
-          especie: LocalstorageWtWood.especie,
-          acierto: LocalstorageWtWood.acierto,
-          wtUserId: LocalstorageWtWood.wtUserId,
+          localId: LocalStorageWtWood.localId,
+          localPathXls: LocalStorageWtWood.localPathXls,
+          path: LocalStorageWtWood.path,
+          url: LocalStorageWtWood.url,
+          especieDeclarada: LocalStorageWtWood.especieDeclarada,
+          especie: LocalStorageWtWood.especie,
+          acierto: LocalStorageWtWood.acierto,
+          wtUserId: LocalStorageWtWood.wtUserId,
           fCreado: new Timestamp(
-            LocalstorageWtWood.fCreado.seconds,
-            LocalstorageWtWood.fCreado.nanoseconds
+            LocalStorageWtWood.fCreado.seconds,
+            LocalStorageWtWood.fCreado.nanoseconds
           ),
           fModificado: new Timestamp(
-            LocalstorageWtWood.fModificado.seconds,
-            LocalstorageWtWood.fModificado.nanoseconds
+            LocalStorageWtWood.fModificado.seconds,
+            LocalStorageWtWood.fModificado.nanoseconds
           ),
         }
       : null;

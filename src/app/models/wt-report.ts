@@ -1,6 +1,6 @@
 import { Timestamp } from "../types/timestamp.type";
 import { FieldValue } from "../types/field-value.type";
-import { LocalstorageWtWood, WtWood } from "./wt-wood";
+import { LocalStorageWtWood, WtWood } from "./wt-wood";
 import { User } from "./user.model";
 
 /**
@@ -89,12 +89,12 @@ export interface WtReport {
  * Todos los campos quedan iguales, excepto los campos "Timestamp" que se convierten a un objeto
  * con el que se pueda reconstruir posteriormente.
  */
-export interface LocalstorageWtReport {
+export interface LocalStorageWtReport {
   id: string;
   localId: string;
   placa: string;
   guia: string;
-  woods: LocalstorageWtWood[];
+  woods: LocalStorageWtWood[];
   localPathXls: string;
   pathXls: string;
   urlXls: string;
@@ -129,19 +129,3 @@ export const NEW_WT_REPORT: WtReport = {
   fCreado: null,
   fModificado: null,
 };
-
-/**
- * Returns a new Report, given a User.
- *
- * @param user
- * @returns
- */
-export function getNewReport(user: User): WtReport {
-  return {
-    ...NEW_WT_REPORT,
-    localId: new Date().getTime().toString(),
-    wtUserId: user.id,
-    fCreado: Timestamp.fromDate(new Date()),
-    fModificado: Timestamp.fromDate(new Date()),
-  };
-}

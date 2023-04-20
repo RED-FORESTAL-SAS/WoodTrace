@@ -1,12 +1,13 @@
 import { Injectable } from "@angular/core";
 import { FirebaseService } from "./firebase.service";
 import { UtilsService } from "./utils.service";
-import { LocastorageWtLicense, WtLicense } from "../models/wt-license";
+import { LocaStorageWtLicense, WtLicense } from "../models/wt-license";
 import { LICENCES_FB_COLLECTION } from "../constants/licenses-fb-collection";
 import { limit, orderBy, where } from "../types/query-constraint.type";
 import { ACTIVE_LICENSE_LS_KEY } from "../constants/active-license-ls-key.constant";
 import { Failure, FailureUtils } from "../utils/failure.utils";
 import { Timestamp } from "../types/timestamp.type";
+import { LocalStorageRepository } from "../infrastructure/local-storage.repository";
 
 /** Failure for License Domain. */
 export class LicenseFailure extends Failure {}
@@ -15,15 +16,19 @@ export class LicenseFailure extends Failure {}
   providedIn: "root",
 })
 export class LicenseService {
-  constructor(private firebase: FirebaseService, private utils: UtilsService) {}
+  constructor(
+    private firebase: FirebaseService,
+    private utils: UtilsService,
+    private localStorage: LocalStorageRepository
+  ) {}
 
   /**
    * Retrieves the active license for current authenticated user. First, tries to retrieve it from
-   * localstorage. If fails, retrieves it from the database. If fails, throws a Failure.
+   * localStorage. If fails, retrieves it from the database. If fails, throws a Failure.
    *
    * @returns Promise<WtLicense> A promise with a valid WtLicense.
    * @throws FirestoreFailure, or LicenseFailure if not license was found.
-   * @dev Cuando se recupera la licencia desde el localstorage, sería sano hacer la verificación
+   * @dev Cuando se recupera la licencia desde el localStorage, sería sano hacer la verificación
    * contra la licencia real, para evitar abusos. Se deja para el futuro.
    */
   async retrieveActiveLicense(): Promise<WtLicense> {
@@ -65,33 +70,36 @@ export class LicenseService {
   }
 
   /**
-   * Saves a WtLicense to localstorage.
+   * Saves a WtLicense to localStorage.
    *
    * @param license
    */
-  saveToLocalStorage(license: WtLicense): void {
-    const licenceToBeSaved = this.toLocalStorage(license);
-    this.utils.saveLocalStorage(ACTIVE_LICENSE_LS_KEY, licenceToBeSaved);
+  saveToLocalStorage(license: WtLicense | null): void {
+    const licenceToBeSaved = license ? this.toLocalStorage(license) : null;
+    this.localStorage.save<LocaStorageWtLicense>(
+      ACTIVE_LICENSE_LS_KEY,
+      licenceToBeSaved
+    );
   }
 
   /**
-   * Retrieves a WtLicense from localstorage
+   * Retrieves WtLicense from localStorage ¡COULD RETURN NULL!.
+   *
    * @returns
    */
   fetchFromLocalStorage(): WtLicense | null {
-    const localstorageLicense = this.utils.getFromLocalStorage(
+    const localStorageLicense = this.localStorage.fetch<LocaStorageWtLicense>(
       ACTIVE_LICENSE_LS_KEY
-    ) as LocastorageWtLicense | null;
-
-    return this.fromLocalStorage(localstorageLicense);
+    );
+    return this.fromLocalStorage(localStorageLicense);
   }
 
   /**
-   * Transforms WtLicense to localstorage apporpriate format (avoid losing Timestamps).
+   * Transforms WtLicense to localStorage apporpriate format (avoid losing Timestamps).
    *
    * @param license
    */
-  toLocalStorage(license: WtLicense): LocastorageWtLicense {
+  toLocalStorage(license: WtLicense): LocaStorageWtLicense {
     return {
       id: license.id,
       status: license.status,
@@ -110,30 +118,30 @@ export class LicenseService {
   }
 
   /**
-   * Transforms a LocastorageWtLicense from localstorage to apporpriate WtLicense format
+   * Transforms a LocaStorageWtLicense from localStorage to apporpriate WtLicense format
    * (reconstruct Timestamps).
    *
-   * @param localstorageWtLicense to be transformed to WtLicense.
+   * @param localStorageWtLicense to be transformed to WtLicense.
    * @returns
    */
   fromLocalStorage(
-    localstorageWtLicense: LocastorageWtLicense | null
+    localStorageWtLicense: LocaStorageWtLicense | null
   ): WtLicense | null {
-    return localstorageWtLicense
+    return localStorageWtLicense
       ? {
-          id: localstorageWtLicense.id,
-          status: localstorageWtLicense.status,
-          entidadId: localstorageWtLicense.entidadId,
-          wtUserId: localstorageWtLicense.wtUserId,
+          id: localStorageWtLicense.id,
+          status: localStorageWtLicense.status,
+          entidadId: localStorageWtLicense.entidadId,
+          wtUserId: localStorageWtLicense.wtUserId,
           begins: new Timestamp(
-            localstorageWtLicense.begins.seconds,
-            localstorageWtLicense.begins.nanoseconds
+            localStorageWtLicense.begins.seconds,
+            localStorageWtLicense.begins.nanoseconds
           ),
           ends: new Timestamp(
-            localstorageWtLicense.ends.seconds,
-            localstorageWtLicense.ends.nanoseconds
+            localStorageWtLicense.ends.seconds,
+            localStorageWtLicense.ends.nanoseconds
           ),
-          redeemCode: localstorageWtLicense.redeemCode,
+          redeemCode: localStorageWtLicense.redeemCode,
         }
       : null;
   }

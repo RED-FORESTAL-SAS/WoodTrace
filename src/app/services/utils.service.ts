@@ -51,6 +51,7 @@ export class UtilsService {
   /**
    *
    * @returns The current user information in localstorage
+   * @deprecated Use UserService.getCurrentUser() instead.
    */
   getCurrentUser() {
     return JSON.parse(localStorage.getItem("user"));
@@ -58,8 +59,10 @@ export class UtilsService {
 
   /**
    * It takes a key as a parameter, and returns the value of that key from localStorage
+   *
    * @param {string} key - The key to store the data under.
    * @returns The value of the key in localStorage.
+   * @deprecated Use localStorageRepository.fetch() instead.
    */
   getFromLocalStorage(key: string) {
     return JSON.parse(localStorage.getItem(key));
@@ -67,13 +70,18 @@ export class UtilsService {
 
   /**
    * It saves an object to local storage.
+   *
    * @param {string} name - The name of the object you want to save.
    * @param {any} object - the object you want to save
+   * @deprecated Use localStorageRepository.save() instead.
    */
   saveLocalStorage(name: string, object: any) {
     localStorage.setItem(name, JSON.stringify(object));
   }
 
+  /**
+   * @deprecated Use localStorageRepository.delete() instead.
+   */
   deleteFromLocalStorage(name: string) {
     localStorage.removeItem(name);
   }

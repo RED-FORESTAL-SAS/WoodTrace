@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [MARIO/RED-10-AUTH-1] - 2023-04-19 - Al terminar hacer merge al MARIO/RED-10-AUTH
+## [MARIO/RED-10-AUTH-1] - 2023-04-20 - Al terminar hacer merge al MARIO/RED-10-AUTH
 
 - Configurar app y environments para usar angular/fire modular. Se conserva el angular/fire compat.
 - Agregar date.utils.
@@ -10,6 +10,10 @@
 - FirebaseService: Add methods collection$, fetchCollection$, doc$ y fetchDoc, usando angular/fire modular.
 - FirebaseService: Marcar deprecated las clases de angular/fire compat para cambiarlas a futuro.
 - Agregar constantes para los keys del localstorage y las colecciones de Firebase.
+- Crear el UserService, para separar también la lógica para allá.
+- Crear una constante para el key del localstorage del usuario autenticado.
+- Crear el LocalStorageRepository, para evitar el acceso directo al localstorage desde los componentes.
+- Fixes y limpieza.
 
 ## [MARIO/RED-10-AUTH] - 2023-04-18
 

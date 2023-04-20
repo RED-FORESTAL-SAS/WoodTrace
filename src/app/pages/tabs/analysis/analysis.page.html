@@ -14,7 +14,7 @@
       </div>
       <div class="btn-container">
         <ion-grid>
-          <ion-row class="btn" (click)="continueAnalysis()">
+          <ion-row class="btn" (click)="continueWithActiveReport()">
             <ion-col align-items-center class="bg-icon-btn" size="2">
               <ion-icon class="icon-btn" name="create-outline"></ion-icon>
             </ion-col>
@@ -32,7 +32,7 @@
               </div>
               <div class="btn-gradient">
                 <ion-button
-                  (click)="confirmNewAnalysisOverContinue()"
+                  (click)="confirmNewReportBeforeContinue()"
                   mode="ios"
                 >
                   <span>Nuevo análisis</span>

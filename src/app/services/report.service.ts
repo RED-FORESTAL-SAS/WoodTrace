@@ -1,27 +1,77 @@
 import { Injectable } from "@angular/core";
-import { UtilsService } from "./utils.service";
-import { LocalstorageWtReport, WtReport } from "../models/wt-report";
+import {
+  LocalStorageWtReport,
+  NEW_WT_REPORT,
+  WtReport,
+} from "../models/wt-report";
 import { WoodService } from "./wood.service";
 import { Timestamp } from "../types/timestamp.type";
+import { ACTIVE_REPORT_LS_KEY } from "../constants/active-report-ls-key.constant";
+import { LocalStorageRepository } from "../infrastructure/local-storage.repository";
+import { UserService } from "./user.service";
 
 @Injectable({
   providedIn: "root",
 })
-export class LicenseService {
-  constructor(private utils: UtilsService, private woodService: WoodService) {}
+export class ReportService {
+  constructor(
+    private localStorage: LocalStorageRepository,
+    private userService: UserService,
+    private woodService: WoodService
+  ) {}
 
-  retrieveActiveReport() {
-    /**
-     * @todo @mario
-     */
+  /**
+   * @todo @mario Hacer funcionalidad para sincronizar los reportes locales con firestore.
+   * @todo @mario Este reporte es responsable de manejar el datagrid.
+   */
+
+  /**
+   * Returns a new empty Report, given a User.
+   *
+   * @param user
+   * @returns
+   */
+  get emptyReport(): WtReport {
+    return {
+      ...NEW_WT_REPORT,
+      localId: new Date().getTime().toString(),
+      wtUserId: this.userService.currentUser!.id,
+      fCreado: Timestamp.fromDate(new Date()),
+      fModificado: Timestamp.fromDate(new Date()),
+    };
   }
 
   /**
-   * Transforms WtReport to localstorage apporpriate format (avoid losing Timestamps).
+   * Saves a WtReport to localStorage.
+   *
+   * @param report
+   */
+  saveToLocalStorage(report: WtReport | null): void {
+    const reportToBeSaved = report ? this.toLocalStorage(report) : null;
+    this.localStorage.save<LocalStorageWtReport>(
+      ACTIVE_REPORT_LS_KEY,
+      reportToBeSaved
+    );
+  }
+
+  /**
+   * Retrieves WtReport from localStorage ¡COULD RETURN NULL!.
+   *
+   * @returns
+   */
+  fetchFromLocalStorage(): WtReport | null {
+    const localStorageReport =
+      this.localStorage.fetch<LocalStorageWtReport>(ACTIVE_REPORT_LS_KEY);
+    return this.fromLocalStorage(localStorageReport);
+  }
+
+  /**
+   * Transforms WtReport to localStorage apporpriate format (avoid losing Timestamps).
+   *
    * @param report
    * @returns
    */
-  toLocalStorage(report: WtReport): LocalstorageWtReport {
+  toLocalStorage(report: WtReport): LocalStorageWtReport {
     return {
       id: report.id,
       localId: report.localId,
@@ -47,38 +97,38 @@ export class LicenseService {
   }
 
   /**
-   * Transforms a LocastorageWtReport from localstorage to apporpriate WtReport format
+   * Transforms a LocastorageWtReport from localStorage to apporpriate WtReport format
    * (reconstruct Timestamps).
    *
-   * @param localstorageWtReport
-   * @returns
+   * @param localStorageWtReport
+   * @returns WtReport | null
    */
   fromLocalStorage(
-    localstorageWtReport: LocalstorageWtReport | null
+    localStorageWtReport: LocalStorageWtReport | null
   ): WtReport | null {
-    return localstorageWtReport
+    return localStorageWtReport
       ? {
-          id: localstorageWtReport.id,
-          localId: localstorageWtReport.localId,
-          placa: localstorageWtReport.placa,
-          guia: localstorageWtReport.guia,
-          woods: localstorageWtReport.woods.map((wood) =>
+          id: localStorageWtReport.id,
+          localId: localStorageWtReport.localId,
+          placa: localStorageWtReport.placa,
+          guia: localStorageWtReport.guia,
+          woods: localStorageWtReport.woods.map((wood) =>
             this.woodService.fromLocalStorage(wood)
           ),
-          localPathXls: localstorageWtReport.localPathXls,
-          pathXls: localstorageWtReport.pathXls,
-          urlXls: localstorageWtReport.urlXls,
-          localPathPdf: localstorageWtReport.localPathPdf,
-          pathPdf: localstorageWtReport.pathPdf,
-          urlPdf: localstorageWtReport.urlPdf,
-          wtUserId: localstorageWtReport.wtUserId,
+          localPathXls: localStorageWtReport.localPathXls,
+          pathXls: localStorageWtReport.pathXls,
+          urlXls: localStorageWtReport.urlXls,
+          localPathPdf: localStorageWtReport.localPathPdf,
+          pathPdf: localStorageWtReport.pathPdf,
+          urlPdf: localStorageWtReport.urlPdf,
+          wtUserId: localStorageWtReport.wtUserId,
           fCreado: new Timestamp(
-            localstorageWtReport.fCreado.seconds,
-            localstorageWtReport.fCreado.nanoseconds
+            localStorageWtReport.fCreado.seconds,
+            localStorageWtReport.fCreado.nanoseconds
           ),
           fModificado: new Timestamp(
-            localstorageWtReport.fModificado.seconds,
-            localstorageWtReport.fModificado.nanoseconds
+            localStorageWtReport.fModificado.seconds,
+            localStorageWtReport.fModificado.nanoseconds
           ),
         }
       : null;
