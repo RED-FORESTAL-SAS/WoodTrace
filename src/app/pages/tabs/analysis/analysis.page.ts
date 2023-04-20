@@ -122,6 +122,12 @@ export class AnalysisPage implements OnInit {
    */
   continueWithNewReport(): void {
     this.reportService.saveToLocalStorage(this.reportService.emptyReport);
+
+    /**
+     * @todo @diana Verificar si hay que crear en este punto el WtWood vacío para tomar la primera muestra,
+     * o si esto será responsabilidad de la primera pantalla del proceso de toma de muestras.
+     */
+
     this.utilsSvc.routerLink("/tabs/analysis/analysis-form");
   }
 
