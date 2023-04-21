@@ -5,19 +5,19 @@ import { Timestamp } from "../types/timestamp.type";
  * Describe una licencia para el uso de la app WoodTracer. Los documentos se almacenarán
  * en la colección "wt_licences".
  *
- * El propósito del documento WtLicence es asociar una "Entidad" con una Licencia para
+ * El propósito del documento WtLicence es asociar una "Company" con una Licencia para
  * usar la aplicación WoodTracer. Dicha Licencia esta limitada por una fecha de inicio
  * y finalización y puede ser redimida/usada por uno (y solo un) "Usuario" a la vez.
  *
  * Las licencias solo pueden ser creadas por un rol "administrador" de RedForestal, una por
- * una o en "batch", asociando una "Entidad" y las fechas de inicio y fin. Al crearse, cada
- * licencia generará automáticamente un codigo. Con dicho codigo, la "Entidad" podrá pedirle
+ * una o en "batch", asociando una "Company" y las fechas de inicio y fin. Al crearse, cada
+ * licencia generará automáticamente un codigo. Con dicho codigo, la "Company" podrá pedirle
  * a uno de sus colaboradores que use la app WoodTracer para "Redimir" la Licencia.
  *
- * Una "Entidad" no podrá crear una Licencia, ni editarla. Pero sí podrá "Liberar la Licencia"
+ * Una "Company" no podrá crear una Licencia, ni editarla. Pero sí podrá "Liberar la Licencia"
  * para que un nuevo usuario pueda "Redimirla".
  *
- * 1️⃣ Entiéndase "Entidad" como un documento de la colección "usuarios" de la plataforma
+ * 1️⃣ Entiéndase "Company" como un documento de la colección "usuarios" de la plataforma
  * RedForestal, donde el campo "tipo" (Array<string>) contiene el valor "entidad".
  *
  * 2️⃣ Entiendase "Usuario" como un documento de la colección "wt_users", es decir, un usuario
@@ -46,8 +46,8 @@ export interface WtLicense {
    * para ajustar las estadísticas y enviar las notificaciones necesarias.
    */
   status: "active" | "inactive";
-  /** ID de la "Entidad" propietaria de la Licencia. */
-  entidadId: string;
+  /** ID de la "Company" propietaria de la Licencia. */
+  wtCompanyId: string;
   /** ID del "Usuario" de la app WoodTracer que "Redimió" la Licencia. */
   wtUserId: string;
   /** Fecha de inicio de la vigencia de la Licencia. */
@@ -66,7 +66,7 @@ export interface WtLicense {
 export interface LocaStorageWtLicense {
   id: string;
   status: "active" | "inactive";
-  entidadId: string;
+  wtCompanyId: string;
   wtUserId: string;
   begins: {
     seconds: number;

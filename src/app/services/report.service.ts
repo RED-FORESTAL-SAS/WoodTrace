@@ -9,6 +9,17 @@ import { Timestamp } from "../types/timestamp.type";
 import { ACTIVE_REPORT_LS_KEY } from "../constants/active-report-ls-key.constant";
 import { LocalStorageRepository } from "../infrastructure/local-storage.repository";
 import { UserService } from "./user.service";
+import { ReportStore } from "../state/report.store";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
+import { WtWood } from "../models/wt-wood";
+import { Failure } from "../utils/failure.utils";
+import { REPORTS_LS_KEY } from "../constants/reports-ls-key.constant";
+
+/**
+ * Failure for ReportDomain.
+ */
+export class ReportFailure extends Failure {}
 
 @Injectable({
   providedIn: "root",
@@ -16,17 +27,20 @@ import { UserService } from "./user.service";
 export class ReportService {
   constructor(
     private localStorage: LocalStorageRepository,
+    private store: ReportStore,
     private userService: UserService,
     private woodService: WoodService
-  ) {}
+  ) {
+    // Initialize active report with value from localStorage, if any, or null.
+    // Inicialize reports with value from localStorage, if any, or empty array.
+    this.store.patch({
+      activeReport: this.fetchActiveReportFromLocalStorage(),
+      reports: this.fetchReportsFromLocalStorage(),
+    });
+  }
 
   /**
-   * @todo @mario Hacer funcionalidad para sincronizar los reportes locales con firestore.
-   * @todo @mario Este reporte es responsable de manejar el datagrid.
-   */
-
-  /**
-   * Returns a new empty Report, given a User.
+   * Returns a new empty Report.
    *
    * @param user
    * @returns
@@ -42,12 +56,130 @@ export class ReportService {
   }
 
   /**
-   * Saves a WtReport to localStorage.
+   * Getter for active report from state.
+   */
+  get activeReport(): Observable<WtReport | null> {
+    return this.store.state$.pipe(map((state) => state.activeReport));
+  }
+
+  /**
+   * Getter for active wood from state.
+   */
+  get activeWood(): Observable<WtWood | null> {
+    return this.store.state$.pipe(map((state) => state.activeWood));
+  }
+
+  /**
+   * Getter for reports from state.
+   */
+  get reports(): Observable<WtReport[]> {
+    return this.store.state$.pipe(map((state) => state.reports));
+  }
+
+  /**
+   * Patch value for active report, and updates local storage.
+   *
+   * @param activeReport
+   */
+  public patchActiveReport(activeReport: WtReport | null): void {
+    this.saveActiveRerportToLocalStorage(activeReport);
+    this.store.patch({ activeReport: activeReport });
+  }
+
+  /**
+   * Patch value for active wood, and updates local storage.
+   *
+   * @param activeWood
+   */
+  public patchActiveWood(activeWood: WtWood | null): void {
+    this.woodService.saveToLocalStorage(activeWood);
+    this.store.patch({ activeWood: activeWood });
+  }
+
+  /**
+   * Saves active Wood to active Report.
+   * Then sets active Wood to null.
+   */
+  public saveActiveWood(): void {
+    if (!this.store.state.activeReport) {
+      throw new ReportFailure("No hay Report activo.");
+    }
+
+    if (!this.store.state.activeWood) {
+      throw new ReportFailure("No hay un Wood activo.");
+    }
+
+    const woods = this.store.state.activeReport.woods;
+    const wood = this.store.state.activeWood;
+    woods.push(wood);
+
+    this.patchActiveReport({
+      ...this.store.state.activeReport,
+      woods: woods,
+    });
+
+    this.patchActiveWood(null);
+  }
+
+  /**
+   * Removes a Wood from active Report "woods" field, given its index.
+   *
+   * @param index
+   */
+  public removeWoodFromActiveReport(index: number): void {
+    if (!this.store.state.activeReport) {
+      throw new ReportFailure("No hay reporte activo.");
+    }
+
+    const woods = this.store.state.activeReport.woods;
+    woods.splice(index, 1);
+    this.patchActiveReport({
+      ...this.store.state.activeReport,
+      woods: woods,
+    });
+  }
+
+  /**
+   * Process active report to generate pdf and xls files.
+   * Then saves it to state into reports field.
+   * Then sets active Report to null.
+   */
+  public saveActiveReport(): void {
+    if (!this.store.state.activeReport) {
+      throw new ReportFailure("No hay reporte activo.");
+    }
+
+    /**
+     * @todo @mario Implementar generación de archivos.
+     */
+
+    // Add new report to beginning of reports array.
+    const reports = this.store.state.reports;
+    reports.unshift(this.store.state.activeReport);
+    this.store.patch({
+      reports: reports,
+    });
+    this.patchActiveReport(null);
+  }
+
+  /**
+   * Retrieves created Reports from localStorage.
+   */
+  private fetchReportsFromLocalStorage(): WtReport[] {
+    const localStorageReports =
+      this.localStorage.fetch<LocalStorageWtReport[]>(REPORTS_LS_KEY);
+    return localStorageReports
+      ? localStorageReports.map((report) => this.reportFromLocalStorage(report))
+      : [];
+  }
+
+  /**
+   * Saves a WtReport to the active Report in localStorage.
    *
    * @param report
    */
-  saveToLocalStorage(report: WtReport | null): void {
-    const reportToBeSaved = report ? this.toLocalStorage(report) : null;
+  private saveActiveRerportToLocalStorage(report: WtReport | null): void {
+    const reportToBeSaved = report ? this.reportToLocalStorage(report) : null;
     this.localStorage.save<LocalStorageWtReport>(
       ACTIVE_REPORT_LS_KEY,
       reportToBeSaved
@@ -55,14 +187,14 @@ export class ReportService {
   }
 
   /**
-   * Retrieves WtReport from localStorage ¡COULD RETURN NULL!.
+   * Retrieves the active Report from localStorage ¡COULD RETURN NULL!.
    *
    * @returns
    */
-  fetchFromLocalStorage(): WtReport | null {
+  private fetchActiveReportFromLocalStorage(): WtReport | null {
     const localStorageReport =
       this.localStorage.fetch<LocalStorageWtReport>(ACTIVE_REPORT_LS_KEY);
-    return this.fromLocalStorage(localStorageReport);
+    return this.reportFromLocalStorage(localStorageReport);
   }
 
   /**
@@ -71,7 +203,7 @@ export class ReportService {
    * @param report
    * @returns
    */
-  toLocalStorage(report: WtReport): LocalStorageWtReport {
+  private reportToLocalStorage(report: WtReport): LocalStorageWtReport {
     return {
       id: report.id,
       localId: report.localId,
@@ -103,7 +235,7 @@ export class ReportService {
    * @param localStorageWtReport
    * @returns WtReport | null
    */
-  fromLocalStorage(
+  private reportFromLocalStorage(
     localStorageWtReport: LocalStorageWtReport | null
   ): WtReport | null {
     return localStorageWtReport

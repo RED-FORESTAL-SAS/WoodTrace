@@ -33,6 +33,10 @@ export class AnalysisPage implements OnInit {
    */
   async checkLicense(): Promise<void> {
     try {
+      /**
+       * @todo @mario Esto debería de leer el UserSerivce.license, en vez
+       * de usar este método.
+       */
       await this.licenseService.retrieveActiveLicense();
       this.licenseActive = true;
     } catch (e) {
@@ -74,6 +78,9 @@ export class AnalysisPage implements OnInit {
     const hasActiveLicense = await this.checkIfLicenseIsValid();
     if (!hasActiveLicense) return;
 
+    /**
+     * @todo @mario esto debería de leer el ReportService.activeReport, en vez de este metodo
+     */
     // If there is no active report, it creates a new one and starts the analysis.
     const activeReport = this.reportService.fetchFromLocalStorage();
     if (activeReport === null) {
@@ -109,6 +116,10 @@ export class AnalysisPage implements OnInit {
    */
   async checkIfLicenseIsValid(): Promise<boolean> {
     try {
+      /**
+       * @todo @mario Esto debería de leer el UserSerivce.license, en vez
+       * de usar este método.
+       */
       await this.licenseService.retrieveActiveLicense();
       return true;
     } catch (e) {
@@ -143,6 +154,9 @@ export class AnalysisPage implements OnInit {
    * Creates an empty Report in local storage and redirects to the analysis form.
    */
   continueWithNewReport(): void {
+    /**
+     * @todo @mario Esto debería de leer el ReportService.pathActiveReport, en vez de este método.
+     */
     this.reportService.saveToLocalStorage(this.reportService.emptyReport);
 
     /**
@@ -157,6 +171,9 @@ export class AnalysisPage implements OnInit {
    * Redirects to analysis route, to continue with existing (in local storage) report.
    */
   continueWithActiveReport() {
+    /**
+     * @todo @mario Esto debería de pegarse de otro método del ReportService.
+     */
     // Validate if current report exists, before redirecting.
     const currentReport = this.reportService.fetchFromLocalStorage();
     if (currentReport === null) {

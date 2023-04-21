@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [MARIO/RED-10-AUTH-2] - 2023-04-21
+
+- Crear clase BaseStore.
+- Crear State/Store para Report (incluye Wood y "Reports") y User (incluye License y Company).
+- Ajustar los servicios para que devuelvan y escriban el state apropiadamente.
+- Agregar modelos para WtCompany y WtUser.
+
 ## [MARIO/RED-10-AUTH] - 2023-04-21
 
 - Estilos pantalla analisis y finkappalert.
