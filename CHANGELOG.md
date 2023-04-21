@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [MARIO/RED-10-AUTH] - 2023-04-21
+
+- Estilos pantalla analisis y finkappalert.
+
 ## [MARIO/RED-10-AUTH] - 2023-04-18
 
 - Estilos email-verification, reset-password, sign-up, update-password, admin-account, help-desk, profile.
