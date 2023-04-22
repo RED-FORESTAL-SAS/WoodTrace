@@ -1,11 +1,16 @@
 import { Injectable, OnDestroy, Optional } from "@angular/core";
 import { LocalStorageRepository } from "../infrastructure/local-storage.repository";
-import { User } from "../models/user.model";
 import { CURRENT_USER_LS_KEY } from "../constants/current-user-ls-key.constant";
 import { UserStore } from "../state/user.store";
 import { WtCompany } from "../models/wt-company";
-import { of, Observable, Subscription } from "rxjs";
-import { map, switchMap, tap } from "rxjs/operators";
+import { Observable, Subscription } from "rxjs";
+import {
+  catchError,
+  distinctUntilChanged,
+  map,
+  switchMap,
+  tap,
+} from "rxjs/operators";
 import { WtLicense } from "../models/wt-license";
 import { LicenseFailure, LicenseService } from "./license.service";
 import { CompanyFailure, CompanyService } from "./company.service";
@@ -13,11 +18,19 @@ import { FirebaseService } from "./firebase.service";
 import { Timestamp } from "../types/timestamp.type";
 import { limit, orderBy, where } from "../types/query-constraint.type";
 import { LICENCES_FB_COLLECTION } from "../constants/licenses-fb-collection";
-import { Failure, FailureUtils } from "../utils/failure.utils";
+import {
+  AuthNetworkRequestFailedFailure,
+  Failure,
+  FailureUtils,
+  NoNetworkFailure,
+  NotFoundFailure,
+  UnauthenticatedFailure,
+} from "../utils/failure.utils";
 import { COMPANYS_FB_COLLECTION } from "../constants/compays-fb-collection";
 import { Auth, authState, User as FirebaseUser } from "@angular/fire/auth";
 import { USERS_FB_COLLECTION } from "../constants/users-fb-collection";
-import { WtUser } from "../models/wt-user";
+import { LocalStorageWtUser, WtUser } from "../models/wt-user";
+import { environment } from "src/environments/environment";
 
 export class UserFailure extends Failure {}
 
@@ -35,50 +48,40 @@ export class UserService implements OnDestroy {
     private licenseService: LicenseService,
     private store: UserStore
   ) {
-    // Watch auth state to load user, license and company.
     this.sbs.push(
-      authState(this.auth)
-        .pipe(
-          switchMap((firebaseUser: FirebaseUser | null) =>
-            firebaseUser !== null
-              ? this.firebase
-                  .doc$(`${USERS_FB_COLLECTION}/${firebaseUser.uid}`)
-                  .pipe(
-                    map((user: WtUser | undefined) => {
-                      // If user doesn't exist in user collection, fail.
-                      if (user === undefined) {
-                        throw new UserFailure(
-                          "El usuario no existe en la base de datos."
-                        );
-                      }
-                      return {
-                        ...user,
-                        emailVerified: firebaseUser.emailVerified,
-                      };
-                    })
-                  )
-              : of(null)
-          ),
-          tap({
-            next: async (user: WtUser | null) => {
-              if (user) {
-                try {
-                  /**
-                   * @todo @mario retrieve current user.
-                   */
-                  await this.retrieveActiveLicense();
-                  await this.retrieveUserCompany();
-                } catch (e) {
-                  /**
-                   * @dev Fail silently.
-                   */
-                }
-              }
-            },
-          })
-        )
-        .subscribe()
+      // Watch for changes in License and retrieve/clean Company.
+      this.license
+        .pipe(distinctUntilChanged((prev, curr) => prev?.id === curr?.id))
+        .subscribe((license: WtLicense) => {
+          if (license) {
+            this.retrieveUserCompany().catch((e) => {
+              /**
+               * @todo @mario Mostrar los errores como debe ser.
+               */
+            });
+          } else {
+            this.patchCompany(null);
+          }
+        }),
+
+      // Watch for changes in User and retrieve/clean License.
+      this.user
+        .pipe(distinctUntilChanged((prev, curr) => prev?.id === curr?.id))
+        .subscribe((user: WtUser | null) => {
+          if (user) {
+            this.retrieveActiveLicense().catch((e) => {
+              /**
+               * @todo @mario Mostrar los errores como debe ser.
+               */
+            });
+          } else {
+            this.patchLicense(null);
+          }
+        })
     );
+
+    // Retrieve authenticated user and watch for changes in authState.
+    this.retrieveAuthenticatedUser();
   }
 
   ngOnDestroy(): void {
@@ -102,7 +105,7 @@ export class UserService implements OnDestroy {
   /**
    * Getter for autenticated user from state.
    */
-  get user(): Observable<User | null> {
+  get user(): Observable<WtUser | null> {
     return this.store.state$.pipe(map((state) => state.user));
   }
 
@@ -111,23 +114,134 @@ export class UserService implements OnDestroy {
    *
    * @returns
    */
-  get currentUser(): User | null {
+  get currentUser(): WtUser | null {
     return this.store.state.user;
   }
 
+  /**
+   * Patches company in state and in localstorage.
+   *
+   * @param company
+   */
   patchCompany(company: WtCompany | null): void {
     this.companyService.saveToLocalStorage(company);
     this.store.patch({ company: company });
   }
 
+  /**
+   * Patches license in state and in localstorage.
+   *
+   * @param license
+   */
   patchLicense(license: WtLicense | null): void {
     this.licenseService.saveToLocalStorage(license);
     this.store.patch({ license: license });
   }
 
-  patchUser(user: User | null): void {
+  /**
+   * Patches user in state and in localstorage.
+   *
+   * @param user
+   */
+  patchUser(user: WtUser | null): void {
     this.saveUserToLocalStorage(user);
     this.store.patch({ user: user });
+  }
+
+  /**
+   * Retrieves the authenticated user from local storage, their license and company from localstorage and watches
+   * authState changes to load user, license and company, when authstate changes.
+   *
+   * @returns Promise<void> Nothing is returned. User, License and Company must be obtained using
+   * UserService getters. keep it inmutable!
+   */
+  public async retrieveAuthenticatedUser(): Promise<void> {
+    // Try to retrieve user from local storage.
+    const user = this.fetchUserFromLocalStorage();
+
+    // If found user is differente from state, patch it in state.
+    if (user && user.id !== this.store.state.user?.id) {
+      this.patchUser(user);
+    }
+
+    // Watch auth state for changes to update user.
+    this.sbs.push(
+      authState(this.auth) // The observer is only triggered on sign-in or sign-out!
+        .pipe(
+          catchError((e) => {
+            // Transform Firebase Auth errors into app Failures.
+            const failure = FailureUtils.errorToFailure(e);
+            throw failure;
+          }),
+          switchMap((firebaseUser: FirebaseUser | null) => {
+            // If authState didn't return a user, fail.
+            if (!firebaseUser) {
+              throw new UnauthenticatedFailure("Usuario no autenticado.");
+            }
+
+            // Retrieve user from database, to get the latest data.
+            return this.firebase
+              .doc$<WtUser>(`${USERS_FB_COLLECTION}/${firebaseUser.uid}`)
+              .pipe(
+                catchError((e) => {
+                  // Transform Firestore errors into app Failures.
+                  const failure = FailureUtils.errorToFailure(e);
+                  throw failure;
+                }),
+                distinctUntilChanged((prev, curr) => prev.id === curr.id), // Avoid duplicated emissions.
+                map((user: WtUser | undefined) => {
+                  // If user was not found, fail.
+                  if (!user) {
+                    throw new NotFoundFailure("Usuario no encontrado.");
+                  }
+
+                  // Otherwise, return user with emailVerified flag.
+                  return {
+                    ...user,
+                    emailVerified: firebaseUser.emailVerified,
+                  };
+                })
+              );
+          }),
+          tap({
+            next: async (user: WtUser | null) => {
+              // If found user is differente from state, patch it in state.
+              if (user && user.id !== this.store.state.user?.id) {
+                this.patchUser(user);
+              }
+            },
+            error: (e) => {
+              // If device is offline, do not change state and fail silently.
+              if (
+                e instanceof AuthNetworkRequestFailedFailure ||
+                e instanceof NoNetworkFailure
+              ) {
+                return;
+
+                // If user is unauthenticated or not found, clean user.
+              } else if (
+                e instanceof UnauthenticatedFailure ||
+                e instanceof NotFoundFailure
+              ) {
+                this.patchUser(null);
+                return;
+
+                // Otherwise, just console log error if in development mode.
+              } else {
+                if (!environment.production) {
+                  console.groupCollapsed(`🏹 [UserService error]`);
+                  console.log(
+                    "Ocurrió un error al intentar obtener el usuario autenticado."
+                  );
+                  console.log("error", e);
+                  console.groupEnd();
+                }
+              }
+            },
+          })
+        )
+        .subscribe()
+    );
   }
 
   /**
@@ -144,12 +258,16 @@ export class UserService implements OnDestroy {
     // Try to retrieve license from local storage.
     const license = this.licenseService.fetchFromLocalStorage();
 
-    // If license is found and it's valid, patch state.
+    // If license is found in LocalStorage.
     if (license) {
       const now = new Date().getTime();
       const ends = (license.ends as Timestamp).toDate().getTime();
+
+      // If active, path it in state and exit.
       if (ends <= now) {
-        this.patchLicense(license);
+        if (license.id !== this.store.state.license?.id) {
+          this.patchLicense(license);
+        }
         return;
       }
     }
@@ -170,11 +288,15 @@ export class UserService implements OnDestroy {
         }
 
         // If license was found, patch state.
-        this.patchLicense(licenses[0]);
-        return;
+        if (licenses[0].id !== this.store.state.license?.id) {
+          this.patchLicense(licenses[0]);
+        }
       })
       .catch((e) => {
-        if (e instanceof LicenseFailure) throw e;
+        // If not found or error, clean license from state.
+        if (this.store.state.license !== null) this.patchLicense(null);
+
+        // Throw Failures.
         const failure = FailureUtils.errorToFailure(e);
         throw failure;
       });
@@ -195,18 +317,22 @@ export class UserService implements OnDestroy {
 
     // If company is found and it's valid, patch state.
     if (company) {
-      this.patchCompany(company);
+      if (
+        company.numerodocumento !== this.store.state.company?.numerodocumento
+      ) {
+        this.patchCompany(company);
+      }
       return;
     }
 
-    // Otherwise, query the database for User's Company.
-
-    if (this.store.state.license) {
+    // If there's no license, fail.
+    if (!this.store.state.license) {
       throw new LicenseFailure(
         "No se cargó la Compañía, porque el no se encontró una Licencia activa para el Usuario autenticado."
       );
     }
 
+    // Otherwise, query the database for User's Company.
     this.firebase
       .fetchDoc<WtCompany>(
         `${COMPANYS_FB_COLLECTION}/${this.store.state.license.wtCompanyId}`
@@ -219,10 +345,17 @@ export class UserService implements OnDestroy {
         }
 
         // If company was found, patch state.
-        this.patchCompany(company);
+        if (
+          company.numerodocumento !== this.store.state.company?.numerodocumento
+        ) {
+          this.patchCompany(company);
+        }
       })
       .catch((e) => {
-        if (e instanceof CompanyFailure) throw e;
+        // If not found or error, clean license from state.
+        if (this.store.state.company) this.patchCompany(null);
+
+        // Throw Failures.
         const failure = FailureUtils.errorToFailure(e);
         throw failure;
       });
@@ -233,9 +366,12 @@ export class UserService implements OnDestroy {
    *
    * @param report
    */
-  private saveUserToLocalStorage(report: User | null): void {
+  private saveUserToLocalStorage(report: WtUser | null): void {
     const userToBeSaved = report ? this.userToLocalStorage(report) : null;
-    this.localStorage.save<User>(CURRENT_USER_LS_KEY, userToBeSaved);
+    this.localStorage.save<LocalStorageWtUser>(
+      CURRENT_USER_LS_KEY,
+      userToBeSaved
+    );
   }
 
   /**
@@ -243,9 +379,9 @@ export class UserService implements OnDestroy {
    *
    * @returns
    */
-  private fetchUserFromLocalStorage(): User | null {
+  private fetchUserFromLocalStorage(): WtUser | null {
     const localStorageUser = this.userFromLocalStorage(
-      this.localStorage.fetch<User>(CURRENT_USER_LS_KEY)
+      this.localStorage.fetch<WtUser>(CURRENT_USER_LS_KEY)
     );
     return this.userFromLocalStorage(localStorageUser);
   }
@@ -256,27 +392,46 @@ export class UserService implements OnDestroy {
    * @param report
    * @returns
    */
-  private userToLocalStorage(user: User): User {
-    return user;
-    /**
-     * @dev Si bien este código aparenta no hace nada, con esto se respeta la estructura definida
-     * para los servicios. No se hace la conversión, simplemente porque el user es el mismo en todas
-     * partes.
-     */
+  private userToLocalStorage(user: WtUser): LocalStorageWtUser {
+    return {
+      id: user.id,
+      email: user.email,
+      fullName: user.fullName,
+      docType: user.docType,
+      docNumber: user.docNumber,
+      emailVerified: user.emailVerified,
+      genero: user.genero,
+      fNacimiento: user.fNacimiento,
+      movil: user.movil,
+      devices: user.devices,
+    };
   }
 
   /**
-   * Transforms a "User" from localStorage to apporpriate WtUser format.
+   * Transforms a LocaStorageWtUser from localStorage to apporpriate WtUser format.
    *
    * @param localStorageWtReport
    * @returns WtReport | null
    */
-  private userFromLocalStorage(localStorageUser: User | null): User | null {
-    return localStorageUser ? localStorageUser : null;
-    /**
-     * @dev Si bien este código aparenta no hace nada, con esto se respeta la estructura definida
-     * para los servicios. No se hace la conversión, simplemente porque el user es el mismo en todas
-     * partes.
-     */
+  private userFromLocalStorage(
+    localStorageUser: LocalStorageWtUser | null
+  ): WtUser | null {
+    return localStorageUser
+      ? {
+          id: localStorageUser.id,
+          email: localStorageUser.email,
+          fullName: localStorageUser.fullName,
+          docType: localStorageUser.docType,
+          docNumber: localStorageUser.docNumber,
+          emailVerified: localStorageUser.emailVerified,
+          genero: localStorageUser.genero,
+          fNacimiento: new Timestamp(
+            localStorageUser.fNacimiento.seconds,
+            localStorageUser.fNacimiento.nanoseconds
+          ),
+          movil: localStorageUser.movil,
+          devices: localStorageUser.devices,
+        }
+      : null;
   }
 }

@@ -1,193 +1,146 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { UtilsService } from "src/app/services/utils.service";
-import {
-  LicenseFailure,
-  LicenseService,
-} from "src/app/services/license.service";
-import { NoNetworkFailure } from "src/app/utils/failure.utils";
 import { ReportService } from "src/app/services/report.service";
+import { UserService } from "src/app/services/user.service";
+import { switchMap, take, tap } from "rxjs/operators";
+import { WtLicense } from "src/app/models/wt-license";
+import { BehaviorSubject, Observable, Subscription } from "rxjs";
+import { map, skipWhile } from "rxjs/operators";
+import { WtReport } from "src/app/models/wt-report";
 
 @Component({
   selector: "app-analysis",
   templateUrl: "./analysis.page.html",
   styleUrls: ["./analysis.page.scss"],
 })
-export class AnalysisPage implements OnInit {
-  /**
-   * Flag to enable/disable the buttons, depending on licence state.
-   */
-  public licenseActive: boolean = false;
+export class AnalysisPage {
+  /** Observable with active license or null. */
+  public license$: Observable<WtLicense | null>;
+
+  /** Observable with boolean indicating if license is active or not. */
+  public licenseIsActive$: Observable<boolean>;
+
+  /** Observable with active report or null. */
+  public activeReport$: Observable<WtReport | null>;
+
+  /** Observable with boolean indicating if there is an active report or not. */
+  public hasActiveReport$: Observable<boolean>;
+
+  /** BehaviorSubject to deal with event "create new report" */
+  public createNewReportEvent = new BehaviorSubject<number>(null);
+
+  /** BehaviorSubject to deal with event "continue report" */
+  public continueReportEvent = new BehaviorSubject<number>(null);
+
+  private sbs: Subscription[] = [];
 
   constructor(
-    private utilsSvc: UtilsService,
-    private licenseService: LicenseService,
-    private reportService: ReportService
-  ) {}
+    private reportService: ReportService,
+    private userService: UserService,
+    private utilsSvc: UtilsService
+  ) {
+    this.license$ = this.userService.license;
+    this.licenseIsActive$ = this.userService.license.pipe(
+      map((license) => !!license)
+    );
 
-  ngOnInit() {
-    this.checkLicense();
+    this.activeReport$ = this.reportService.activeReport;
+    this.hasActiveReport$ = this.reportService.activeReport.pipe(
+      map((report) => !!report)
+    );
+
+    // Wire up event handlers.
+    this.createNewReportHandler();
+    this.continueReportHandler();
   }
 
   /**
-   * Checks if there is an active license for the current user and disables/enables the buttons.
+   * Triggers the creation of a new report.
    */
-  async checkLicense(): Promise<void> {
-    try {
-      /**
-       * @todo @mario Esto debería de leer el UserSerivce.license, en vez
-       * de usar este método.
-       */
-      await this.licenseService.retrieveActiveLicense();
-      this.licenseActive = true;
-    } catch (e) {
-      if (e instanceof LicenseFailure) {
-        this.utilsSvc.presentFinkAlert({
-          title: "No hay Licencia activa",
-          content:
-            "Para realizar un análisis debes tener una licencia activa. Podrás encontrar más información sobre la licencia en tu perfil.",
-          btnText: "Aceptar",
-          route: "tabs/profile/membership",
-        });
-      } else if (e instanceof NoNetworkFailure) {
-        this.utilsSvc.presentFinkAlert({
-          title: "Sin acceso a internet",
-          content:
-            "Parece que no tienes conexión a internet. Por favor intenta de nuevo.",
-          btnText: "Aceptar",
-        });
-      } else {
-        this.utilsSvc.presentFinkAlert({
-          title: "Error",
-          content:
-            "Ha ocurrido un error al intentar validar la licencia. Intenta de nuevo.",
-          btnText: "Aceptar",
-        });
-      }
-      this.licenseActive = false;
-    }
+  createNewReport(): void {
+    this.createNewReportEvent.next(Date.now());
   }
 
   /**
-   * Checks if there is an active report in the local storage. If there is, it asks the user if they
-   * want to continue with the current report or start a new one. If there is not, it creates a new
-   * report and starts the analysis.
-   *
-   * @returns
+   * Triggers the continuation of an existing report.
    */
-  async confirmNewReportBeforeContinue(): Promise<void> {
-    const hasActiveLicense = await this.checkIfLicenseIsValid();
-    if (!hasActiveLicense) return;
-
-    /**
-     * @todo @mario esto debería de leer el ReportService.activeReport, en vez de este metodo
-     */
-    // If there is no active report, it creates a new one and starts the analysis.
-    const activeReport = this.reportService.fetchFromLocalStorage();
-    if (activeReport === null) {
-      this.continueWithNewReport();
-      return;
-    }
-
-    // Otherwise, ask user if they want to overwrite the existing Report.
-    this.utilsSvc.presentAlertConfirm({
-      header: "Advertencia",
-      message:
-        "Tienes un análisis en proceso. Al iniciar un análisis nuevo estarás reemplazando el anterior",
-      buttons: [
-        {
-          text: "Cancelar",
-          handler: () => {},
-        },
-        {
-          text: "Confirmar",
-          handler: () => {
-            this.continueWithNewReport();
-          },
-        },
-      ],
-    });
+  continueReport(): void {
+    this.continueReportEvent.next(Date.now());
   }
 
   /**
-   * Checks if user has a valid licence and returns a Promise<boolean> with result.
-   * Shows alert if no valid licence is found or if any error ocurs.
-   *
-   * @returns
+   * Handles the event "create new report".
    */
-  async checkIfLicenseIsValid(): Promise<boolean> {
-    try {
-      /**
-       * @todo @mario Esto debería de leer el UserSerivce.license, en vez
-       * de usar este método.
-       */
-      await this.licenseService.retrieveActiveLicense();
-      return true;
-    } catch (e) {
-      if (e instanceof LicenseFailure) {
-        this.utilsSvc.presentFinkAlert({
-          title: "No hay Licencia activa",
-          content:
-            "Para realizar un análisis debes tener una licencia activa. Podrás encontrar más información sobre la licencia en tu perfil.",
-          btnText: "Aceptar",
-          route: "tabs/profile/membership",
-        });
-      } else if (e instanceof NoNetworkFailure) {
-        this.utilsSvc.presentFinkAlert({
-          title: "Sin acceso a internet",
-          content:
-            "Parece que no tienes conexión a internet. Por favor intenta de nuevo.",
-          btnText: "Aceptar",
-        });
-      } else {
-        this.utilsSvc.presentFinkAlert({
-          title: "Error",
-          content:
-            "Ha ocurrido un error al intentar validar la licencia. Intenta de nuevo.",
-          btnText: "Aceptar",
-        });
-      }
-      return false;
-    }
+  createNewReportHandler(): void {
+    this.sbs.push(
+      this.createNewReportEvent
+        .asObservable()
+        .pipe(
+          skipWhile((v) => v === null),
+          switchMap((_) => this.reportService.activeReport.pipe(take(1))),
+          tap({
+            next: (report) => {
+              // If there is no active report, it creates a new one and start the analysis.
+              if (report === null) {
+                this.continueWithNewReport();
+                return;
+              }
+
+              // Otherwise, ask user if they want to overwrite the existing Report.
+              this.utilsSvc.presentAlertConfirm({
+                header: "Advertencia",
+                message:
+                  "Tienes un análisis en proceso. Al iniciar un análisis nuevo estarás reemplazando el anterior",
+                buttons: [
+                  {
+                    text: "Cancelar",
+                    handler: () => {},
+                  },
+                  {
+                    text: "Confirmar",
+                    handler: () => {
+                      this.continueWithNewReport();
+                    },
+                  },
+                ],
+              });
+            },
+          })
+        )
+        .subscribe()
+    );
   }
 
   /**
    * Creates an empty Report in local storage and redirects to the analysis form.
    */
-  continueWithNewReport(): void {
+  private continueWithNewReport(): void {
+    this.reportService.patchActiveReport(this.reportService.emptyReport);
     /**
-     * @todo @mario Esto debería de leer el ReportService.pathActiveReport, en vez de este método.
+     * @todo @diana Revisar por que no redirige.
      */
-    this.reportService.saveToLocalStorage(this.reportService.emptyReport);
-
-    /**
-     * @todo @diana Verificar si hay que crear en este punto el WtWood vacío para tomar la primera muestra,
-     * o si esto será responsabilidad de la primera pantalla del proceso de toma de muestras.
-     */
-
     this.utilsSvc.routerLink("/tabs/analysis/analysis-form");
   }
 
   /**
-   * Redirects to analysis route, to continue with existing (in local storage) report.
+   * Handles the event "continue report".
    */
-  continueWithActiveReport() {
-    /**
-     * @todo @mario Esto debería de pegarse de otro método del ReportService.
-     */
-    // Validate if current report exists, before redirecting.
-    const currentReport = this.reportService.fetchFromLocalStorage();
-    if (currentReport === null) {
-      this.utilsSvc.presentFinkAlert({
-        title: "No hay análisis",
-        content: "No posees ningún análisis sin terminar.",
-        btnText: "Aceptar",
-      });
-      return;
-    }
-
-    /**
-     * @todo @diana Verificar por qué esto no se está llendo a ninguna parte.
-     */
-    this.utilsSvc.routerLink("/tabs/analysis/analysis-trees/pending");
+  continueReportHandler(): void {
+    this.sbs.push(
+      this.continueReportEvent
+        .asObservable()
+        .pipe(
+          skipWhile((v) => v === null),
+          tap({
+            next: (report) => {
+              /**
+               * @todo @diana Revisar por que no redirige.
+               */
+              this.utilsSvc.routerLink("/tabs/analysis/analysis-trees/pending");
+            },
+          })
+        )
+        .subscribe()
+    );
   }
 }

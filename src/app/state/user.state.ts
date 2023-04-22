@@ -1,6 +1,6 @@
-import { User } from "../models/user.model";
 import { WtCompany } from "../models/wt-company";
 import { WtLicense } from "../models/wt-license";
+import { WtUser } from "../models/wt-user";
 
 /**
  * Describes the state of the current authenticated User, the Company where user belongs and the
@@ -20,5 +20,5 @@ export interface UserState {
   /**
    * Current authenticated user.
    */
-  user: User | null;
+  user: WtUser | null;
 }

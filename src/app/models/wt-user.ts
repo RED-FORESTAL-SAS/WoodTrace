@@ -28,3 +28,28 @@ export interface WtUser {
     uuid: string;
   }>;
 }
+
+/**
+ * Describe un WtUser con el formato apropiado para guardarlo en el localstorage.
+ * Todos los campos quedan iguales, excepto los campos "Timestamp" que se convierten a un objeto
+ * con el que se pueda reconstruir posteriormente.
+ */
+export interface LocalStorageWtUser {
+  id: string;
+  email: string;
+  password?: string;
+  fullName: string;
+  docType: number;
+  docNumber: string;
+  emailVerified: boolean;
+  genero: string;
+  fNacimiento: {
+    seconds: number;
+    nanoseconds: number;
+  };
+  movil: string;
+  devices: Array<{
+    model: string;
+    uuid: string;
+  }>;
+}
