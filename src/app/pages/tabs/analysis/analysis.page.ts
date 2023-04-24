@@ -1,103 +1,146 @@
-import { Component, OnInit } from "@angular/core";
-import { User } from "src/app/models/user.model";
-import { FirebaseService } from "src/app/services/firebase.service";
+import { Component } from "@angular/core";
 import { UtilsService } from "src/app/services/utils.service";
+import { ReportService } from "src/app/services/report.service";
+import { UserService } from "src/app/services/user.service";
+import { switchMap, take, tap } from "rxjs/operators";
+import { WtLicense } from "src/app/models/wt-license";
+import { BehaviorSubject, Observable, Subscription } from "rxjs";
+import { map, skipWhile } from "rxjs/operators";
+import { WtReport } from "src/app/models/wt-report";
 
 @Component({
   selector: "app-analysis",
   templateUrl: "./analysis.page.html",
   styleUrls: ["./analysis.page.scss"],
 })
-export class AnalysisPage implements OnInit {
-  user = {} as User;
+export class AnalysisPage {
+  /** Observable with active license or null. */
+  public license$: Observable<WtLicense | null>;
+
+  /** Observable with boolean indicating if license is active or not. */
+  public licenseIsActive$: Observable<boolean>;
+
+  /** Observable with active report or null. */
+  public activeReport$: Observable<WtReport | null>;
+
+  /** Observable with boolean indicating if there is an active report or not. */
+  public hasActiveReport$: Observable<boolean>;
+
+  /** BehaviorSubject to deal with event "create new report" */
+  public createNewReportEvent = new BehaviorSubject<number>(null);
+
+  /** BehaviorSubject to deal with event "continue report" */
+  public continueReportEvent = new BehaviorSubject<number>(null);
+
+  private sbs: Subscription[] = [];
 
   constructor(
-    private utilsSvc: UtilsService,
-    private firebaseSvc: FirebaseService
-  ) {}
+    private reportService: ReportService,
+    private userService: UserService,
+    private utilsSvc: UtilsService
+  ) {
+    this.license$ = this.userService.license;
+    this.licenseIsActive$ = this.userService.license.pipe(
+      map((license) => !!license)
+    );
 
-  ngOnInit() {}
+    this.activeReport$ = this.reportService.activeReport;
+    this.hasActiveReport$ = this.reportService.activeReport.pipe(
+      map((report) => !!report)
+    );
 
-  ionViewWillEnter() {
-    this.user = this.utilsSvc.getCurrentUser();
-  }
-
-  ionViewDidEnter() {
-    this.user = this.utilsSvc.getCurrentUser();
-    this.getLicenseRemainingDays();
+    // Wire up event handlers.
+    this.createNewReportHandler();
+    this.continueReportHandler();
   }
 
   /**
-   * It calculates the difference between two dates and returns the number of days
+   * Triggers the creation of a new report.
    */
-  getLicenseRemainingDays() {
-    if (this.user.license && this.user.license.dateInit) {
-      let currentDate = this.utilsSvc.getCurrentDate();
-      this.user.license.remainingDays = this.utilsSvc.getDiffDays(
-        currentDate,
-        this.user.license.dateEnd
-      );
-
-      if (this.user.license.remainingDays <= 0) {
-        this.firebaseSvc.deleteFromCollection("licenses", this.user.license.id);
-      }
-    }
+  createNewReport(): void {
+    this.createNewReportEvent.next(Date.now());
   }
 
-  newAnalysis() {
-    if (this.user.license && this.user.license.remainingDays) {
-      this.utilsSvc.routerLink("/tabs/analysis/analysis-form");
-    } else {
-      this.noMembership();
-    }
+  /**
+   * Triggers the continuation of an existing report.
+   */
+  continueReport(): void {
+    this.continueReportEvent.next(Date.now());
   }
 
-  confirmNewAnalysisOverContinue() {
-    let currentAnalysis = this.utilsSvc.getFromLocalStorage("analysis");
-    if (currentAnalysis) {
-      this.utilsSvc.presentAlertConfirm({
-        header: "Advertencia",
-        message:
-          "Tienes un análisis en proceso. Al iniciar un análisis nuevo estarás reemplazando el anterior",
-        buttons: [
-          {
-            text: "Cancelar",
-            handler: () => {},
-          },
-          {
-            text: "Confirmar",
-            handler: () => {
-              this.newAnalysis();
+  /**
+   * Handles the event "create new report".
+   */
+  createNewReportHandler(): void {
+    this.sbs.push(
+      this.createNewReportEvent
+        .asObservable()
+        .pipe(
+          skipWhile((v) => v === null),
+          switchMap((_) => this.reportService.activeReport.pipe(take(1))),
+          tap({
+            next: (report) => {
+              // If there is no active report, it creates a new one and start the analysis.
+              if (report === null) {
+                this.continueWithNewReport();
+                return;
+              }
+
+              // Otherwise, ask user if they want to overwrite the existing Report.
+              this.utilsSvc.presentAlertConfirm({
+                header: "Advertencia",
+                message:
+                  "Tienes un análisis en proceso. Al iniciar un análisis nuevo estarás reemplazando el anterior",
+                buttons: [
+                  {
+                    text: "Cancelar",
+                    handler: () => {},
+                  },
+                  {
+                    text: "Confirmar",
+                    handler: () => {
+                      this.continueWithNewReport();
+                    },
+                  },
+                ],
+              });
             },
-          },
-        ],
-      });
-    } else {
-      this.newAnalysis();
-    }
+          })
+        )
+        .subscribe()
+    );
   }
 
-  continueAnalysis() {
-    let currentAnalysis = this.utilsSvc.getFromLocalStorage("analysis");
-
-    if (currentAnalysis) {
-      this.utilsSvc.routerLink("/tabs/analysis/analysis-trees/pending");
-    } else {
-      this.utilsSvc.presentFinkAlert({
-        title: "No hay análisis",
-        content: "No posees ningún análisis sin terminar.",
-        btnText: "Aceptar",
-      });
-    }
+  /**
+   * Creates an empty Report in local storage and redirects to the analysis form.
+   */
+  private continueWithNewReport(): void {
+    this.reportService.patchActiveReport(this.reportService.emptyReport);
+    /**
+     * @todo @diana Revisar por que no redirige.
+     */
+    this.utilsSvc.routerLink("/tabs/analysis/analysis-form");
   }
 
-  noMembership() {
-    this.utilsSvc.presentFinkAlert({
-      title: "No eres miembro",
-      content:
-        "Para realizar un análisis debes tener una membresía activa. Podrás encontrar más información de membresía en tu perfil.",
-      btnText: "Aceptar",
-      route: "tabs/profile/membership",
-    });
+  /**
+   * Handles the event "continue report".
+   */
+  continueReportHandler(): void {
+    this.sbs.push(
+      this.continueReportEvent
+        .asObservable()
+        .pipe(
+          skipWhile((v) => v === null),
+          tap({
+            next: (report) => {
+              /**
+               * @todo @diana Revisar por que no redirige.
+               */
+              this.utilsSvc.routerLink("/tabs/analysis/analysis-trees/pending");
+            },
+          })
+        )
+        .subscribe()
+    );
   }
 }

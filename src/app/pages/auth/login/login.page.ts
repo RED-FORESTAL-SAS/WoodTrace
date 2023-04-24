@@ -185,8 +185,10 @@ export class LoginPage implements OnDestroy {
    * replaces ngOnInit and ngOnDestroy component behaviour.
    */
   unwatchAuthState() {
-    this.authStateSbs.unsubscribe();
-    this.authStateSbs = null;
+    if (this.authStateSbs !== null) {
+      this.authStateSbs.unsubscribe();
+      this.authStateSbs = null;
+    }
     this.loginIn.next(false);
   }
 

@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [MARIO/RED-10-AUTH] - 2023-04-22
+
+- Crear clase BaseStore.
+- Crear State/Store para Report (incluye Wood y "Reports") y User (incluye License y Company).
+- Ajustar los servicios para que devuelvan y escriban el state apropiadamente.
+- Agregar modelos para WtCompany y WtUser.
+- Make UserService reactive to authentication state change.
+- Make Analysis page reactive.
+
 ## [MARIO/RED-10-AUTH] - 2023-04-21
 
 - Estilos pantalla analisis-form.
@@ -7,6 +16,21 @@
 ## [MARIO/RED-10-AUTH] - 2023-04-21
 
 - Estilos pantalla analisis y finkappalert.
+
+## [MARIO/RED-10-AUTH] - 2023-04-20 - Al terminar hacer merge al MARIO/RED-10-AUTH
+
+- Configurar app y environments para usar angular/fire modular. Se conserva el angular/fire compat.
+- Agregar date.utils.
+- Mejorar failure.utils.
+- Agregar types para FieldValue, Timestamp y "query constraints".
+- Agregar/ajustar modelos y servicios para licences, reports y woods.
+- FirebaseService: Add methods collection$, fetchCollection$, doc$ y fetchDoc, usando angular/fire modular.
+- FirebaseService: Marcar deprecated las clases de angular/fire compat para cambiarlas a futuro.
+- Agregar constantes para los keys del localstorage y las colecciones de Firebase.
+- Crear el UserService, para separar también la lógica para allá.
+- Crear una constante para el key del localstorage del usuario autenticado.
+- Crear el LocalStorageRepository, para evitar el acceso directo al localstorage desde los componentes.
+- Fixes y limpieza.
 
 ## [MARIO/RED-10-AUTH] - 2023-04-18
 
