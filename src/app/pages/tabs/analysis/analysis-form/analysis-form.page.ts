@@ -1,26 +1,48 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { User } from 'src/app/models/user.model';
-import { FirebaseService } from 'src/app/services/firebase.service';
-import { UtilsService } from 'src/app/services/utils.service';
-
+import { Component, OnInit } from "@angular/core";
+import { FormControl, Validators } from "@angular/forms";
+import { User } from "src/app/models/user.model";
+import { FirebaseService } from "src/app/services/firebase.service";
+import { UtilsService } from "src/app/services/utils.service";
+import { colombia } from "src/assets/data/colombia-departments-towns";
+import { Geolocation } from "@capacitor/geolocation";
 
 @Component({
-  selector: 'app-analysis-form',
-  templateUrl: './analysis-form.page.html',
-  styleUrls: ['./analysis-form.page.scss'],
+  selector: "app-analysis-form",
+  templateUrl: "./analysis-form.page.html",
+  styleUrls: ["./analysis-form.page.scss"],
 })
 export class AnalysisFormPage implements OnInit {
-
-  operator = new FormControl('', [Validators.required])
-  species = new FormControl('Limón Común', [Validators.required])
+  // operator = new FormControl("", [Validators.required]);
+  // species = new FormControl("Limón Común", [Validators.required]);
   // property = new FormControl('', [Validators.required])
-  treeQuantity = new FormControl('', [Validators.required, Validators.min(1)])
-  priceKg = new FormControl('', [Validators.required])
+  // treeQuantity = new FormControl("", [Validators.required, Validators.min(1)]);
+  // priceKg = new FormControl("", [Validators.required]);
 
-  operators = [];
-  properties = [];
-  speciesList = [{ content: 'Limón Común', value: 'Limón Común' }];
+  department = new FormControl("", [Validators.required]);
+  town = new FormControl("", [Validators.required]);
+  guia = new FormControl("", [Validators.required]);
+  placa = new FormControl("", [Validators.required]);
+
+  latitude: number;
+  longitude: number;
+
+  departments = [];
+  towns = [];
+  /**
+   * @todo de donde vamos a sacar los departamentos???
+   */
+  departamentoList = [
+    { content: "antioquia", value: "Antioquia" },
+    { content: "atlantico", value: "Atlántico" },
+  ];
+
+  /**
+   * @todo de donde vamos a sacar los municipios???
+   */
+  municipioList = [
+    { content: "jardin", value: "Jardín" },
+    { content: "tamesis", value: "Támesis" },
+  ];
 
   user = {} as User;
 
@@ -29,10 +51,10 @@ export class AnalysisFormPage implements OnInit {
   constructor(
     private firebaseSvc: FirebaseService,
     private utilsSvc: UtilsService
-  ) { }
+  ) {}
 
   ngOnInit() {
-    this.species.disable();
+    // this.species.disable();
   }
 
   ionViewWillEnter() {
@@ -41,73 +63,96 @@ export class AnalysisFormPage implements OnInit {
 
   ionViewDidEnter() {
     this.user = this.utilsSvc.getCurrentUser();
-    this.getOperators();
-    this.getProperties();
+    this.getDeparments();
+    // this.getProperties();
   }
 
-
-
-  getOperators() {
-    this.operators = this.user.operators.map(operator => {
+  /**
+   * We're using the Object.keys() method to get an array of the keys of the colombia object, then we're
+   * using the map() method to iterate over the array and return an array of objects with the value and
+   * content properties
+   */
+  getDeparments() {
+    this.departments = Object.keys(colombia).map((department) => {
       return {
-        value: operator,
-        content: operator
+        value: department,
+        content: department,
+      };
+    });
+  }
+
+  /**
+   * It loops through the object and if the value of the department is equal to the key of the object,
+   * it maps the value of the object to the towns array
+   */
+  getTowns() {
+    this.town.reset();
+    for (let [key, value] of Object.entries(colombia)) {
+      if (this.department.value == key) {
+        this.towns = value.map((department) => {
+          return {
+            value: department,
+            content: department,
+          };
+        });
       }
-    })
+    }
   }
 
-  getProperties() {
-    this.properties = this.user.properties.map(property => {
-      return {
-        value: property,
-        content: property
-      }
-    })
+  /**
+   * The function calls the Geolocation plugin's getCurrentPosition() function, which returns a promise
+   * that resolves to a Coordinates object
+   */
+  async getCurrentPosition() {
+    this.utilsSvc.presentLoading();
+
+    const coordinates = await Geolocation.getCurrentPosition();
+    this.utilsSvc.dismissLoading();
+
+    if (coordinates && coordinates.coords) {
+      this.latitude = coordinates.coords.latitude;
+      this.longitude = coordinates.coords.longitude;
+    }
   }
 
-  submit() {
-   let data = {
-    operator: this.operator.value,
-    // property: this.property.value,
-    treeQuantity: this.treeQuantity.value,
-    priceKg: this.priceKg.value,
-    species: this.species.value,
-    date: this.utilsSvc.getCurrentDate()
-   }
+  createReport() {
+    // const location = { latitude: this.latitude, longitude: this.longitude };
+    // let data = {
+    //   id: "",
+    //   localId: "",
+    //   departament: this.department.value,
+    //   town: this.town.value,
+    //   location: location,
+    //   placa: this.placa.value,
+    //   guia: this.guia.value,
+    //   analisis: [],
+    //   localPathXls: "",
+    //   pathPdf: "",
+    //   urlPdf: "",
+    //   wtUserId: "",
+    //   fCreado: this.utilsSvc.getCurrentDate(),
+    //   fModificado: this.utilsSvc.getCurrentDate(),
+    // };
 
-   this.utilsSvc.saveLocalStorage('analysis',data);
-   this.utilsSvc.routerLink('/tabs/analysis/how-to-use')
-   
+    // this.utilsSvc.saveLocalStorage("wt-report", data);
+    this.utilsSvc.routerLink("/tabs/analysis/how-to-use");
   }
-
-  resetForm() {
-    this.operator.reset();
-    // this.property.reset();
-    this.treeQuantity.reset();
-    this.priceKg.reset();
-  }
-
 
   validator() {
-    if (this.operator.invalid) {
+    if (this.department.invalid) {
       return false;
     }
-    if (this.species.invalid) {
-      return false;
-    }
-
-    // if (this.property.invalid) {
-    //   return false;
-    // }
-
-    if (this.treeQuantity.invalid) {
+    if (this.town.invalid) {
       return false;
     }
 
-    if (this.priceKg.invalid) {
+    if (this.guia.invalid) {
       return false;
     }
 
+    if (this.placa.invalid) {
+      return false;
+    }
 
     return true;
   }

@@ -11,6 +11,10 @@
 
 ## [MARIO/RED-10-AUTH] - 2023-04-21
 
+- Estilos pantalla analisis-form.
+
+## [MARIO/RED-10-AUTH] - 2023-04-21
+
 - Estilos pantalla analisis y finkappalert.
 
 ## [MARIO/RED-10-AUTH] - 2023-04-20 - Al terminar hacer merge al MARIO/RED-10-AUTH

@@ -1,14 +1,20 @@
-.btn-loading{
-    width: 115px;
+.btn-loading {
+  width: 115px;
 }
 
-.wrapper{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 80vh;
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
 }
 
-.form{
-    width: 85vw;
+.form {
+  width: 85vw;
+}
+
+.gradient-input[_ngcontent-ryf-c150]
+  ion-buttons[_ngcontent-ryf-c150]
+  ion-button[_ngcontent-ryf-c150] {
+  height: 50px !important;
 }
