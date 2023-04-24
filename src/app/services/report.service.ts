@@ -159,6 +159,11 @@ export class ReportService {
     this.store.patch({
       reports: reports,
     });
+
+    /**
+     * @todo @mario Persistir el report en el localstorage.
+     */
+
     this.patchActiveReport(null);
   }
 
