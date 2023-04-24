@@ -45,7 +45,12 @@ export class CompanyService {
   private toLocalStorage(company: WtCompany): LocaStorageWtCompany {
     return {
       nombres: company.nombres,
+      apellidos: company.apellidos,
       numerodocumento: company.numerodocumento,
+      direccion: company.direccion,
+      pais: company.pais,
+      departamento: company.departamento,
+      municipio: company.municipio,
     };
   }
 
@@ -61,7 +66,12 @@ export class CompanyService {
     return locaStorageWtCompany
       ? {
           nombres: locaStorageWtCompany.nombres,
+          apellidos: locaStorageWtCompany.apellidos,
           numerodocumento: locaStorageWtCompany.numerodocumento,
+          direccion: locaStorageWtCompany.direccion,
+          pais: locaStorageWtCompany.pais,
+          departamento: locaStorageWtCompany.departamento,
+          municipio: locaStorageWtCompany.municipio,
         }
       : null;
   }

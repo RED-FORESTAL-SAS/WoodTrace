@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [MARIO/RED-10-AUTH] - 2023-04-24
+
+- Estilos pantalla analisis-form.
+- Poblar datos de la empresa.
+
 ## [MARIO/RED-10-AUTH] - 2023-04-22
 
 - Crear clase BaseStore.
@@ -8,10 +13,6 @@
 - Agregar modelos para WtCompany y WtUser.
 - Make UserService reactive to authentication state change.
 - Make Analysis page reactive.
-
-## [MARIO/RED-10-AUTH] - 2023-04-21
-
-- Estilos pantalla analisis-form.
 
 ## [MARIO/RED-10-AUTH] - 2023-04-21
 

@@ -8,8 +8,18 @@
 export interface WtCompany {
   /** Nombre de la entidad o empesa. */
   nombres: string;
+  /** Apellidos de la entidad o empresa */
+  apellidos: string;
   /** Número de documento de la entidad o empresa. */
   numerodocumento: string;
+  /** Dirección de la entidad*/
+  direccion: string;
+  /** Pais de la entidad */
+  pais: string;
+  /** Departamento de la entidad */
+  departamento: string;
+  /** Ciudad o municipio de la entidad */
+  municipio: string;
 
   /**
    * @todo @diana Terminar de definir los campos.

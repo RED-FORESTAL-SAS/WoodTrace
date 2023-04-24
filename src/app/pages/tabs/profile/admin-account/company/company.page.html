@@ -1,6 +1,6 @@
 <app-header
   backButton="/tabs/profile/admin-account"
-  title="Empresa"
+  title="Empresa asociada"
 ></app-header>
 <ion-content>
   <div class="form">
@@ -23,34 +23,34 @@
         <img [src]="photo.value" />
       </ion-avatar>
     </div>
-    <ion-list>
+    <ion-list *ngIf="company$ | async as company">
       <ion-item>
         <ion-label position="stacked">Nombre de la empresa</ion-label>
-        <ion-input>{{ companyName.value }}</ion-input>
+        <ion-input>{{ company.nombres }} {{ company.apellidos }}</ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked">NIT</ion-label>
-        <ion-input>{{ nit.value }}</ion-input>
+        <ion-input>{{ company.numerodocumento }}</ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked">Dirección</ion-label>
-        <ion-input>{{ companyAddress.value }}</ion-input>
+        <ion-input>{{ company.direccion }}</ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked">País</ion-label>
-        <ion-input>{{ country.value | date:'dd/MM/yyyy' }}</ion-input>
+        <ion-input>{{ company.pais }}</ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked">Departamento</ion-label>
-        <ion-input>{{ department.value }}</ion-input>
+        <ion-input>{{ company.departamento }}</ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="stacked">Ciudad</ion-label>
-        <ion-input>{{ town.value }}</ion-input>
+        <ion-input>{{ company.municipio }}</ion-input>
       </ion-item>
     </ion-list>
 
