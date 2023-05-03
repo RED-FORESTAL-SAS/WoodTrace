@@ -15,9 +15,10 @@ import { map } from "rxjs/operators";
 import { WtWood } from "../models/wt-wood";
 import { Failure } from "../utils/failure.utils";
 import { REPORTS_LS_KEY } from "../constants/reports-ls-key.constant";
+import { AiFailure, AiService } from "./ai.service";
 
 /**
- * Failure for ReportDomain.
+ * Failure for Report Domain.
  */
 export class ReportFailure extends Failure {}
 
@@ -29,7 +30,8 @@ export class ReportService {
     private localStorage: LocalStorageRepository,
     private store: ReportStore,
     private userService: UserService,
-    private woodService: WoodService
+    private woodService: WoodService,
+    private aiService: AiService
   ) {
     // Initialize active report with value from localStorage, if any, or null.
     // Inicialize reports with value from localStorage, if any, or empty array.
@@ -74,6 +76,28 @@ export class ReportService {
    */
   get reports(): Observable<WtReport[]> {
     return this.store.state$.pipe(map((state) => state.reports));
+  }
+
+  /**
+   * Envía el Wood activo para que sea analizado por la AI y actualiza su estado de la aplicación,
+   * con el resultado del análisis.
+   *
+   * @throws ReportFailure. El resultado solo puede ser exitoso o fallar. Por eso solo se indica un
+   * error en caso de falla.
+   */
+  async analyzeWood(): Promise<void> {
+    if (!this.store.state.activeWood) {
+      throw new ReportFailure("No hay un Wood activo.");
+    }
+
+    try {
+      const analayzedWood = await this.aiService.withRemoteImage(
+        this.store.state.activeWood
+      );
+      this.patchActiveWood(analayzedWood);
+    } catch (e) {
+      throw new ReportFailure("Error al analizar la muestra.", e.code, e);
+    }
   }
 
   /**

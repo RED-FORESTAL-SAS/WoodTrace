@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [MARIO/RED-10-AUTH] - 2023-05-03
+
+- Add AiService and AiResponseModel.
+- Fix Failure to have "cause" field.
+- ReportService: Add "analyzeWood" method.
+
 ## [MARIO/RED-10-AUTH] - 2023-04-24
 
 - Estilos pantalla analisis-form.
