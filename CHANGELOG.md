@@ -1,10 +1,10 @@
 # CHANGELOG
 
-## [MARIO/RED-10-AUTH] - 2023-05-03
+## [MARIO/RED-10-AUTH] - 2023-05-04
 
-- Add AiService and AiResponseModel.
-- Fix Failure to have "cause" field.
-- ReportService: Add "analyzeWood" method.
+- membership: Hacer que se recuperen y se rediman las licencias.
+- Borrar código en desuso.
+- Anaálisis: Que identifique y se comporte según si existe o nó licencia.
 
 ## [MARIO/RED-10-AUTH] - 2023-04-24
 
