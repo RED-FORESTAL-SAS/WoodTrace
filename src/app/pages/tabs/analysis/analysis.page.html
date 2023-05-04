@@ -14,20 +14,21 @@
       </div>
       <div class="btn-container">
         <ion-grid>
-          <ion-button
-            class="btn"
-            [disabled]="(hasActiveReport$|async) ? false : true"
-            (click)="continueReport()"
-          >
-            <ion-col align-items-center class="bg-icon-btn" size="2">
-              <ion-icon class="icon-btn" name="create-outline"></ion-icon>
-            </ion-col>
-
-            <ion-col align-items-start class="label-btn">
-              Continuar análisis
-            </ion-col>
-          </ion-button>
           <ion-row>
+            <ion-col align-items-center>
+              <div class="btn-gradient">
+                <ion-button
+                  mode="ios"
+                  [disabled]="(license$ | async) && (hasActiveReport$|async) ? false : true"
+                  (click)="continueReportHandler()"
+                >
+                  <span>Continuar análisis</span>
+                </ion-button>
+              </div>
+            </ion-col>
+          </ion-row>
+
+          <ion-row *ngIf="license$ | async">
             <ion-col align-items-center>
               <div class="icon-container">
                 <img
@@ -36,11 +37,37 @@
                   src="assets/icon/wt_Property 1=Analyze Second.svg"
                 />
               </div>
+            </ion-col>
+          </ion-row>
+          <ion-row *ngIf="(license$ | async) === null">
+            <h5>¡Ups! No tienes una licencia activa.</h5>
+            <ion-col align-items-center>
               <div class="btn-gradient">
                 <ion-button
                   mode="ios"
-                  [disabled]="(licenseIsActive$|async) ? false : true"
-                  (click)="createNewReport()"
+                  routerLink="../profile/admin-account/membership"
+                >
+                  <span>Ingresar Licencia</span>
+                </ion-button>
+              </div>
+            </ion-col>
+            <ion-col align-items-center>
+              <div class="icon-container">
+                <img
+                  width="180px"
+                  height="180px"
+                  src="assets/icon/wt_License_1.svg"
+                />
+              </div>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col align-items-center>
+              <div class="btn-gradient">
+                <ion-button
+                  mode="ios"
+                  [disabled]="(license$ | async) === null"
+                  (click)="createNewReportHandler()"
                 >
                   <span>Nuevo análisis</span>
                 </ion-button>

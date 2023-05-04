@@ -1,51 +1,56 @@
 <app-header backButton="/tabs/profile" title="Membresía"></app-header>
-<div class="title">
-  <h3 *ngIf="licencia">Detalle de la membresía</h3>
-  <h3 *ngIf="!licencia">Ingresa el código de licencia</h3>
-</div>
+
 <ion-content>
-  <div *ngIf="licencia" class="form">
+  <div *ngIf="license$ | async as license" class="form">
     <ion-list>
+      <h3>Detalle de la membresía</h3>
+
       <ion-item>
         <ion-label position="fixed">Estado:</ion-label>
-        <ion-input>{{ licencia }}</ion-input>
+        <ion-input
+          ><span *ngIf="license.status === 'active'">Activa</span>
+          <span *ngIf="license.status === 'inactive'">Inactiva</span></ion-input
+        >
       </ion-item>
 
       <ion-item>
         <ion-label position="fixed">Desde:</ion-label>
-        <ion-input>{{ licencia }}</ion-input>
+        <ion-input
+          >{{ license.begins.toDate() | date: 'dd-MM-yyyy' }}</ion-input
+        >
       </ion-item>
 
       <ion-item>
         <ion-label position="fixed">Hasta:</ion-label>
-        <ion-input>{{ licencia }}</ion-input>
+        <ion-input>{{ license.ends.toDate() | date: 'dd-MM-yyyy' }}</ion-input>
       </ion-item>
     </ion-list>
   </div>
 
-  <div *ngIf="!licencia" class="wrapper-form">
+  <div *ngIf="(license$ | async) === null " class="wrapper-form">
     <div>
       <div class="form">
+        <h3>Ingresa el código de licencia</h3>
         <!-- Licencia/Número de serie  -->
         <app-input-gradient
           max="20"
           label="Licencia/Número de serie"
           type="text"
-          [formControlValue]="licenseId"
+          [formControlValue]="redeemCode"
         >
         </app-input-gradient>
         <!-- <div class="note">El código de licencia expira una vez redimido.</div> -->
-        <div class="validators" *ngIf="licenseId.dirty && licenseId.errors">
-          <span *ngIf="licenseId.errors?.['minlength']"
+        <div class="validators" *ngIf="redeemCode.dirty && redeemCode.errors">
+          <span *ngIf="redeemCode.errors?.['minlength']"
             >El formato de la licencia es inválido</span
           >
         </div>
 
         <!-- Button Redeem-->
-        <div *ngIf="!loading && !licencia" class="btn-gradient">
+        <div *ngIf="!loading" class="btn-gradient">
           <ion-button
             (click)="getLicense()"
-            [disabled]="licenseId.invalid || user.license"
+            [disabled]="redeemCode.invalid"
             mode="ios"
           >
             <span>Validar</span>

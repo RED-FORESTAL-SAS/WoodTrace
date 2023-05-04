@@ -2,26 +2,26 @@
 
 <ion-content>
   <div class="form">
-    <ion-list>
+    <ion-list *ngIf="user$ | async as user">
       <ion-item>
         <ion-label position="stacked">Nombre</ion-label>
-        <ion-input [disabled]="true">{{ fullName.value }}</ion-input>
+        <ion-input [disabled]="true">{{ user.fullName }}</ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked">Email</ion-label>
-        <ion-input [disabled]="true">{{ email.value }}</ion-input>
+        <ion-input [disabled]="true">{{ user.email }}</ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked"> Celular</ion-label>
-        <ion-input [disabled]="true">{{ movil.value }}</ion-input>
+        <ion-input [disabled]="true">{{ user.movil }}</ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked">Fecha de nacimiento</ion-label>
         <ion-input [disabled]="true"
-          >{{ fNacimiento.value | date:'dd/MM/yyyy' }}</ion-input
+          >{{ user.fNacimiento.toDate() | date: 'dd-MM-yyyy' }}</ion-input
         >
       </ion-item>
 
@@ -32,11 +32,11 @@
           <ion-select-option value="2">Oranges</ion-select-option>
           <ion-select-option value="3">Bananas</ion-select-option>
         </ion-select> -->
-        <ion-input type="select">{{ docType.value }}</ion-input>
+        <ion-input type="select">{{ user.docType }}</ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="stacked">Documento</ion-label>
-        <ion-input [disabled]="true">{{ docNumber.value }}</ion-input>
+        <ion-input [disabled]="true">{{ user.docNumber }}</ion-input>
       </ion-item>
     </ion-list>
   </div>

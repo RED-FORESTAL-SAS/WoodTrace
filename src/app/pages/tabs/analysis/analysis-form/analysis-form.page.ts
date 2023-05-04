@@ -12,12 +12,6 @@ import { Geolocation } from "@capacitor/geolocation";
   styleUrls: ["./analysis-form.page.scss"],
 })
 export class AnalysisFormPage implements OnInit {
-  // operator = new FormControl("", [Validators.required]);
-  // species = new FormControl("Limón Común", [Validators.required]);
-  // property = new FormControl('', [Validators.required])
-  // treeQuantity = new FormControl("", [Validators.required, Validators.min(1)]);
-  // priceKg = new FormControl("", [Validators.required]);
-
   department = new FormControl("", [Validators.required]);
   town = new FormControl("", [Validators.required]);
   guia = new FormControl("", [Validators.required]);
@@ -116,25 +110,26 @@ export class AnalysisFormPage implements OnInit {
   }
 
   createReport() {
-    // const location = { latitude: this.latitude, longitude: this.longitude };
-    // let data = {
-    //   id: "",
-    //   localId: "",
-    //   departament: this.department.value,
-    //   town: this.town.value,
-    //   location: location,
-    //   placa: this.placa.value,
-    //   guia: this.guia.value,
-    //   analisis: [],
-    //   localPathXls: "",
-    //   pathPdf: "",
-    //   urlPdf: "",
-    //   wtUserId: "",
-    //   fCreado: this.utilsSvc.getCurrentDate(),
-    //   fModificado: this.utilsSvc.getCurrentDate(),
-    // };
+    console.log("entra a createReport");
+    const location = { latitude: this.latitude, longitude: this.longitude };
+    let data = {
+      id: "",
+      localId: "",
+      departament: this.department.value,
+      town: this.town.value,
+      location: location,
+      placa: this.placa.value,
+      guia: this.guia.value,
+      analisis: [],
+      localPathXls: "",
+      pathPdf: "",
+      urlPdf: "",
+      wtUserId: "",
+      fCreado: this.utilsSvc.getCurrentDate(),
+      fModificado: this.utilsSvc.getCurrentDate(),
+    };
 
-    // this.utilsSvc.saveLocalStorage("wt-report", data);
+    this.utilsSvc.saveLocalStorage("wt_report", data);
     this.utilsSvc.routerLink("/tabs/analysis/how-to-use");
   }
 

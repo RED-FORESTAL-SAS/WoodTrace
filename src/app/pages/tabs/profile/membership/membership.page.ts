@@ -1,11 +1,14 @@
 import { Component, OnInit } from "@angular/core";
 import { FormControl, Validators } from "@angular/forms";
-import { User } from "src/app/models/user.model";
 import { FirebaseService } from "src/app/services/firebase.service";
 import { UtilsService } from "src/app/services/utils.service";
-import { Browser } from "@capacitor/browser";
-import * as moment from "moment";
 import { License } from "src/app/models/license.model";
+import { WtLicense } from "src/app/models/wt-license";
+import { Observable } from "rxjs";
+import { UserService } from "src/app/services/user.service";
+import { LICENCES_FB_COLLECTION } from "src/app/constants/licenses-fb-collection";
+import { limit, orderBy, where } from "src/app/types/query-constraint.type";
+import { WtUser } from "src/app/models/wt-user";
 
 @Component({
   selector: "app-membership",
@@ -14,56 +17,34 @@ import { License } from "src/app/models/license.model";
 })
 export class MembershipPage implements OnInit {
   date = Date.now();
-  licenseId = new FormControl("", [
+  redeemCode = new FormControl("", [
     Validators.required,
-    Validators.minLength(20),
+    Validators.minLength(10),
   ]);
   isValidLicense: boolean = null;
-
-  user = {} as User;
   loading: boolean;
 
   licencia_vitalicia: boolean;
 
-  // @todo solo para probar los estilos. Borrar cuando se tenga la lógica de la licencia
-  licencia: boolean = false;
+  public license$: Observable<WtLicense | null>;
+  public wtUser: WtUser = {} as WtUser;
 
   constructor(
     private firebaseSvc: FirebaseService,
-    private utilsSvc: UtilsService
-  ) {}
+    private utilsSvc: UtilsService,
+    private userService: UserService
+  ) {
+    this.license$ = this.userService.license;
+    this.license$.subscribe((license) => {
+      console.log(license);
+    });
+    this.wtUser = this.userService.currentUser;
+    console.log(this.wtUser);
+  }
 
   ngOnInit() {}
 
-  ionViewWillEnter() {
-    this.user = this.utilsSvc.getCurrentUser();
-    this.licenseExist();
-  }
-
-  async getMembership() {
-    await Browser.open({ url: "https://redforestal.com/" });
-  }
-
-  /**
-   * If the user has a license, set the licenseId value to the license id and get the remaining days of
-   * the license
-   */
-  licenseExist() {
-    if (this.user.license && this.user.license.id) {
-      this.licenseId.setValue(this.user.license.id);
-      this.licenseId.disable();
-    }
-
-    if (this.user.license && this.user.license.dateInit) {
-      this.getRemainingDays();
-
-      if (this.user.license.months == 999999) {
-        this.licencia_vitalicia = true;
-      } else {
-        this.licencia_vitalicia = false;
-      }
-    }
-  }
+  ionViewWillEnter() {}
 
   /**
    * It creates a license object and then adds it to the licenses collection in Firestore
@@ -96,84 +77,62 @@ export class MembershipPage implements OnInit {
    * the local storage and calls the redeemLicense function
    */
   getLicense() {
-    if (this.licenseId.valid) {
+    if (this.redeemCode.valid) {
       this.loading = true;
-      let ref = this.firebaseSvc
-        .getDataById("licenses", this.licenseId.value)
-        .valueChanges()
-        .subscribe(
-          (license: License) => {
-            this.loading = false;
+      this.firebaseSvc
+        .fetchCollection<WtLicense>(LICENCES_FB_COLLECTION, [
+          where("redeemCode", "==", this.redeemCode.value),
+          orderBy("ends", "desc"),
+          limit(1),
+        ])
+        .then((license) => {
+          this.loading = false;
 
-            if (license && !license.dateInit) {
-              license.id = this.licenseId.value;
-              this.redeemLicense(license.months);
-              this.isValidLicense = true;
-            }
-
-            if (!license) {
-              this.utilsSvc.presentToast("Licencia inválida");
-              this.isValidLicense = false;
-            }
-
-            if (license && license.dateInit) {
-              this.utilsSvc.presentToast(
-                "Esta licencia ya fue redimida. Licencia inválida"
-              );
-              this.isValidLicense = false;
-            }
-
-            ref.unsubscribe();
-          },
-          (err) => {
-            this.loading = false;
-            console.log(err);
+          if (license.length === 0) {
+            console.log("NO hay licencia");
+            this.utilsSvc.presentToast(
+              "No hay una licencia identificada con este código. "
+            );
+            // this.isValidLicense = false;
+            return;
           }
-        );
+
+          if (license[0].wtUserId !== "") {
+            this.utilsSvc.presentToast(
+              "Ya hay un usuario asociado a este código de licencia. "
+            );
+            //   this.isValidLicense = false;
+            return;
+          }
+
+          /**
+           * @todo @mario asumo que la validación de la fecha de vigencia no tiene que hacerse
+           * sabiendo que el cron que cambiará el estatus va a hacerlo.
+           */
+          if (license[0].status !== "active") {
+            this.utilsSvc.presentToast("Esta licencia se encuentra inactiva. ");
+            //   this.isValidLicense = false;
+            return;
+          }
+
+          this.loading = true;
+          license[0].wtUserId = this.wtUser.id;
+          this.firebaseSvc.UpdateCollection("wt_licenses", license[0]).then(
+            (res) => {
+              this.utilsSvc.presentToast("¡Licencia redimida exitosamente!");
+              this.loading = false;
+            },
+            (err) => {
+              console.log(err);
+              this.utilsSvc.presentToast("No se pudo redimir la licencia.");
+              this.loading = false;
+            }
+          );
+        })
+        .catch((err) => {
+          this.loading = false;
+          console.log(err);
+        });
     }
-  }
-
-  /**
-   * This function is used to redeem a license, it receives the number of months as a parameter, it
-   * creates a license object with the data of the license, it updates the license in the database and
-   * saves the license in the local storage
-   * @param {number} months - number - The number of months to add to the current date.
-   */
-  redeemLicense(months: number) {
-    this.loading = true;
-
-    let license: License = {
-      id: this.licenseId.value,
-      userId: this.user.id,
-      months,
-      dateInit: moment(Date.now()).format("LLL"),
-      dateEnd: moment().add(months, "months").format("LLL"),
-    };
-
-    this.firebaseSvc.UpdateCollection("licenses", license).then(
-      (res) => {
-        this.loading = false;
-        this.user.license = license;
-        this.utilsSvc.saveLocalStorage("user", this.user);
-        this.getRemainingDays();
-
-        this.utilsSvc.presentToast("¡Licencia redimida exitosamente!");
-      },
-      (err) => {
-        this.loading = false;
-        console.log(err);
-      }
-    );
-  }
-
-  /**
-   * It calculates the difference between two dates and returns the number of days
-   */
-  getRemainingDays() {
-    let currentDate = this.utilsSvc.getCurrentDate();
-    this.user.license.remainingDays = this.utilsSvc.getDiffDays(
-      currentDate,
-      this.user.license.dateEnd
-    );
   }
 }

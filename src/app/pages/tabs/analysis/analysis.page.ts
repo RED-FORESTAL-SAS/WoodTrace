@@ -50,8 +50,8 @@ export class AnalysisPage implements OnDestroy {
     );
 
     // Wire up event handlers.
-    this.createNewReportHandler();
-    this.continueReportHandler();
+    // this.createNewReportHandler();
+    // this.continueReportHandler();
   }
 
   ngOnDestroy(): void {
@@ -63,21 +63,22 @@ export class AnalysisPage implements OnDestroy {
   /**
    * Triggers the creation of a new report.
    */
-  createNewReport(): void {
-    this.createNewReportEvent.next(Date.now());
-  }
+  // createNewReport(): void {
+  //   this.createNewReportEvent.next(Date.now());
+  // }
 
   /**
    * Triggers the continuation of an existing report.
    */
-  continueReport(): void {
-    this.continueReportEvent.next(Date.now());
-  }
+  // continueReport(): void {
+  //   this.continueReportEvent.next(Date.now());
+  // }
 
   /**
    * Handles the event "create new report".
    */
   createNewReportHandler(): void {
+    console.log("entra a createNewReportHandler");
     this.sbs.push(
       this.createNewReportEvent
         .asObservable()
@@ -88,6 +89,7 @@ export class AnalysisPage implements OnDestroy {
             next: (report) => {
               // If there is no active report, it creates a new one and start the analysis.
               if (report === null) {
+                console.log(report);
                 this.continueWithNewReport();
                 return;
               }
@@ -122,9 +124,6 @@ export class AnalysisPage implements OnDestroy {
    */
   private continueWithNewReport(): void {
     this.reportService.patchActiveReport(this.reportService.emptyReport);
-    /**
-     * @todo @diana Revisar por que no redirige.
-     */
     this.utilsSvc.routerLink("/tabs/analysis/analysis-form");
   }
 
@@ -132,17 +131,21 @@ export class AnalysisPage implements OnDestroy {
    * Handles the event "continue report".
    */
   continueReportHandler(): void {
+    console.log("entra a continueReportHandler");
     this.sbs.push(
       this.continueReportEvent
         .asObservable()
         .pipe(
           skipWhile((v) => v === null),
+          switchMap((_) => this.reportService.activeReport.pipe(take(1))),
           tap({
             next: (report) => {
-              /**
-               * @todo @diana Revisar por que no redirige.
-               */
-              this.utilsSvc.routerLink("/tabs/analysis/analysis-trees/pending");
+              // If there is no active report, it creates a new one and start the analysis.
+              if (report === null) {
+                console.log("no hay reporte ");
+              } else {
+                console.log("si hay reporte");
+              }
             },
           })
         )

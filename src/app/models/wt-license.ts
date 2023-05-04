@@ -51,9 +51,9 @@ export interface WtLicense {
   /** ID del "Usuario" de la app WoodTracer que "Redimió" la Licencia. */
   wtUserId: string;
   /** Fecha de inicio de la vigencia de la Licencia. */
-  begins: Timestamp | FieldValue | null;
+  begins: Timestamp | null;
   /** Fecha de finalización de la vigencia de la Licencia. */
-  ends: Timestamp | FieldValue | null;
+  ends: Timestamp | null;
   /** Codigo único para "Redimir" la licencia. */
   redeemCode: string;
 }

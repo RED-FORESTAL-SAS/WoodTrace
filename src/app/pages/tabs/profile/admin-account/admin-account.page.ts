@@ -6,6 +6,9 @@ import { FirebaseService } from "src/app/services/firebase.service";
 import { UtilsService } from "src/app/services/utils.service";
 import { docTypes } from "src/assets/data/document-types";
 import { UpdatePasswordComponent } from "./owner/components/update-password/update-password.component";
+import { UserService } from "src/app/services/user.service";
+import { WtUser } from "src/app/models/wt-user";
+import { Observable } from "rxjs";
 
 @Component({
   selector: "app-admin-account",
@@ -27,9 +30,12 @@ export class AdminAccountPage implements OnInit {
   loading: boolean;
   loadingPhoto: boolean;
 
+  public user$: Observable<WtUser | null>;
+
   constructor(
-    private firebaseSvc: FirebaseService,
-    private utilsSvc: UtilsService,
+    // private firebaseSvc: FirebaseService,
+    // private utilsSvc: UtilsService,
+    private userService: UserService,
     private modalController: ModalController
   ) {}
 
@@ -38,7 +44,7 @@ export class AdminAccountPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    this.user = this.utilsSvc.getCurrentUser();
+    this.user$ = this.userService.user;
     this.getUser();
   }
 
