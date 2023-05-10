@@ -12,7 +12,7 @@ import { UserService } from "./user.service";
 import { ReportStore } from "../state/report.store";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { WtWood } from "../models/wt-wood";
+import { NEW_WT_WOOD, WtWood } from "../models/wt-wood";
 import { Failure } from "../utils/failure.utils";
 import { REPORTS_LS_KEY } from "../constants/reports-ls-key.constant";
 import { AiFailure, AiService } from "./ai.service";
@@ -50,6 +50,22 @@ export class ReportService {
   get emptyReport(): WtReport {
     return {
       ...NEW_WT_REPORT,
+      localId: new Date().getTime().toString(),
+      wtUserId: this.userService.currentUser!.id,
+      fCreado: Timestamp.fromDate(new Date()),
+      fModificado: Timestamp.fromDate(new Date()),
+    };
+  }
+
+  /**
+   * Returns a new empty Wood.
+   *
+   * @param user
+   * @returns
+   */
+  get emptyWood(): WtWood {
+    return {
+      ...NEW_WT_WOOD,
       localId: new Date().getTime().toString(),
       wtUserId: this.userService.currentUser!.id,
       fCreado: Timestamp.fromDate(new Date()),
@@ -238,6 +254,9 @@ export class ReportService {
       localId: report.localId,
       placa: report.placa,
       guia: report.guia,
+      departamento: report.departamento,
+      municipio: report.municipio,
+      ubicacion: report.ubicacion,
       woods: report.woods.map((wood) => this.woodService.toLocalStorage(wood)),
       localPathXls: report.localPathXls,
       pathXls: report.pathXls,
@@ -273,6 +292,9 @@ export class ReportService {
           localId: localStorageWtReport.localId,
           placa: localStorageWtReport.placa,
           guia: localStorageWtReport.guia,
+          departamento: localStorageWtReport.departamento,
+          municipio: localStorageWtReport.municipio,
+          ubicacion: localStorageWtReport.ubicacion,
           woods: localStorageWtReport.woods.map((wood) =>
             this.woodService.fromLocalStorage(wood)
           ),

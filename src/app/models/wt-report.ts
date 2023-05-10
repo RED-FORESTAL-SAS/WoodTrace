@@ -54,6 +54,12 @@ export interface WtReport {
   placa: string;
   /** Número de la guía que porta el transportador para la movilización de la madera. */
   guia: string;
+  /** Departamento donde se ubica la carga a analizar en el reporte */
+  departamento: string;
+  /** Municipio donde se ubica la carga a analizar en el reporte */
+  municipio: string;
+  /** ubicación (latitude, longitude) de la carga a analizar en el reporte */
+  ubicacion: Ubicacion;
   /** Array con las muestras/análisis que se han generado para el reporte. */
   woods: WtWood[];
   /**
@@ -84,6 +90,10 @@ export interface WtReport {
   fModificado: Timestamp | FieldValue | null;
 }
 
+export interface Ubicacion {
+  lat: number;
+  lng: number;
+}
 /**
  * Describe un WtReport con el formato apropiado para guardarlo en el localstorage.
  * Todos los campos quedan iguales, excepto los campos "Timestamp" que se convierten a un objeto
@@ -94,6 +104,9 @@ export interface LocalStorageWtReport {
   localId: string;
   placa: string;
   guia: string;
+  departamento: string;
+  municipio: string;
+  ubicacion: Ubicacion;
   woods: LocalStorageWtWood[];
   localPathXls: string;
   pathXls: string;
@@ -118,6 +131,12 @@ export const NEW_WT_REPORT: WtReport = {
   localId: "",
   placa: "",
   guia: "",
+  departamento: "",
+  municipio: "",
+  ubicacion: {
+    lat: 0,
+    lng: 0,
+  },
   woods: [],
   localPathXls: "",
   pathXls: "",

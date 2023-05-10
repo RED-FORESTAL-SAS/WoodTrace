@@ -30,15 +30,15 @@ const routes: Routes = [
       import("./take-photos/take-photos.module").then(
         (m) => m.TakePhotosPageModule
       ),
-    canActivate: [AnalysisGuard],
+    // canActivate: [AnalysisGuard],
   },
   {
-    path: "analysis-resumen/:tree",
+    path: "analysis-resumen",
     loadChildren: () =>
       import("./analysis-resumen/analysis-resumen.module").then(
         (m) => m.AnalysisResumenPageModule
       ),
-    canActivate: [AnalysisGuard],
+    // canActivate: [AnalysisGuard],
   },
   {
     path: "analysis-trees/:segment",

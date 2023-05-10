@@ -1,61 +1,94 @@
 <app-header backButton="/tabs/analysis" title="Como Analizar"></app-header>
 
 <ion-content>
-
-
-
-  <swiper class="swiper" [config]="config" #swiper [virtual]="true" (slideChange)="onSlideChange($event)">
-
+  <swiper
+    class="swiper"
+    [config]="config"
+    #swiper
+    [virtual]="true"
+    (slideChange)="onSlideChange($event)"
+  >
     <!-- Paso 1 -->
     <ng-template swiperSlide>
-      <app-stepper slideActive="1"></app-stepper>
+      <!-- <app-stepper slideActive="1"></app-stepper> -->
 
       <div class="ion-text-center d-flex">
         <div>
-               <p>Pon el celular frente al árbol en modo vertical</p>
+          <h1>Paso 1</h1>
+          <p>Toma una foto o sube una que hayas tomado antes.</p>
 
-        <div class="ion-padding-vertical">
-          <img style="width: 230px;margin-left: 80px;" src="assets/icon/analisis-ayuda-1.svg" alt="">
+          <img src="assets/icon/wt_Group464.svg" alt="" />
+          <img
+            style="max-height: 80%; max-width: 80%"
+            src="assets/icon/wt_Paso1.svg"
+            alt=""
+          />
         </div>
-        </div>
-   
-
       </div>
     </ng-template>
 
     <!-- Paso 2 -->
     <ng-template swiperSlide>
-      <app-stepper slideActive="2"></app-stepper>
+      <!-- <app-stepper slideActive="2"></app-stepper> -->
       <div class="ion-text-center d-flex">
-
         <div>
-          <p>Toca el botón de en medio para tomar la fotografía</p>
-          <div class="height: 280px;">
-              <img style="width: 230px; transform: rotate(90deg);padding-top: 170px; margin-left: 140px;" src="assets/icon/analisis-ayuda-4.svg" alt=""> 
-          </div>
+          <h1>Paso 2</h1>
+          <p>
+            Asegurate de tener una lupa x60 en la cámara posterior del celular.
+          </p>
+
+          <img src="assets/icon/wt_Paso2.svg" alt="" />
         </div>
-       
-     
       </div>
     </ng-template>
-
-    
 
     <!-- Paso 3 -->
     <ng-template swiperSlide>
-      <app-stepper slideActive="3"></app-stepper>
+      <!-- <app-stepper slideActive="3"></app-stepper> -->
       <div class="ion-text-center d-flex">
-
         <div>
-          <p>Debes tomar 4 fotos, una desde cada lado del arbol</p>
-        <div style="height: 340px;">
-             <img style="width: 300px;" src="assets/icon/analisis-ayuda-8.svg" alt="">
+          <h1>Paso 3</h1>
+          <p>
+            Toma una muestra de la madera, acerca el celular, tómale una foto,
+            verifica el análisis y guardalo.
+          </p>
+          <img src="assets/icon/wt_Paso3.svg" alt="" />
         </div>
-       
-        </div>
-        
       </div>
     </ng-template>
 
+    <!-- Paso 4 -->
+    <ng-template swiperSlide>
+      <!-- <app-stepper slideActive="4"></app-stepper> -->
+      <div class="ion-text-center d-flex">
+        <div>
+          <h1>Paso 4</h1>
+          <p>
+            Perfecto! Por ultimo, añade muestras al reporte o generalo para
+            finalizar.
+          </p>
+          <img src="assets/icon/wt_Paso4.svg" alt="" />
+        </div>
+      </div>
+    </ng-template>
   </swiper>
+
+  <div class="btn-container animate__animated animate__fadeIn">
+    <div *ngIf="slideActive" class="btn-gradient">
+      <ion-button (click)="slidePrev()" mode="ios">
+        <span>Volver</span>
+      </ion-button>
+    </div>
+    <div *ngIf="slideActive !== 3" class="btn-gradient">
+      <ion-button (click)="slideNext()" mode="ios">
+        <span>Siguiente</span>
+      </ion-button>
+    </div>
+
+    <div *ngIf="slideActive === 3" class="btn-gradient">
+      <ion-button (click)="goToRoot()" mode="ios">
+        <span>Entendido </span>
+      </ion-button>
+    </div>
+  </div>
 </ion-content>

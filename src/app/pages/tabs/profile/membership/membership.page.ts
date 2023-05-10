@@ -35,11 +35,7 @@ export class MembershipPage implements OnInit {
     private userService: UserService
   ) {
     this.license$ = this.userService.license;
-    this.license$.subscribe((license) => {
-      console.log(license);
-    });
     this.wtUser = this.userService.currentUser;
-    console.log(this.wtUser);
   }
 
   ngOnInit() {}

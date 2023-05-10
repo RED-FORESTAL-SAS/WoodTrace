@@ -20,7 +20,7 @@
                 <ion-button
                   mode="ios"
                   [disabled]="(license$ | async) && (hasActiveReport$|async) ? false : true"
-                  (click)="continueReportHandler()"
+                  (click)="continueReport()"
                 >
                   <span>Continuar análisis</span>
                 </ion-button>
@@ -67,7 +67,7 @@
                 <ion-button
                   mode="ios"
                   [disabled]="(license$ | async) === null"
-                  (click)="createNewReportHandler()"
+                  (click)="createNewReport()"
                 >
                   <span>Nuevo análisis</span>
                 </ion-button>

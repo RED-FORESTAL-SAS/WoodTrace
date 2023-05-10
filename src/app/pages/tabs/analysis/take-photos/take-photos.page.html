@@ -1,42 +1,78 @@
 <app-header backButton="/tabs/analysis" title="Análisis"></app-header>
 
 <ion-content>
-
-  <div style="padding: 20px 20px 0px 20px;" *ngIf="currentAnalysis().pendingTrees.length || currentAnalysis().trees.length" class="btn-gradient ion-text-end">
-    <ion-button size="small" routerLink="/tabs/analysis/analysis-trees/pending" mode="ios">
-      <span>Ir al resumen</span>
-    </ion-button>
-  </div>
-
-  <p>Para analizar el arbol debes tomar 4 fotos, una desde cada lado del arbol</p>
-
   <ion-grid fixed>
     <ion-row>
-      <ion-col (click)="removePhoto(i, p.side)" *ngFor="let p of photos; index as i" size="6">
-        
-        <div class="side-label">{{p.side}}</div>
-        <div class="square">
-          <ion-icon (click)="removePhoto(i, p.side)" class="remove-photo" color="light" name="close-circle"></ion-icon>
-          <img [src]="p.file">
+      <ion-col align-items-center>
+        <div class="form">
+          <app-input-gradient
+            [selectOptions]="especies"
+            label="Especie"
+            type="select"
+            [formControlValue]="especie"
+          ></app-input-gradient>
+          <div class="validators" *ngIf="especie.touched && especie.errors">
+            <span *ngIf="especie.errors?.['required']"
+              >Selecciona el departamento donde está ubicada la empresa</span
+            >
+          </div>
         </div>
       </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col align-items-center>
+        <div class="ion-text-center d-flex">
+          <img *ngIf="!this.photo.value" src="assets/icon/wt_Group459.svg" />
 
-      <ion-col *ngFor="let s of sides" size="6">
-        <div class="side-label">{{s}}</div>
-        <ion-card (click)="takePhoto(s)">
-          <ion-icon name="add-circle"></ion-icon> 
-        </ion-card>
+          <img
+            *ngIf="this.photo.value && !loadingPhoto"
+            [src]="this.photo.value"
+          />
+        </div>
       </ion-col>
-
+      <!-- <ion-col align-items-center>
+        <div class="ion-text-center d-flex">
+          <img *ngIf="!this.photo" src="assets/icon/wt_Group459.svg" />
+          <img *ngIf="this.photo" src="{{ this.photo }}" />
+        </div>
+      </ion-col> -->
+    </ion-row>
+    <ion-row>
+      <ion-col align-items-center>
+        <div class="ion-text-center d-flex">
+          <ion-button class="rounded-button" mode="ios">
+            <ion-icon
+              class="icon-big"
+              color="primary"
+              src="../../../../assets/icon/wt_analisis_camera.svg"
+            ></ion-icon>
+          </ion-button>
+          <p>Tomar</p>
+        </div>
+      </ion-col>
+      <ion-col align-items-center>
+        <div class="ion-text-center d-flex">
+          <ion-button class="rounded-button" mode="ios" (click)="uploadPhoto()">
+            <ion-icon
+              class="icon-big"
+              color="dark"
+              src="../../../../assets/icon/wt_analisis_upload.svg"
+            ></ion-icon>
+          </ion-button>
+          <p>Subir</p>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col align-items-center>
+        <div class="btn-gradient">
+          <ion-button (click)="saveWood()" mode="ios">
+            <span>Analizar</span>
+          </ion-button>
+        </div>
+      </ion-col>
     </ion-row>
   </ion-grid>
 
-   <!-- Button *ngIf="!loading && photos.length == 4" -->
-   <div class="btn-gradient">
-    <ion-button [disabled]="photos.length !== 4" (click)="saveTree()" mode="ios">
-      <span>Añadir Árbol</span>
-    </ion-button>
-  </div>
-
-
+  <!-- Button *ngIf="!loading && photos.length == 4" -->
 </ion-content>

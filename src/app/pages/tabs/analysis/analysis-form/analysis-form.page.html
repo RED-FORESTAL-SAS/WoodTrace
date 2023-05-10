@@ -3,8 +3,8 @@
   <div class="wrapper">
     <div class="form">
       <!-- Departamento  -->
+
       <app-input-gradient
-        (ionChange)="getTowns()"
         [selectOptions]="departments"
         label="Departamento"
         type="select"
@@ -63,7 +63,6 @@
       </div>
       <app-input-gradient
         class=".label-left"
-        (click)="getCurrentPosition()"
         icon="location-outline"
         label="{{longitude && latitude ? latitude+', '+longitude : 'Añadir Ubicación'}}"
         type="button"
@@ -73,7 +72,7 @@
       <!-- Button -->
       <div *ngIf="!loading" class="btn-gradient">
         <ion-button
-          (click)="createReport()"
+          (click)="updateReport()"
           [disabled]="!validator()"
           mode="ios"
         >
