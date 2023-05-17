@@ -1,42 +1,43 @@
-<app-header backButton="/tabs/profile" title="Cómo funciona"></app-header>
+<app-header backButton="/tabs/help" title="Cómo funciona"></app-header>
+<ion-content>
+  <div class="btn-container">
+    <ion-grid>
+      <ion-row class="btn" routerLink="../implements">
+        <ion-col align-items-center class="bg-icon-btn" size="2">
+          <ion-icon
+            class="icon-btn"
+            src="../../../../assets/icon/wt_Icon list=Help.svg"
+          ></ion-icon>
+        </ion-col>
 
-<div class="btn-container">
-  <ion-grid>
-    <ion-row class="btn" routerLink="../implements">
-      <ion-col align-items-center class="bg-icon-btn" size="2">
-        <ion-icon
-          class="icon-btn"
-          src="../../../../assets/icon/wt_Icon list=Help.svg"
-        ></ion-icon>
-      </ion-col>
+        <ion-col align-items-start class="label-btn">
+          Implementos necesarios
+        </ion-col>
+      </ion-row>
+      <ion-row class="btn" routerLink="../analysis-help">
+        <ion-col align-items-center class="bg-icon-btn" size="2">
+          <ion-icon
+            class="icon-btn"
+            src="../../../../assets/icon/wt_Icon list=Contacts.svg"
+          ></ion-icon>
+        </ion-col>
 
-      <ion-col align-items-start class="label-btn">
-        Implementos necesarios
-      </ion-col>
-    </ion-row>
-    <ion-row class="btn" routerLink="../analysis-help">
-      <ion-col align-items-center class="bg-icon-btn" size="2">
-        <ion-icon
-          class="icon-btn"
-          src="../../../../assets/icon/wt_Icon list=Contacts.svg"
-        ></ion-icon>
-      </ion-col>
+        <ion-col align-items-start class="label-btn">
+          Cómo realizar un análisis
+        </ion-col>
+      </ion-row>
+      <ion-row class="btn" routerLink="../report-help">
+        <ion-col align-items-center class="bg-icon-btn" size="2">
+          <ion-icon
+            class="icon-btn"
+            src="../../../../assets/icon/wt_Icon list=Contacts.svg"
+          ></ion-icon>
+        </ion-col>
 
-      <ion-col align-items-start class="label-btn">
-        Cómo realizar un análisis
-      </ion-col>
-    </ion-row>
-    <ion-row class="btn" routerLink="../report-help">
-      <ion-col align-items-center class="bg-icon-btn" size="2">
-        <ion-icon
-          class="icon-btn"
-          src="../../../../assets/icon/wt_Icon list=Contacts.svg"
-        ></ion-icon>
-      </ion-col>
-
-      <ion-col align-items-start class="label-btn">
-        Cómo funcionan los reportes
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-</div>
+        <ion-col align-items-start class="label-btn">
+          Cómo funcionan los reportes
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>

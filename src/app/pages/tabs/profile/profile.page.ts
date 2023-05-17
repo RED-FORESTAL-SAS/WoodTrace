@@ -1,9 +1,13 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
+import { Observable, Subscription } from "rxjs";
+import { take, tap } from "rxjs/operators";
 import { User } from "src/app/models/user.model";
+import { WtUser } from "src/app/models/wt-user";
 import { FirebaseService } from "src/app/services/firebase.service";
 import { PdfService } from "src/app/services/pdf.service";
+import { UserService } from "src/app/services/user.service";
 import { UtilsService } from "src/app/services/utils.service";
 
 @Component({
@@ -11,30 +15,60 @@ import { UtilsService } from "src/app/services/utils.service";
   templateUrl: "./profile.page.html",
   styleUrls: ["./profile.page.scss"],
 })
-export class ProfilePage implements OnInit {
+export class ProfilePage implements OnInit, OnDestroy {
   photo = new FormControl("");
   loadingPhoto: boolean;
+
+  private sbs: Subscription[] = [];
 
   user = {} as User;
 
   loading: boolean;
 
+  /** Observable with active license or null. */
+  public user$: Observable<WtUser | null>;
+
   constructor(
     private firebaseSvc: FirebaseService,
-    private utilsSvc: UtilsService
-  ) {}
-
-  ngOnInit() {}
-
-  ionViewWillEnter() {
-    this.user = this.utilsSvc.getCurrentUser();
-    this.getUser();
+    private utilsSvc: UtilsService,
+    private userService: UserService
+  ) {
+    this.user$ = this.userService.user;
   }
 
-  currentUser(): User {
-    console.log();
-    return this.utilsSvc.getCurrentUser();
+  ngOnInit() {
+    this.populateForm();
   }
+
+  ngOnDestroy(): void {
+    this.sbs.forEach((s) => s.unsubscribe());
+  }
+
+  populateForm() {
+    this.sbs.push(
+      this.userService.user
+        .pipe(
+          take(1),
+          tap({
+            next: (user) => {
+              console.log(user.email);
+              this.photo.setValue(user.photo);
+            },
+          })
+        )
+        .subscribe()
+    );
+  }
+
+  // ionViewWillEnter() {
+  //   this.user = this.utilsSvc.getCurrentUser();
+  //   this.getUser();
+  // }
+
+  // currentUser(): User {
+  //   console.log();
+  //   return this.utilsSvc.getCurrentUser();
+  // }
 
   /**
    * This function sets the values of the form fields to the values of the user object
@@ -95,40 +129,29 @@ export class ProfilePage implements OnInit {
     );
   }
 
-  /**
-   * It calculates the difference between two dates and returns the number of days
-   */
-  // async getLicenseRemainingDays() {
-  //   let currentUser: User = this.currentUser();
-
-  //   if (currentUser.license && currentUser.license.dateInit) {
-  //     let currentDate = this.utilsSvc.getCurrentDate();
-  //     currentUser.license.remainingDays = this.utilsSvc.getDiffDays(
-  //       currentDate,
-  //       currentUser.license.dateEnd
-  //     );
-  //     this.utilsSvc.saveLocalStorage("user", currentUser);
-
-  //     if (currentUser.license.remainingDays <= 0) {
-  //       await this.firebaseSvc.deleteFromCollection(
-  //         "licenses",
-  //         currentUser.license.id
-  //       );
-
-  //       currentUser.license = null;
-  //       this.utilsSvc.saveLocalStorage("user", currentUser);
-  //     }
-  //   }
-  // }
-
-  // async passwordRequired() {
-  //   let passwordValid = await this.utilsSvc.passwordRequired();
-  //   if (passwordValid) {
-  //     this.utilsSvc.routerLink('/tabs/profile/admin-account')
-  //   }
-  // }
-
   logOut() {
     this.firebaseSvc.logout();
+  }
+
+  eliminarCuenta() {
+    this.utilsSvc.presentAlertConfirm({
+      header: "Eliminar la cuenta",
+      message: "¿Está seguro de que desea eliminar la cuenta?",
+      buttons: [
+        {
+          text: "Cancelar",
+          handler: () => {},
+        },
+        {
+          text: "Continuar",
+          handler: () => {
+            /** @todo falta definir las políticas de eliminación de cuentas y la funcionalidad.  */
+            this.utilsSvc.presentToast(
+              ":P Falta desarrollar esta funcionalidad. "
+            );
+          },
+        },
+      ],
+    });
   }
 }

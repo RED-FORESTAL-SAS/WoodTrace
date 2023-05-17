@@ -1,24 +1,10 @@
-.wrapper {
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 60vh;
+.logo {
+  margin-top: 20px;
 }
 
 ion-item ion-label {
   font-size: 18px;
 }
-
-// .swiper-pagination-bullet {
-//   background-color: red;
-//   opacity: 1;
-// }
-
-// span.swiper-pagination-bullet.swiper-pagination-bullet-active {
-//   background-color: blue;
-//   opacity: 1;
-// }
 
 .btn-container {
   display: flex;
@@ -26,9 +12,15 @@ ion-item ion-label {
   align-items: center;
 }
 
-.icon-slide {
-  font-size: 170px;
-  filter: blur(150px);
+.elipse {
+  background-image: url("../../../../assets/icon/wt_Ellipse17.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.img-slide {
+  width: 200px;
+  height: 200px;
 }
 
 h1 {
@@ -42,6 +34,7 @@ h4 {
   font-weight: 500;
   font-size: 20px;
   line-height: 30px;
+  margin: 20px;
 }
 
 h6 {
@@ -49,6 +42,7 @@ h6 {
   font-style: normal;
   font-size: 16px;
   line-height: 24px;
+  margin: 20px;
 }
 
 .btn-gradient {

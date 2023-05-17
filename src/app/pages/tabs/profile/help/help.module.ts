@@ -12,6 +12,7 @@ import { HelpDeskComponent } from "./components/help-desk/help-desk.component";
 import { ImplementsComponent } from "./components/implements/implements.component";
 import { AnalysisHelpComponent } from "./components/analysis-help/analysis-help.component";
 import { ReportHelpComponent } from "./components/report-help/report-help.component";
+import { ContactComponent } from "./components/contact/contact.component";
 
 @NgModule({
   imports: [
@@ -27,6 +28,7 @@ import { ReportHelpComponent } from "./components/report-help/report-help.compon
     ImplementsComponent,
     AnalysisHelpComponent,
     ReportHelpComponent,
+    ContactComponent,
   ],
 })
 export class HelpPageModule {}

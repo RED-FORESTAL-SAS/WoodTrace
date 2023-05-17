@@ -33,37 +33,18 @@ export class AdminAccountPage implements OnInit {
   public user$: Observable<WtUser | null>;
 
   constructor(
-    // private firebaseSvc: FirebaseService,
-    // private utilsSvc: UtilsService,
     private userService: UserService,
     private modalController: ModalController
-  ) {}
+  ) {
+    this.user$ = this.userService.user;
+  }
 
   ngOnInit() {
     this.docTypes = docTypes;
-  }
-
-  ionViewWillEnter() {
-    this.user$ = this.userService.user;
-    this.getUser();
-  }
-
-  /**
-   * We're setting the values of the form controls to the values of the user object
-   */
-  getUser() {
-    this.email.setValue(this.user.email);
-    this.email.disable();
-    this.fullName.setValue(this.user.fullName);
-    this.fullName.disable();
-    this.docType.setValue(this.user.docType);
-    this.docType.disable();
-    this.docNumber.setValue(this.user.docNumber);
-    this.docNumber.disable();
-    this.movil.setValue(this.user.movil);
-    this.movil.disable();
-    this.fNacimiento.setValue(this.user.fNacimiento);
-    this.fNacimiento.disable();
+    this.user$.subscribe((user) => {
+      const type = this.docTypes.find((t) => t.value === user.docType);
+      this.docType = type.content;
+    });
   }
 
   async updatePassword() {

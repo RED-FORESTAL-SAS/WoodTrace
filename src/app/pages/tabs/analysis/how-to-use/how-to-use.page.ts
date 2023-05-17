@@ -3,8 +3,7 @@ import { Observable } from "rxjs";
 import { WtWood } from "src/app/models/wt-wood";
 import { ReportService } from "src/app/services/report.service";
 import { UtilsService } from "src/app/services/utils.service";
-import { WoodService } from "src/app/services/wood.service";
-import SwiperCore, { SwiperOptions, Pagination, Virtual } from "swiper";
+import { SwiperOptions } from "swiper";
 import { SwiperComponent } from "swiper/angular";
 
 @Component({
@@ -40,7 +39,6 @@ export class HowToUsePage implements OnInit {
   onSlideChange(event) {
     let a = event[0].activeIndex;
     this.slideActive = a;
-    console.log(this.slideActive);
   }
 
   slideNext() {
@@ -52,7 +50,6 @@ export class HowToUsePage implements OnInit {
   }
 
   goToRoot() {
-    console.log("entendido");
     this.reportService.patchActiveWood(this.reportService.emptyWood);
     this.utilsSvc.routerLink("/tabs/analysis/take-photos");
   }

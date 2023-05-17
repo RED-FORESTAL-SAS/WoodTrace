@@ -1,5 +1,24 @@
 # CHANGELOG
 
+## [MARIO/RED-10-AUTH] - 2023-05-17
+
+- Agregar iconos faltantes en pantalla s de auth y profile.
+- Implementar analysis- form, analysis-resume, how-to-use, take-photo, con su funcionalidad.
+- Ajustar estilos en general.
+- Agregar iconos en help-slide, analysis-help,report-help, help-desk e implements.
+- Agregar iconos en membership.
+- Crear módulo contact.
+- Ajustar consulta de usuario en profile
+- Crear módulo input-custom.
+- Agregar especies.ts (listado de especies).
+
+## [MARIO/RED-10-AUTH] - 2023-05-10
+
+- Implementación del formulario de reporte.
+- Estilos de how to use analisis.
+- Implkementación del formulario de wood (analisis).
+- Vinculación del mok de analisis con el módulo take-photos.
+
 ## [MARIO/RED-10-AUTH] - 2023-05-04
 
 - membership: Hacer que se recuperen y se rediman las licencias.

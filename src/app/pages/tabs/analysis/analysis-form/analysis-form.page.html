@@ -4,32 +4,37 @@
     <div class="form">
       <!-- Departamento  -->
 
-      <app-input-gradient
-        [selectOptions]="departments"
+      <app-input-costum
+        [selectOptions]="this.departamentos"
+        [viewField]="'nombre'"
+        [valueField]="'nombre'"
         label="Departamento"
         type="select"
-        [formControlValue]="department"
-      ></app-input-gradient>
-      <div class="validators" *ngIf="department.touched && department.errors">
-        <span *ngIf="department.errors?.['required']"
+        [formControlValue]="departamento"
+      ></app-input-costum>
+      <div
+        class="validators"
+        *ngIf="departamento.touched && departamento.errors"
+      >
+        <span *ngIf="departamento.errors?.['required']"
           >Selecciona el departamento donde está ubicada la empresa</span
         >
       </div>
 
       <!-- Municipio  -->
-      <div>
-        <app-input-gradient
-          [selectOptions]="towns"
-          label="Municipio"
-          type="select"
-          [formControlValue]="town"
+      <app-input-costum
+        [selectOptions]="this.municipios"
+        [viewField]="'nombre'"
+        [valueField]="'nombre'"
+        label="Municipio"
+        type="select"
+        [formControlValue]="municipio"
+        (disabled)="!departamento.value"
+      ></app-input-costum>
+      <div class="validators" *ngIf="municipio.touched && municipio.errors">
+        <span *ngIf="municipio.errors?.['required']"
+          >Selecciona el municipio donde está ubicada la empresa</span
         >
-        </app-input-gradient>
-        <div class="validators" *ngIf="town.touched && town.errors">
-          <span *ngIf="town.errors?.['required']"
-            >Selecciona el municipio donde está ubicada la empresa</span
-          >
-        </div>
       </div>
 
       <app-input-gradient
@@ -66,6 +71,7 @@
         icon="location-outline"
         label="{{longitude && latitude ? latitude+', '+longitude : 'Añadir Ubicación'}}"
         type="button"
+        (click)="getCurrentPosition()"
       >
       </app-input-gradient>
 

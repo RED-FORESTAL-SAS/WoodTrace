@@ -14,10 +14,10 @@ import { UtilsService } from "src/app/services/utils.service";
 })
 export class AnalysisResumenPage implements OnInit, OnDestroy {
   especie = new FormControl("", []);
-  especieDeclarada = new FormControl("", []);
+  especieReportada = new FormControl("", []);
   photo = new FormControl("");
   acierto = new FormControl(0);
-  fCreado = new FormControl("");
+  fCreado = new FormControl(null);
 
   private sbs: Subscription[] = [];
 
@@ -51,7 +51,7 @@ export class AnalysisResumenPage implements OnInit, OnDestroy {
           tap({
             next: (wood) => {
               console.log(wood);
-              this.especieDeclarada.setValue(wood.especieDeclarada);
+              this.especieReportada.setValue(wood.especieDeclarada);
               this.especie.setValue(wood.especie);
               this.acierto.setValue(wood.acierto);
               this.photo.setValue(wood.path);

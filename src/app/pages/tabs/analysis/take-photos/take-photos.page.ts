@@ -9,6 +9,7 @@ import { WoodService } from "src/app/services/wood.service";
 import { ReportService } from "src/app/services/report.service";
 import { BehaviorSubject, Subscription } from "rxjs";
 import { skipWhile, switchMap, take, tap } from "rxjs/operators";
+import { especie } from "src/assets/data/especies";
 
 interface Img {
   side: string;
@@ -25,12 +26,12 @@ export class TakePhotosPage implements OnInit, OnDestroy {
   photo = new FormControl("");
   loadingPhoto: boolean;
 
-  especies = [];
+  especies = especie;
 
-  especieList = [
-    { content: "cedro", value: "Cedro" },
-    { content: "roble", value: "Roble" },
-  ];
+  // especieList = [
+  //   { content: "cedro", value: "Cedro" },
+  //   { content: "roble", value: "Roble" },
+  // ];
 
   private sbs: Subscription[] = [];
 
@@ -52,7 +53,7 @@ export class TakePhotosPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     // this.setTreeArrays();
-    this.especies = this.especieList;
+    // this.especies = this.especieList;
     this.populateForm();
   }
 
@@ -76,17 +77,17 @@ export class TakePhotosPage implements OnInit, OnDestroy {
     );
   }
 
-  ionViewWillEnter() {
-    // this.treeId = Date.now().toString();
-  }
+  // ionViewWillEnter() {
+  //   // this.treeId = Date.now().toString();
+  // }
 
-  currentUser(): User {
-    return this.utilsSvc.getCurrentUser();
-  }
+  // currentUser(): User {
+  //   return this.utilsSvc.getCurrentUser();
+  // }
 
-  currentAnalysis() {
-    return this.utilsSvc.getFromLocalStorage("analysis");
-  }
+  // currentAnalysis() {
+  //   return this.utilsSvc.getFromLocalStorage("analysis");
+  // }
 
   // setTreeArrays() {
   //   let currentAnalysis = this.currentAnalysis();
@@ -166,24 +167,20 @@ export class TakePhotosPage implements OnInit, OnDestroy {
           skipWhile((v) => v === null),
           switchMap((_) => this.reportService.activeWood.pipe(take(1))),
           tap({
-            next: (wood) => {
+            next: async (wood) => {
               const patchData = {
                 ...wood,
                 especieDeclarada: this.especie.value,
                 path: this.photo.value,
               };
               this.reportService.patchActiveWood(patchData);
-              this.analizeWoodPromise();
+              await this.reportService.analyzeWood();
               this.utilsSvc.routerLink("/tabs/analysis/analysis-resumen");
             },
           })
         )
         .subscribe()
     );
-  }
-
-  async analizeWoodPromise(): Promise<void> {
-    await this.reportService.analyzeWood();
   }
 
   // ================= Guardar la imagen =====================

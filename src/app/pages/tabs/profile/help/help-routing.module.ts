@@ -6,6 +6,7 @@ import { ImplementsComponent } from "./components/implements/implements.componen
 
 import { HelpPage } from "./help.page";
 import { ReportHelpComponent } from "./components/report-help/report-help.component";
+import { ContactComponent } from "./components/contact/contact.component";
 
 const routes: Routes = [
   {
@@ -30,10 +31,7 @@ const routes: Routes = [
   },
   {
     path: "contact-info",
-    loadChildren: () =>
-      import("../terms-and-conditions/terms-and-conditions.module").then(
-        (m) => m.TermsAndConditionsPageModule
-      ),
+    component: ContactComponent,
   },
   {
     path: "terms-and-conditions",

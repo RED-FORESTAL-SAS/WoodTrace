@@ -8,6 +8,7 @@ import { Geolocation } from "@capacitor/geolocation";
 import { ReportService } from "src/app/services/report.service";
 import { skipWhile, switchMap, take, tap } from "rxjs/operators";
 import { BehaviorSubject, Subscription } from "rxjs";
+import { pais } from "src/assets/data/country";
 
 @Component({
   selector: "app-analysis-form",
@@ -15,8 +16,8 @@ import { BehaviorSubject, Subscription } from "rxjs";
   styleUrls: ["./analysis-form.page.scss"],
 })
 export class AnalysisFormPage implements OnInit, OnDestroy {
-  department = new FormControl("", [Validators.required]);
-  town = new FormControl("", [Validators.required]);
+  departamento = new FormControl("", [Validators.required]);
+  municipio = new FormControl("", [Validators.required]);
   guia = new FormControl("", [Validators.required]);
   placa = new FormControl("", [Validators.required]);
 
@@ -25,24 +26,10 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
 
   private sbs: Subscription[] = [];
 
-  departments = [];
-  towns = [];
-  /**
-   * @todo de donde vamos a sacar los departamentos???
-   */
-  departamentoList = [
-    { content: "antioquia", value: "Antioquia" },
-    { content: "atlantico", value: "Atlántico" },
-    { content: "amazonas", value: "Amazonas" },
-  ];
-
-  /**
-   * @todo de donde vamos a sacar los municipios???
-   */
-  municipioList = [
-    { content: "jardin", value: "Jardín" },
-    { content: "tamesis", value: "Támesis" },
-  ];
+  pais = pais;
+  option = "Division[]";
+  departamentos = [];
+  municipios = [];
 
   user = {} as User;
 
@@ -60,9 +47,9 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.departments = this.departamentoList;
-    this.towns = this.municipioList;
+    this.departamentos = pais.division.map((division) => division);
     this.populateForm();
+    this.onChanges();
   }
 
   ngOnDestroy(): void {
@@ -76,9 +63,20 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
           take(1),
           tap({
             next: (report) => {
-              console.log(report.departamento);
-              this.department.setValue(report.departamento);
-              this.town.setValue(report.municipio);
+              console.log(report);
+              /**
+               * @todo revisar el populate que si se esté poblando como debe y
+               * cómo hacemos para no duplicar este código.
+               */
+              if (report.departamento !== "") {
+                const dpto = pais.division.find(
+                  (depto) => depto.nombre === report.departamento
+                );
+                this.municipios = dpto.division.map((division) => division);
+              }
+
+              this.departamento.setValue(report.departamento);
+              this.municipio.setValue(report.municipio);
               this.guia.setValue(report.guia);
               this.placa.setValue(report.placa);
               this.latitude = report.ubicacion.lat;
@@ -90,64 +88,20 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
     );
   }
 
-  ionViewWillEnter() {
-    this.user = this.utilsSvc.getCurrentUser();
+  onChanges() {
+    this.sbs.push(
+      this.departamento.valueChanges.subscribe((v) => {
+        if (this.departamento.value === "") {
+          this.municipio.setValue("");
+        } else {
+          this.municipio.setValue("");
+          this.municipios = pais.division
+            .find((depto) => depto.nombre === v)
+            .division.map((division) => division);
+        }
+      })
+    );
   }
-
-  ionViewDidEnter() {
-    this.user = this.utilsSvc.getCurrentUser();
-    // this.getDeparments();
-  }
-
-  /**
-   * We're using the Object.keys() method to get an array of the keys of the colombia object, then we're
-   * using the map() method to iterate over the array and return an array of objects with the value and
-   * content properties
-   * @todo @diana revisar si esto si sirve para alguna cosa e implementar el array nuevo.
-   */
-  getDeparments() {
-    this.departments = Object.keys(colombia).map((department) => {
-      return {
-        value: department,
-        content: department,
-      };
-    });
-  }
-
-  /**
-   * It loops through the object and if the value of the department is equal to the key of the object,
-   * it maps the value of the object to the towns array
-   * * @todo @diana revisar si esto si sirve para alguna cosa e implementar el array nuevo.
-   */
-  getTowns() {
-    this.town.reset();
-    for (let [key, value] of Object.entries(colombia)) {
-      if (this.department.value == key) {
-        this.towns = value.map((department) => {
-          return {
-            value: department,
-            content: department,
-          };
-        });
-      }
-    }
-  }
-
-  /**
-   * The function calls the Geolocation plugin's getCurrentPosition() function, which returns a promise
-   * that resolves to a Coordinates object
-   */
-  // async getCurrentPosition() {
-  //   this.utilsSvc.presentLoading();
-
-  //   const coordinates = await Geolocation.getCurrentPosition();
-  //   this.utilsSvc.dismissLoading();
-
-  //   if (coordinates && coordinates.coords) {
-  //     this.latitude = coordinates.coords.latitude;
-  //     this.longitude = coordinates.coords.longitude;
-  //   }
-  // }
 
   public updateReport(): void {
     this.updateReportEvent.next(Date.now());
@@ -165,8 +119,8 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
               // Extract form values.
               const patchData = {
                 ...report,
-                departamento: this.department.value,
-                municipio: this.town.value,
+                departamento: this.departamento.value,
+                municipio: this.municipio.value,
                 guia: this.guia.value,
                 placa: this.placa.value,
                 ubicacion: {
@@ -184,11 +138,27 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
     );
   }
 
+  /**
+   * The function calls the Geolocation plugin's getCurrentPosition() function, which returns a promise
+   * that resolves to a Coordinates object
+   */
+  async getCurrentPosition() {
+    this.utilsSvc.presentLoading();
+
+    const coordinates = await Geolocation.getCurrentPosition();
+    this.utilsSvc.dismissLoading();
+
+    if (coordinates && coordinates.coords) {
+      this.latitude = coordinates.coords.latitude;
+      this.longitude = coordinates.coords.longitude;
+    }
+  }
+
   validator() {
-    if (this.department.invalid) {
+    if (this.departamento.invalid) {
       return false;
     }
-    if (this.town.invalid) {
+    if (this.municipio.invalid) {
       return false;
     }
 

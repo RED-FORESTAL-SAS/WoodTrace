@@ -14,7 +14,7 @@
       </div>
       <div class="btn-container">
         <ion-grid>
-          <ion-row>
+          <ion-row style="margin-bottom: 25px">
             <ion-col align-items-center>
               <div class="btn-gradient">
                 <ion-button
@@ -29,7 +29,7 @@
           </ion-row>
 
           <ion-row *ngIf="license$ | async">
-            <ion-col align-items-center>
+            <ion-col>
               <div class="icon-container">
                 <img
                   width="180px"
@@ -40,7 +40,9 @@
             </ion-col>
           </ion-row>
           <ion-row *ngIf="(license$ | async) === null">
-            <h5>¡Ups! No tienes una licencia activa.</h5>
+            <h5 style="margin-bottom: 25px">
+              ¡Ups! No tienes una licencia activa.
+            </h5>
             <ion-col align-items-center>
               <div class="btn-gradient">
                 <ion-button
@@ -61,7 +63,7 @@
               </div>
             </ion-col>
           </ion-row>
-          <ion-row>
+          <ion-row style="margin-top: 25px">
             <ion-col align-items-center>
               <div class="btn-gradient">
                 <ion-button

@@ -2,11 +2,11 @@
   <div class="wrapper">
     <div>
       <div class="user-info row">
-        <ion-grid>
+        <ion-grid *ngIf="user$ | async as user">
           <ion-row size="auto">
             <ion-col style="vertical-align: bottom">
               <ion-icon
-                *ngIf="!currentUser().photo"
+                *ngIf="!user.photo"
                 class="default-photo"
                 name="person-circle-outline"
               ></ion-icon>
@@ -15,8 +15,8 @@
                 class="photo-spinner"
                 color="secondary"
               ></ion-spinner>
-              <ion-avatar class="photo" *ngIf="photo.value && !loadingPhoto">
-                <img [src]="photo.value" />
+              <ion-avatar class="photo" *ngIf="user.photo">
+                <img [src]="user.photo" />
               </ion-avatar>
             </ion-col>
           </ion-row>
@@ -29,16 +29,9 @@
           </ion-row>
           <ion-row>
             <ion-col align-items-center>
-              <h5 class="ion-no-margin name">{{currentUser().fullName}}</h5>
+              <h5 class="ion-no-margin name">{{ user.fullName}}</h5>
               <div class="active">
-                <ion-text
-                  *ngIf="currentUser().license && currentUser().license.remainingDays"
-                  color="primary"
-                  >Miembro Activo</ion-text
-                >
-                <ion-text *ngIf="!currentUser().license" color="medium"
-                  >Miembro Inactivo</ion-text
-                >
+                <ion-text>{{ user.email }}</ion-text>
               </div>
             </ion-col>
           </ion-row>
@@ -90,6 +83,18 @@
 
             <ion-col align-items-start class="label-btn">
               Cerrar sesión
+            </ion-col>
+          </ion-row>
+          <ion-row class="btn" (click)="eliminarCuenta()">
+            <ion-col align-items-center class="bg-icon-btn" size="2">
+              <ion-icon
+                class="icon-btn"
+                src="../../../../assets/icon/wt_Icon list=Edit.svg"
+              ></ion-icon>
+            </ion-col>
+
+            <ion-col align-items-start class="label-btn">
+              Eliminar cuenta
             </ion-col>
           </ion-row>
         </ion-grid>

@@ -404,6 +404,7 @@ export class UserService implements OnDestroy {
       fNacimiento: user.fNacimiento,
       movil: user.movil,
       devices: user.devices,
+      photo: user.photo,
     };
   }
 
@@ -431,6 +432,7 @@ export class UserService implements OnDestroy {
           ),
           movil: localStorageUser.movil,
           devices: localStorageUser.devices,
+          photo: localStorageUser.photo,
         }
       : null;
   }

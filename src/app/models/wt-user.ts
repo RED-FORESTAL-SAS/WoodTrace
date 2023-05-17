@@ -27,6 +27,7 @@ export interface WtUser {
     model: string;
     uuid: string;
   }>;
+  photo: string;
 }
 
 /**
@@ -52,4 +53,5 @@ export interface LocalStorageWtUser {
     model: string;
     uuid: string;
   }>;
+  photo: string;
 }

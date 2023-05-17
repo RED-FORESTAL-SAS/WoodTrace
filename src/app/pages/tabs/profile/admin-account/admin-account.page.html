@@ -27,12 +27,7 @@
 
       <ion-item>
         <ion-label position="stacked">Tipo de documento</ion-label>
-        <!-- <ion-select>
-          <ion-select-option value="1">Apples</ion-select-option>
-          <ion-select-option value="2">Oranges</ion-select-option>
-          <ion-select-option value="3">Bananas</ion-select-option>
-        </ion-select> -->
-        <ion-input type="select">{{ user.docType }}</ion-input>
+        <ion-input>{{ this.docType }}</ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="stacked">Documento</ion-label>
@@ -52,9 +47,7 @@
         ></ion-icon>
       </ion-col>
 
-      <ion-col align-items-start class="label-btn">
-        Estado de la membresía
-      </ion-col>
+      <ion-col align-items-start class="label-btn"> Licencia </ion-col>
     </ion-row>
     <ion-row class="btn" routerLink="owner">
       <ion-col align-items-center class="bg-icon-btn" size="2">

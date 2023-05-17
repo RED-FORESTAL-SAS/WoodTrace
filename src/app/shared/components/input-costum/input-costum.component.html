@@ -1,0 +1,88 @@
+<div class="ion-padding-bottom">
+  <!-- ========= Label Regular ========= -->
+  <div
+    class="label animate__animated animate__fadeIn"
+    *ngIf="
+      formControlValue &&
+      formControlValue.value &&
+      type !== 'button' &&
+      type !== 'currency'
+    "
+  >
+    {{ label }}
+  </div>
+
+  <!-- ========= Label Currency Input ========= -->
+  <div
+    class="label animate__animated animate__fadeIn"
+    *ngIf="type == 'currency'"
+  >
+    {{ label }}
+  </div>
+
+  <div class="gradient-input">
+    <!-- ========= Input Regular ========= -->
+
+    <ion-item lines="none" *ngIf="!noInputTypes.includes(type)">
+      <ion-input
+        debounce="400"
+        [minlength]="min"
+        [maxlength]="max"
+        [formControl]="formControlValue"
+        [placeholder]="label"
+        [type]="type"
+      ></ion-input>
+      <ion-icon
+        *ngIf="isPassword"
+        slot="end"
+        (click)="showAndHide()"
+        [name]="hide ? 'eye-outline' : 'eye-off-outline'"
+      >
+      </ion-icon>
+    </ion-item>
+
+    <!-- ========= Input Currency ========= -->
+
+    <ion-item lines="none" *ngIf="type == 'currency'">
+      <input
+        type="tel"
+        currencyMask
+        [formControl]="formControlValue"
+        [options]="mask"
+      />
+    </ion-item>
+
+    <!-- ========= Select ========= -->
+
+    <ion-item lines="none" *ngIf="type == 'select'">
+      <ion-select
+        cancelText="Cancelar"
+        okText="Aceptar"
+        [formControl]="formControlValue"
+        [placeholder]="label"
+      >
+        <ion-select-option
+          class="ion-text-wrap"
+          *ngFor="let s of selectOptions"
+          [value]="s[valueField]"
+          >{{ s[viewField] }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <!-- ========= Button ========= -->
+    <ion-item
+      class="ion-activatable ripple-parent"
+      lines="none"
+      *ngIf="type == 'button'"
+    >
+      <ion-buttons slot="start">
+        <ion-button>
+          <ion-icon slot="start" color="primary" [name]="icon"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-label class="ion-text-wrap">{{ label }}</ion-label>
+      <ion-ripple-effect type="unbounded"></ion-ripple-effect>
+    </ion-item>
+  </div>
+</div>

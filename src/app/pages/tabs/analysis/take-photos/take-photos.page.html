@@ -5,12 +5,14 @@
     <ion-row>
       <ion-col align-items-center>
         <div class="form">
-          <app-input-gradient
-            [selectOptions]="especies"
+          <app-input-costum
+            [selectOptions]="this.especies"
+            [viewField]="'nombreCienticifo'"
+            [valueField]="'nombreCienticifo'"
             label="Especie"
             type="select"
             [formControlValue]="especie"
-          ></app-input-gradient>
+          ></app-input-costum>
           <div class="validators" *ngIf="especie.touched && especie.errors">
             <span *ngIf="especie.errors?.['required']"
               >Selecciona el departamento donde está ubicada la empresa</span
@@ -25,6 +27,7 @@
           <img *ngIf="!this.photo.value" src="assets/icon/wt_Group459.svg" />
 
           <img
+            style="width: 250px; height: 250px"
             *ngIf="this.photo.value && !loadingPhoto"
             [src]="this.photo.value"
           />
@@ -66,7 +69,11 @@
     <ion-row>
       <ion-col align-items-center>
         <div class="btn-gradient">
-          <ion-button (click)="saveWood()" mode="ios">
+          <ion-button
+            mode="ios"
+            (click)="saveWood()"
+            [disabled]="!this.photo.value || !this.especie"
+          >
             <span>Analizar</span>
           </ion-button>
         </div>
