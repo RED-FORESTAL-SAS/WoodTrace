@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [MARIO/RED-10-AUTH] - 2023-05-18
+
+- AnalysisModule: Forzar el comportamiento de los tabs con el router.
+- Limpiar codigo del componente TabsPage.
+- Hacer build con los nuevos assets.
+
 ## [MARIO/RED-10-AUTH] - 2023-05-17
 
 - Agregar iconos faltantes en pantalla s de auth y profile.

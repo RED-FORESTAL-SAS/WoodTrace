@@ -1,15 +1,18 @@
 <ion-tabs>
   <ion-tab-bar>
-    <ion-tab-button tab="analysis">
-      <ion-icon src="assets/icon/wt_Property 1=Analyze.svg"></ion-icon>
-    </ion-tab-button>
-
-    <ion-tab-button tab="reports">
+    <!-- <ion-tab-button tab="reports"> -->
+    <ion-tab-button (click)="goto('reports')">
       <ion-icon src="assets/icon/wt_Property 1=Reports.svg"></ion-icon>
     </ion-tab-button>
 
-    <ion-tab-button tab="profile">
+    <!-- <ion-tab-button tab="profile"> -->
+    <ion-tab-button (click)="goto('profile')">
       <ion-icon src="assets/icon/wt_Property 1=Profile.svg"></ion-icon>
+    </ion-tab-button>
+
+    <!-- <ion-tab-button tab="analysis"> -->
+    <ion-tab-button (click)="goto('analysis')">
+      <ion-icon src="assets/icon/wt_Property 1=Analyze.svg"></ion-icon>
     </ion-tab-button>
   </ion-tab-bar>
 </ion-tabs>

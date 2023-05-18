@@ -1,18 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { FirebaseService } from 'src/app/services/firebase.service';
-import * as moment from 'moment';
+import { Component } from "@angular/core";
+import { UtilsService } from "src/app/services/utils.service";
 
 @Component({
-  selector: 'app-tabs',
-  templateUrl: './tabs.page.html',
-  styleUrls: ['./tabs.page.scss'],
+  selector: "app-tabs",
+  templateUrl: "./tabs.page.html",
+  styleUrls: ["./tabs.page.scss"],
 })
-export class TabsPage implements OnInit {
+export class TabsPage {
+  constructor(private utilsService: UtilsService) {}
 
-  constructor(private firebaseSvc: FirebaseService) { }
-
-  ngOnInit() {
+  public goto(url: string): void {
+    this.utilsService.routerLink(`/tabs/${url}`);
   }
-
-  
 }

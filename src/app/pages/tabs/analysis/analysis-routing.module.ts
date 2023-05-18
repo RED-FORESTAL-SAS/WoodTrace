@@ -46,7 +46,7 @@ const routes: Routes = [
       import("./analysis-trees/analysis-trees.module").then(
         (m) => m.AnalysisTreesPageModule
       ),
-    canActivate: [AnalysisGuard],
+    // canActivate: [AnalysisGuard],
   },
 ];
 
