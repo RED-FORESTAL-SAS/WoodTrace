@@ -22,7 +22,7 @@ const routes: Routes = [
       import("./how-to-use/how-to-use.module").then(
         (m) => m.HowToUsePageModule
       ),
-    canActivate: [AnalysisGuard],
+    // canActivate: [AnalysisGuard],
   },
   {
     path: "take-photos",
@@ -30,7 +30,7 @@ const routes: Routes = [
       import("./take-photos/take-photos.module").then(
         (m) => m.TakePhotosPageModule
       ),
-    canActivate: [AnalysisGuard],
+    // canActivate: [AnalysisGuard],
   },
   {
     path: "analysis-resumen",
@@ -38,7 +38,7 @@ const routes: Routes = [
       import("./analysis-resumen/analysis-resumen.module").then(
         (m) => m.AnalysisResumenPageModule
       ),
-    canActivate: [AnalysisGuard],
+    // canActivate: [AnalysisGuard],
   },
   {
     path: "analysis-trees/:segment",
