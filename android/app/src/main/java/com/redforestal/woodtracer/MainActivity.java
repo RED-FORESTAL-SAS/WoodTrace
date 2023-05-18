@@ -1,4 +1,4 @@
-package com.fink.app;
+package com.redforestal.woodtracer;
 
 import com.getcapacitor.BridgeActivity;
 

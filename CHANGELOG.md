@@ -4,6 +4,9 @@
 
 - Ajuste de consulta de user por $user para módulos de Profile.
 - borrar código innecesario.
+- AnalysisModule: Forzar el comportamiento de los tabs con el router.
+- Limpiar codigo del componente TabsPage.
+- Hacer build con los nuevos assets.
 
 ## [MARIO/RED-10-AUTH] - 2023-05-17
 
