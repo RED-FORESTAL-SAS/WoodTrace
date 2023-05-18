@@ -1,34 +1,34 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { ModalController } from "@ionic/angular";
-import { User } from "src/app/models/user.model";
-import { FirebaseService } from "src/app/services/firebase.service";
-import { UtilsService } from "src/app/services/utils.service";
 import { docTypes } from "src/assets/data/document-types";
 import { UpdatePasswordComponent } from "./owner/components/update-password/update-password.component";
 import { UserService } from "src/app/services/user.service";
 import { WtUser } from "src/app/models/wt-user";
-import { Observable } from "rxjs";
+import { Observable, Subscription } from "rxjs";
+import { Timestamp } from "../../../../../app/types/timestamp.type";
 
 @Component({
   selector: "app-admin-account",
   templateUrl: "./admin-account.page.html",
   styleUrls: ["./admin-account.page.scss"],
 })
-export class AdminAccountPage implements OnInit {
+export class AdminAccountPage implements OnInit, OnDestroy {
   fullName = new FormControl("", []);
   email = new FormControl("", []);
   movil = new FormControl("", []);
-  fNacimiento = new FormControl("", []);
+  fNacimiento = new FormControl(Timestamp, []);
   docType = new FormControl("", []);
   docNumber = new FormControl("", []);
 
-  docTypes = [];
+  docTypesList = [];
 
-  user = {} as User;
+  // user = {} as User;
 
   loading: boolean;
   loadingPhoto: boolean;
+
+  private sbs: Subscription[] = [];
 
   public user$: Observable<WtUser | null>;
 
@@ -40,11 +40,18 @@ export class AdminAccountPage implements OnInit {
   }
 
   ngOnInit() {
-    this.docTypes = docTypes;
-    this.user$.subscribe((user) => {
-      const type = this.docTypes.find((t) => t.value === user.docType);
-      this.docType = type.content;
-    });
+    this.docTypesList = docTypes;
+    this.sbs.push(
+      this.user$.subscribe((user) => {
+        console.log(user);
+        const type = this.docTypesList.find((t) => t.value === user.docType);
+        this.docType = type.content;
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.sbs.forEach((s) => s.unsubscribe());
   }
 
   async updatePassword() {

@@ -3,6 +3,8 @@
 ## [MARIO/RED-10-AUTH] - 2023-05-18
 
 - Hacer fix temporal del ProfilePage, para que se muestre todo después de cerrar y abrir sesión.
+- Ajuste de consulta de user por $user para módulos de Profile.
+- borrar código innecesario.
 - AnalysisModule: Forzar el comportamiento de los tabs con el router.
 - Limpiar codigo del componente TabsPage.
 - Hacer build con los nuevos assets.

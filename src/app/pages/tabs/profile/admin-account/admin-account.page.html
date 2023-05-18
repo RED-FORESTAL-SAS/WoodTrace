@@ -18,12 +18,10 @@
         <ion-input [disabled]="true">{{ user.movil }}</ion-input>
       </ion-item>
 
-      <ion-item>
+      <!-- <ion-item>
         <ion-label position="stacked">Fecha de nacimiento</ion-label>
-        <ion-input [disabled]="true"
-          >{{ user.fNacimiento.toDate() | date: 'dd-MM-yyyy' }}</ion-input
-        >
-      </ion-item>
+        <ion-input [disabled]="true">{{ user.fNacimiento }}</ion-input>
+      </ion-item> -->
 
       <ion-item>
         <ion-label position="stacked">Tipo de documento</ion-label>
@@ -35,41 +33,41 @@
       </ion-item>
     </ion-list>
   </div>
+
+  <div class="btn-container">
+    <ion-grid>
+      <ion-row class="btn" routerLink="membership">
+        <ion-col align-items-center class="bg-icon-btn" size="2">
+          <ion-icon
+            class="icon-btn"
+            src="../../../../assets/icon/wt_Icon list=Legal.svg"
+          ></ion-icon>
+        </ion-col>
+
+        <ion-col align-items-start class="label-btn"> Licencia </ion-col>
+      </ion-row>
+      <ion-row class="btn" routerLink="owner">
+        <ion-col align-items-center class="bg-icon-btn" size="2">
+          <ion-icon
+            class="icon-btn"
+            src="../../../../assets/icon/wt_Icon list=Edit.svg"
+          ></ion-icon>
+        </ion-col>
+
+        <ion-col align-items-start class="label-btn"> Editar perfil </ion-col>
+      </ion-row>
+      <ion-row class="btn">
+        <ion-col align-items-center class="bg-icon-btn" size="2">
+          <ion-icon
+            class="icon-btn"
+            src="../../../../assets/icon/wt_Icon list=Edit.svg"
+          ></ion-icon>
+        </ion-col>
+
+        <ion-col align-items-start class="label-btn" (click)="updatePassword()">
+          Cambiar contraseña
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
 </ion-content>
-
-<div class="btn-container">
-  <ion-grid>
-    <ion-row class="btn" routerLink="membership">
-      <ion-col align-items-center class="bg-icon-btn" size="2">
-        <ion-icon
-          class="icon-btn"
-          src="../../../../assets/icon/wt_Icon list=Legal.svg"
-        ></ion-icon>
-      </ion-col>
-
-      <ion-col align-items-start class="label-btn"> Licencia </ion-col>
-    </ion-row>
-    <ion-row class="btn" routerLink="owner">
-      <ion-col align-items-center class="bg-icon-btn" size="2">
-        <ion-icon
-          class="icon-btn"
-          src="../../../../assets/icon/wt_Icon list=Edit.svg"
-        ></ion-icon>
-      </ion-col>
-
-      <ion-col align-items-start class="label-btn"> Editar perfil </ion-col>
-    </ion-row>
-    <ion-row class="btn">
-      <ion-col align-items-center class="bg-icon-btn" size="2">
-        <ion-icon
-          class="icon-btn"
-          src="../../../../assets/icon/wt_Icon list=Edit.svg"
-        ></ion-icon>
-      </ion-col>
-
-      <ion-col align-items-start class="label-btn" (click)="updatePassword()">
-        Cambiar contraseña
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-</div>

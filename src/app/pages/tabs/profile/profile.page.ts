@@ -6,7 +6,6 @@ import { take, tap } from "rxjs/operators";
 import { User } from "src/app/models/user.model";
 import { WtUser } from "src/app/models/wt-user";
 import { FirebaseService } from "src/app/services/firebase.service";
-import { PdfService } from "src/app/services/pdf.service";
 import { UserService } from "src/app/services/user.service";
 import { UtilsService } from "src/app/services/utils.service";
 
@@ -73,16 +72,6 @@ export class ProfilePage implements OnInit, OnDestroy {
         .subscribe()
     );
   }
-
-  // ionViewWillEnter() {
-  //   this.user = this.utilsSvc.getCurrentUser();
-  //   this.getUser();
-  // }
-
-  // currentUser(): User {
-  //   console.log();
-  //   return this.utilsSvc.getCurrentUser();
-  // }
 
   /**
    * This function sets the values of the form fields to the values of the user object

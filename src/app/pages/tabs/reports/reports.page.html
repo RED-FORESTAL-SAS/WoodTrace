@@ -1,8 +1,19 @@
 <app-header title="Reportes"></app-header>
 
 <ion-content class="ion-text-center">
+  <ion-content>
+    <div class="wrapper">
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <h1>Este módulo está en desarrollo</h1>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+  </ion-content>
 
-    <div *ngIf="reports.length && !loading" class="table-container">
+  <!-- <div *ngIf="reports.length && !loading" class="table-container">
         <table>
             <thead>
                 <th>Especie</th>
@@ -25,9 +36,9 @@
                 </td>
             </tr>
         </table>
-    </div>
+    </div> -->
 
-    <div *ngIf="loading" class="table-container">
+  <!-- <div *ngIf="loading" class="table-container">
         <table>
             <tr *ngFor="let item of [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]">
                 <td>
@@ -47,12 +58,10 @@
                 </td>
             </tr>
         </table>
-    </div>
+    </div> -->
 
-
-    <div style="padding-top: 25vh;" *ngIf="!reports.length && !loading">
+  <!-- <div style="padding-top: 25vh;" *ngIf="!reports.length && !loading">
         <app-empty-array iconSrc="assets/icon/icon-reportes.svg" text="No hay reportes disponibles">
         </app-empty-array>
-    </div>
-
+    </div> -->
 </ion-content>
