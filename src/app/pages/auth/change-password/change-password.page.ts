@@ -53,7 +53,6 @@ export class ChangePasswordPage implements OnInit {
     if (this.email.invalid) {
       return false;
     }
-
     return true;
   }
 }

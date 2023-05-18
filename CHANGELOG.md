@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [MARIO/RED-10-AUTH] - 2023-05-18
+
+- Ajuste de consulta de user por $user para módulos de Profile.
+- borrar código innecesario.
+
 ## [MARIO/RED-10-AUTH] - 2023-05-17
 
 - Agregar iconos faltantes en pantalla s de auth y profile.
