@@ -55,6 +55,7 @@ export class FirebaseService {
    *
    * @returns Observable<User | null>
    * @throws FirestoreFailure
+   * @deprecated Use UserService.user instead.
    */
   get authState(): Observable<User | null> {
     return this.auth.authState.pipe(
@@ -231,6 +232,9 @@ export class FirebaseService {
   // =========Cerrar Sesión===========
   /* Cierra sesión y borra datos almacenados en localstorage. */
 
+  /**
+   * @deprecated use UserService.logout instead.
+   */
   async logout() {
     await this.auth.signOut();
     localStorage.removeItem("user");
@@ -241,6 +245,7 @@ export class FirebaseService {
 
   /**
    * Sign out user and deletes local storage data.
+   * @deprecated use UserService.logout instead.
    */
   async signOut(): Promise<void> {
     await this.auth.signOut();

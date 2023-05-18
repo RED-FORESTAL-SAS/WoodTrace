@@ -27,7 +27,12 @@ import {
   UnauthenticatedFailure,
 } from "../utils/failure.utils";
 import { COMPANYS_FB_COLLECTION } from "../constants/compays-fb-collection";
-import { Auth, authState, User as FirebaseUser } from "@angular/fire/auth";
+import {
+  Auth,
+  authState,
+  signOut,
+  User as FirebaseUser,
+} from "@angular/fire/auth";
 import { USERS_FB_COLLECTION } from "../constants/users-fb-collection";
 import { LocalStorageWtUser, WtUser } from "../models/wt-user";
 import { environment } from "src/environments/environment";
@@ -80,11 +85,16 @@ export class UserService implements OnDestroy {
         })
     );
 
+    /**
+     * @todo @mario ver si al subir esto de primero, se evita que se pueblen los otros valores nulos.
+     * Deberia ser irrelevante. Tambien podríamos hacer un skip null.
+     */
     // Retrieve authenticated user and watch for changes in authState.
     this.retrieveAuthenticatedUser();
   }
 
   ngOnDestroy(): void {
+    console.log("Running UserService OnDestroy");
     this.sbs.forEach((s) => s.unsubscribe());
   }
 
@@ -159,6 +169,8 @@ export class UserService implements OnDestroy {
     // Try to retrieve user from local storage.
     const user = this.fetchUserFromLocalStorage();
 
+    console.log("User from local storage", user);
+
     // If found user is differente from state, patch it in state.
     if (user && user.id !== this.store.state.user?.id) {
       this.patchUser(user);
@@ -168,6 +180,11 @@ export class UserService implements OnDestroy {
     this.sbs.push(
       authState(this.auth) // The observer is only triggered on sign-in or sign-out!
         .pipe(
+          tap({
+            next: (authSt) => {
+              console.log("AuthState changed", authSt);
+            },
+          }),
           catchError((e) => {
             // Transform Firebase Auth errors into app Failures.
             const failure = FailureUtils.errorToFailure(e);
@@ -211,6 +228,8 @@ export class UserService implements OnDestroy {
               }
             },
             error: (e) => {
+              console.log("error", e);
+
               // If device is offline, do not change state and fail silently.
               if (
                 e instanceof AuthNetworkRequestFailedFailure ||
@@ -300,6 +319,16 @@ export class UserService implements OnDestroy {
         const failure = FailureUtils.errorToFailure(e);
         throw failure;
       });
+  }
+
+  /**
+   * Signs out current user and updates state.
+   */
+  public async signOut(): Promise<void> {
+    await signOut(this.auth).catch((e) => {});
+    this.patchUser(null);
+    this.patchLicense(null);
+    this.patchCompany(null);
   }
 
   /**

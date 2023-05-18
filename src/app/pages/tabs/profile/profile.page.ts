@@ -14,6 +14,13 @@ import { UtilsService } from "src/app/services/utils.service";
   selector: "app-profile",
   templateUrl: "./profile.page.html",
   styleUrls: ["./profile.page.scss"],
+  /**
+   * @todo @mario Esto provee una instancia única del servicio, que forza a que se cree y se
+   * destruya el servicio y a que se inicialicen nuevamente los observables. Esto no debería de ser
+   * necesario. Lo que debe hacerse es un refactor en el metodo UserService.retrieveAuthenticatedUser()
+   * para que se recalcule cuando se hace nuevamente la autenticación.
+   */
+  providers: [UserService],
 })
 export class ProfilePage implements OnInit, OnDestroy {
   photo = new FormControl("");
@@ -34,6 +41,12 @@ export class ProfilePage implements OnInit, OnDestroy {
     private userService: UserService
   ) {
     this.user$ = this.userService.user;
+
+    this.sbs.push(
+      this.user$.subscribe((user) => {
+        console.log("User in profile page", user);
+      })
+    );
   }
 
   ngOnInit() {
@@ -41,6 +54,7 @@ export class ProfilePage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    console.log("Running ngOnDestroy on ProfilePage");
     this.sbs.forEach((s) => s.unsubscribe());
   }
 
