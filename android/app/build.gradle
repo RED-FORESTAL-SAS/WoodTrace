@@ -6,8 +6,8 @@ android {
         applicationId "com.redforestal.woodtracer"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion 33
-        versionCode 13
-        versionName "1.0.13"
+        versionCode 14
+        versionName "1.0.14"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
