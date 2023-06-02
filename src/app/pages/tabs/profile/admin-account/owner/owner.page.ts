@@ -33,7 +33,7 @@ export class OwnerPage implements OnInit, OnDestroy {
   ]);
   photo = new FormControl("");
   movil = new FormControl("", [Validators.required]);
-  // fNacimiento: Timestamp = new FormControl('null', [Validators.required]);
+  fNacimiento = new FormControl(null, [Validators.required]);
   genero = new FormControl("", [Validators.required]);
 
   docTypes = [];
@@ -71,7 +71,6 @@ export class OwnerPage implements OnInit, OnDestroy {
 
   ionViewWillEnter() {
     this.user = this.utilsSvc.getCurrentUser();
-    // this.getUser();
   }
 
   populateForm() {
@@ -81,6 +80,7 @@ export class OwnerPage implements OnInit, OnDestroy {
           take(1),
           tap({
             next: (user) => {
+              console.log("fechaNacimiento", user.fNacimiento);
               this.email.setValue(user.email);
               this.email.disable();
               this.fullName.setValue(user.fullName);
@@ -88,7 +88,7 @@ export class OwnerPage implements OnInit, OnDestroy {
               this.docNumber.setValue(user.docNumber);
               this.photo.setValue(user.photo);
               this.movil.setValue(user.movil);
-              // this.fNacimiento.setValue(user.fNacimiento );
+              this.fNacimiento.setValue(user.fNacimiento.toDate());
               this.genero.setValue(user.genero);
             },
           })
@@ -121,7 +121,7 @@ export class OwnerPage implements OnInit, OnDestroy {
     this.user.docType = this.docType.value;
     this.user.docNumber = this.docNumber.value;
     this.user.movil = this.movil.value;
-    // this.user.fNacimiento = this.fNacimiento.value;
+    this.user.fNacimiento = this.fNacimiento.value;
     this.user.genero = this.genero.value;
 
     this.utilsSvc.saveLocalStorage("user", this.user);

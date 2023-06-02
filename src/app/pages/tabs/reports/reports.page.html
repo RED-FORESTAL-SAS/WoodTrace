@@ -1,67 +1,57 @@
-<app-header title="Reportes"></app-header>
-
-<ion-content class="ion-text-center">
-  <ion-content>
-    <div class="wrapper">
+<ion-content>
+  <div class="wrapper">
+    <div class="user-info row">
       <ion-grid>
-        <ion-row>
-          <ion-col>
-            <h1>Este módulo está en desarrollo</h1>
+        <ion-row size="auto">
+          <ion-col style="vertical-align: bottom">
+            <h4>Reportes</h4>
           </ion-col>
         </ion-row>
       </ion-grid>
     </div>
-  </ion-content>
+    <div class="btn-container">
+      <ion-grid>
+        <ion-row style="margin-bottom: 25px">
+          <ion-col align-items-center>
+            <app-input-gradient
+              label="Buscar"
+              type="string"
+              [formControlValue]="busqueda"
+            >
+            </app-input-gradient>
+          </ion-col>
+        </ion-row>
 
-  <!-- <div *ngIf="reports.length && !loading" class="table-container">
-        <table>
-            <thead>
-                <th>Especie</th>
-                <th>Operario</th>
-                <th>Hora y Fecha</th>
-                <th>ㅤ</th>
-                <th>ㅤ</th>
-            </thead>
-            <tr *ngFor="let r of reports">
-                <td>Limón Común</td>
-                <td>{{r.operator}}</td>
-                <td>{{r.id | date: 'h:mm a'}} <br>
-                    {{r.id | date: 'dd/MM/yyyy'}}
-                </td>
+        <ion-row>
+          <ion-col class="table-container">
+            <table>
+              <thead class="header">
+                <th>Placa</th>
+                <th>Municipio</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
+              </thead>
+              <tr *ngFor="let report of reports$ | async; index as i">
+                <td>{{ report.placa }}</td>
+                <td>{{ report.municipio }}</td>
+                <td>{{ report.fCreado }}</td>
                 <td>
-                    <ion-icon (click)="dowloadReport(r)" class="option-icon" name="download-outline"></ion-icon>
+                  <ion-icon
+                    class="option-icon"
+                    src="assets/icon/wt_Property 1=Reports.svg"
+                    (click)="onViewReport(report)"
+                  ></ion-icon>
+                  <ion-icon
+                    class="option-icon"
+                    src="assets/icon/wt_delete.svg"
+                    (click)="onDawnloadReport(i)"
+                  ></ion-icon>
                 </td>
-                <td>
-                    <ion-icon (click)="deleteReport(r.id)" class="option-icon" name="trash-outline"></ion-icon>
-                </td>
-            </tr>
-        </table>
-    </div> -->
-
-  <!-- <div *ngIf="loading" class="table-container">
-        <table>
-            <tr *ngFor="let item of [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]">
-                <td>
-                    <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
-                </td>
-                <td>
-                    <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
-                </td>
-                <td>
-                    <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
-                </td>
-                <td>
-                    <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
-                </td>
-                <td>
-                    <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
-                </td>
-            </tr>
-        </table>
-    </div> -->
-
-  <!-- <div style="padding-top: 25vh;" *ngIf="!reports.length && !loading">
-        <app-empty-array iconSrc="assets/icon/icon-reportes.svg" text="No hay reportes disponibles">
-        </app-empty-array>
-    </div> -->
+              </tr>
+            </table>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+  </div>
 </ion-content>

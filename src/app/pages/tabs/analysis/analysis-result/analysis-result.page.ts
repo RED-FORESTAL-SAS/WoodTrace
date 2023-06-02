@@ -1,23 +1,27 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
-import { Subscription } from "rxjs";
+import { Observable, Subscription } from "rxjs";
 import { take, tap } from "rxjs/operators";
+import { WtWood } from "src/app/models/wt-wood";
 import { FirebaseService } from "src/app/services/firebase.service";
 import { ReportService } from "src/app/services/report.service";
 import { UtilsService } from "src/app/services/utils.service";
 
 @Component({
-  selector: "app-analysis-resumen",
-  templateUrl: "./analysis-resumen.page.html",
-  styleUrls: ["./analysis-resumen.page.scss"],
+  selector: "app-analysis-result",
+  templateUrl: "./analysis-result.page.html",
+  styleUrls: ["./analysis-result.page.scss"],
 })
-export class AnalysisResumenPage implements OnInit, OnDestroy {
+export class AnalysisResultPage implements OnInit, OnDestroy {
   especie = new FormControl("", []);
   especieReportada = new FormControl("", []);
   photo = new FormControl("");
   acierto = new FormControl(0);
   fCreado = new FormControl(null);
+
+  /** Observable with active report or null. */
+  public activeWood$: Observable<WtWood | null>;
 
   private sbs: Subscription[] = [];
 
@@ -31,8 +35,7 @@ export class AnalysisResumenPage implements OnInit, OnDestroy {
     private actRoute: ActivatedRoute,
     private reportService: ReportService
   ) {
-    // this.tree = parseInt(this.actRoute.snapshot.paramMap.get("tree"));
-    // this.analysis = this.analysisFormData().trees[this.tree];
+    this.activeWood$ = this.reportService.activeWood;
   }
 
   ngOnInit() {
@@ -55,6 +58,7 @@ export class AnalysisResumenPage implements OnInit, OnDestroy {
               this.especie.setValue(wood.especie);
               this.acierto.setValue(wood.acierto);
               this.photo.setValue(wood.path);
+              this.fCreado.setValue(wood.fCreado);
             },
           })
         )
@@ -62,11 +66,25 @@ export class AnalysisResumenPage implements OnInit, OnDestroy {
     );
   }
 
-  analysisFormData() {
-    return this.utilsSvc.getFromLocalStorage("analysis");
+  onRehacer() {
+    this.reportService.patchActiveWood(this.reportService.emptyWood);
+    this.utilsSvc.routerLink("/tabs/analysis/take-photos");
   }
 
-  submit() {
-    this.utilsSvc.routerLink("/tabs/analysis/analysis-trees/ready");
+  onGuardar() {
+    this.reportService.saveActiveWood();
+    this.utilsSvc.routerLink("/tabs/analysis/analysis-list");
   }
+
+  onVolver() {
+    this.utilsSvc.routerLink("/tabs/analysis/analysis-list");
+  }
+
+  // analysisFormData() {
+  //   return this.utilsSvc.getFromLocalStorage("analysis");
+  // }
+
+  // submit() {
+  //   this.utilsSvc.routerLink("/tabs/analysis/analysis-trees/ready");
+  // }
 }

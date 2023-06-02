@@ -33,17 +33,11 @@
           />
         </div>
       </ion-col>
-      <!-- <ion-col align-items-center>
-        <div class="ion-text-center d-flex">
-          <img *ngIf="!this.photo" src="assets/icon/wt_Group459.svg" />
-          <img *ngIf="this.photo" src="{{ this.photo }}" />
-        </div>
-      </ion-col> -->
     </ion-row>
     <ion-row>
       <ion-col align-items-center>
         <div class="ion-text-center d-flex">
-          <ion-button class="rounded-button" mode="ios">
+          <ion-button class="rounded-button" mode="ios" (click)="takePhoto()">
             <ion-icon
               class="icon-big"
               color="primary"

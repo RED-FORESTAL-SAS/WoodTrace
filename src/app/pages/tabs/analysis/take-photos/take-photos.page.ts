@@ -28,21 +28,10 @@ export class TakePhotosPage implements OnInit, OnDestroy {
 
   especies = especie;
 
-  // especieList = [
-  //   { content: "cedro", value: "Cedro" },
-  //   { content: "roble", value: "Roble" },
-  // ];
-
   private sbs: Subscription[] = [];
 
   /** BehaviourSubject to deal with event "saveWood". */
   private saveWoodEvent = new BehaviorSubject<number>(null);
-
-  // model;
-  // photos = [];
-  // sides = ["Izquierda", "Derecha", "Adelante", "Atrás"];
-
-  // treeId: string;
 
   constructor(
     private utilsSvc: UtilsService,
@@ -52,8 +41,6 @@ export class TakePhotosPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // this.setTreeArrays();
-    // this.especies = this.especieList;
     this.populateForm();
   }
 
@@ -77,85 +64,39 @@ export class TakePhotosPage implements OnInit, OnDestroy {
     );
   }
 
-  // ionViewWillEnter() {
-  //   // this.treeId = Date.now().toString();
-  // }
-
-  // currentUser(): User {
-  //   return this.utilsSvc.getCurrentUser();
-  // }
-
-  // currentAnalysis() {
-  //   return this.utilsSvc.getFromLocalStorage("analysis");
-  // }
-
-  // setTreeArrays() {
-  //   let currentAnalysis = this.currentAnalysis();
-
-  //   if (!currentAnalysis.pendingTrees) {
-  //     currentAnalysis.pendingTrees = [];
-  //   }
-
-  //   if (!currentAnalysis.trees) {
-  //     currentAnalysis.trees = [];
-  //   }
-
-  //   this.utilsSvc.saveLocalStorage("analysis", currentAnalysis);
-  // }
-
   /**
-   * It takes a string as a parameter, then it gets a photo from the camera, then it converts the photo
-   * to base64, then it pushes the photo to an array
-   * @param {string} sideSelected - string - The side of the image that was selected.
-   */
-  // async takePhoto(sideSelected: string) {
-  //   let data: Img;
-
-  //   await Camera.getPhoto({
-  //     quality: 100,
-  //     allowEditing: false,
-  //     resultType: CameraResultType.DataUrl,
-  //     promptLabelHeader: "Imagenes",
-  //     promptLabelPhoto: "Elegir Foto",
-  //     promptLabelPicture: "Tomar Foto",
-  //     source: CameraSource.Prompt,
-  //   }).then(
-  //     async (image) => {
-  //       data = { side: sideSelected, file: image.dataUrl };
-
-  //       this.sides = this.sides.filter((side) => side !== sideSelected);
-  //       this.photos.push(data);
-  //     },
-  //     (err) => {
-  //       console.log(err);
-  //     }
-  //   );
-  // }
-
-  /**
-   * It takes a photo, uploads it to Firebase Storage, and then updates the user's profile photo in the
-   * database
+   * Funciona para cuando se escoge seleccionar una foto del dispositovo
    */
   async uploadPhoto() {
     const image = await Camera.getPhoto({
       quality: 70,
       allowEditing: true,
       resultType: CameraResultType.DataUrl,
-      promptLabelHeader: "Foto de perfil",
-      promptLabelPhoto: "Selecciona una imagen",
-      promptLabelPicture: "Toma una foto",
-      source: CameraSource.Prompt,
+      source: CameraSource.Photos,
     });
 
     this.loadingPhoto = true;
 
     this.photo.setValue(image.dataUrl);
-    console.log(this.photo);
+    console.log(this.photo.value);
+    this.loadingPhoto = false;
+  }
+
+  async takePhoto() {
+    const image = await Camera.getPhoto({
+      quality: 70,
+      allowEditing: true,
+      resultType: CameraResultType.DataUrl,
+      source: CameraSource.Camera,
+    });
+
+    this.loadingPhoto = true;
+    this.photo.setValue(image.dataUrl);
+    console.log(this.photo.value);
     this.loadingPhoto = false;
   }
 
   public saveWood(): void {
-    console.log("hello");
     this.saveWoodEvent.next(Date.now());
   }
 
@@ -172,10 +113,13 @@ export class TakePhotosPage implements OnInit, OnDestroy {
                 ...wood,
                 especieDeclarada: this.especie.value,
                 path: this.photo.value,
+                /**
+                 * @todo falta llenar los campos localPath y url.
+                 */
               };
               this.reportService.patchActiveWood(patchData);
               await this.reportService.analyzeWood();
-              this.utilsSvc.routerLink("/tabs/analysis/analysis-resumen");
+              this.utilsSvc.routerLink("/tabs/analysis/analysis-result");
             },
           })
         )

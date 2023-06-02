@@ -80,7 +80,7 @@ export interface LocalStorageWtWood {
 }
 
 export const NEW_WT_WOOD: WtWood = {
-  localId: new Date().getTime().toString(),
+  localId: "0",
   localPath: "",
   path: "",
   url: "",

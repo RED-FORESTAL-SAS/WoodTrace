@@ -33,18 +33,18 @@ const routes: Routes = [
     // canActivate: [AnalysisGuard],
   },
   {
-    path: "analysis-resumen",
+    path: "analysis-result",
     loadChildren: () =>
-      import("./analysis-resumen/analysis-resumen.module").then(
-        (m) => m.AnalysisResumenPageModule
+      import("./analysis-result/analysis-result.module").then(
+        (m) => m.AnalysisResultPageModule
       ),
     // canActivate: [AnalysisGuard],
   },
   {
-    path: "analysis-trees/:segment",
+    path: "analysis-list",
     loadChildren: () =>
-      import("./analysis-trees/analysis-trees.module").then(
-        (m) => m.AnalysisTreesPageModule
+      import("./analysis-list/analysis-list.module").then(
+        (m) => m.AnalysisListPageModule
       ),
     // canActivate: [AnalysisGuard],
   },

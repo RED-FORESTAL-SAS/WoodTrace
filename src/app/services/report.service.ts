@@ -66,7 +66,7 @@ export class ReportService {
   get emptyWood(): WtWood {
     return {
       ...NEW_WT_WOOD,
-      localId: new Date().getTime().toString(),
+      localId: "0",
       wtUserId: this.userService.currentUser!.id,
       fCreado: Timestamp.fromDate(new Date()),
       fModificado: Timestamp.fromDate(new Date()),
@@ -151,12 +151,16 @@ export class ReportService {
 
     const woods = this.store.state.activeReport.woods;
     const wood = this.store.state.activeWood;
-    woods.push(wood);
+    wood.localId = new Date().getTime().toString();
+    const findWood = woods.find((w) => w.localId === wood.localId);
+    if (findWood === undefined) {
+      woods.push(wood);
 
-    this.patchActiveReport({
-      ...this.store.state.activeReport,
-      woods: woods,
-    });
+      this.patchActiveReport({
+        ...this.store.state.activeReport,
+        woods: woods,
+      });
+    }
 
     this.patchActiveWood(null);
   }
@@ -200,9 +204,8 @@ export class ReportService {
       reports: reports,
     });
 
-    /**
-     * @todo @mario Persistir el report en el localstorage.
-     */
+    // Save reports to localStorage.
+    this.saveReportsToLocalStorage(reports);
 
     this.patchActiveReport(null);
   }
@@ -216,6 +219,21 @@ export class ReportService {
     return localStorageReports
       ? localStorageReports.map((report) => this.reportFromLocalStorage(report))
       : [];
+  }
+
+  /**
+   * Saves an Array of WtReports to localStorage.
+   *
+   * @param reports WtReport[]
+   */
+  private saveReportsToLocalStorage(reports: WtReport[]): void {
+    const localStorageReports = reports.map((report) =>
+      this.reportToLocalStorage(report)
+    );
+    this.localStorage.save<LocalStorageWtReport[]>(
+      REPORTS_LS_KEY,
+      localStorageReports
+    );
   }
 
   /**

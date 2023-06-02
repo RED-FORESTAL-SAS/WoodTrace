@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [MARIO/RED-10-AUTH] - 2023-06-02
+
+- Crear componentes analysis-list, analysis-result, report-details.
+- implementar flujo de los componentes creados.
+
 ## [MARIO/RED-10-AUTH] - 2023-05-18
 
 - Hacer fix temporal del ProfilePage, para que se muestre todo después de cerrar y abrir sesión.
