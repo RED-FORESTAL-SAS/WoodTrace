@@ -9,6 +9,10 @@
 - Implementación de funcionalidad para eliminar cuenta.
 - remplazo de icons, img a la luz de los nuevos cambios de figma.
 
+## [MARIO/RED-10-AUTH] - 2023-06-05
+
+- Cambios hechos con el último deploy.
+
 ## [MARIO/RED-10-AUTH] - 2023-06-02
 
 - Crear componentes analysis-list, analysis-result, report-details.
