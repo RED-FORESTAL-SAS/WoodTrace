@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 import { FormControl } from "@angular/forms";
-import { User } from "src/app/models/user.model";
 import { UserService } from "src/app/services/user.service";
 import { WtCompany } from "src/app/models/wt-company";
 import { Observable } from "rxjs";
@@ -17,8 +16,6 @@ export class CompanyPage implements OnInit {
   photo = new FormControl("");
   loading: boolean;
   loadingPhoto: boolean;
-
-  user = {} as User;
 
   public company$: Observable<WtCompany | null>;
 

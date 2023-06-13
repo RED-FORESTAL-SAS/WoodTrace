@@ -14,6 +14,7 @@ import { FinkAlertComponent } from "./components/fink-alert/fink-alert.component
 import { DownloadTypeComponent } from "./components/download-type/download-type.component";
 import { NgxCurrencyModule } from "ngx-currency";
 import { LoteModalComponent } from "./components/lote-modal/lote-modal.component";
+import { TimeStampPipe } from "./components/pipes/timestamp.pipe";
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { LoteModalComponent } from "./components/lote-modal/lote-modal.component
     FinkAlertComponent,
     DownloadTypeComponent,
     LoteModalComponent,
+    TimeStampPipe,
   ],
   exports: [
     HeaderComponent,
@@ -39,6 +41,7 @@ import { LoteModalComponent } from "./components/lote-modal/lote-modal.component
     FinkAlertComponent,
     DownloadTypeComponent,
     LoteModalComponent,
+    TimeStampPipe,
   ],
   imports: [
     CommonModule,

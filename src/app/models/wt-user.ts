@@ -18,7 +18,7 @@ export interface WtUser {
   docNumber: string;
   emailVerified: boolean;
   genero: string;
-  fNacimiento: Timestamp;
+  fNacimiento: Timestamp | null;
   movil: string;
   /**
    * Dispositivos asociados al usuario.
@@ -28,6 +28,7 @@ export interface WtUser {
     uuid: string;
   }>;
   photo: string;
+  activo: boolean;
 }
 
 /**
@@ -54,4 +55,5 @@ export interface LocalStorageWtUser {
     uuid: string;
   }>;
   photo: string;
+  activo: boolean;
 }

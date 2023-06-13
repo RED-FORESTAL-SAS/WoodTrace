@@ -7,6 +7,9 @@ import { UserService } from "src/app/services/user.service";
 import { WtUser } from "src/app/models/wt-user";
 import { Observable, Subscription } from "rxjs";
 import { Timestamp } from "../../../../../app/types/timestamp.type";
+import { UtilsService } from "src/app/services/utils.service";
+import { take, tap } from "rxjs/operators";
+import { FirebaseService } from "src/app/services/firebase.service";
 
 @Component({
   selector: "app-admin-account",
@@ -23,8 +26,6 @@ export class AdminAccountPage implements OnInit, OnDestroy {
 
   docTypesList = [];
 
-  // user = {} as User;
-
   loading: boolean;
   loadingPhoto: boolean;
 
@@ -34,7 +35,9 @@ export class AdminAccountPage implements OnInit, OnDestroy {
 
   constructor(
     private userService: UserService,
-    private modalController: ModalController
+    private utilsSvc: UtilsService,
+    private modalController: ModalController,
+    private firebaseSvc: FirebaseService
   ) {
     this.user$ = this.userService.user;
   }
@@ -43,7 +46,6 @@ export class AdminAccountPage implements OnInit, OnDestroy {
     this.docTypesList = docTypes;
     this.sbs.push(
       this.user$.subscribe((user) => {
-        console.log(user);
         const type = this.docTypesList.find((t) => t.value === user.docType);
         this.docType = type.content;
       })
@@ -61,6 +63,64 @@ export class AdminAccountPage implements OnInit, OnDestroy {
     });
 
     await modal.present();
+  }
+
+  eliminarCuenta() {
+    this.utilsSvc.presentAlertConfirm({
+      header: "Eliminar la cuenta",
+      message: "¿Está seguro de que desea eliminar la cuenta?",
+      buttons: [
+        {
+          text: "Cancelar",
+          handler: () => {},
+        },
+        {
+          text: "Eliminar",
+          handler: () => {
+            this.sbs.push(
+              this.userService.user
+                .pipe(
+                  take(1),
+                  tap({
+                    next: async (user) => {
+                      const patchData = {
+                        ...user,
+                        activo: false,
+                      };
+                      this.userService.patchUser(patchData);
+                      this.loading = true;
+                      this.firebaseSvc
+                        .UpdateCollection("wt_users", patchData)
+                        .then(
+                          (res) => {
+                            this.utilsSvc.presentToast(
+                              "Su usuario ha sido eliminado con éxito. Ya no podrá acceder a la aplicación. "
+                            );
+                            this.logOut();
+                            this.loading = false;
+                          },
+                          (err) => {
+                            console.log(err);
+
+                            this.utilsSvc.presentToast(
+                              "No tienes conexión actualmente los datos se subiran una vez se restablesca la conexión"
+                            );
+                            this.loading = false;
+                          }
+                        );
+                    },
+                  })
+                )
+                .subscribe()
+            );
+          },
+        },
+      ],
+    });
+  }
+
+  logOut() {
+    this.firebaseSvc.logout();
   }
 
   /**

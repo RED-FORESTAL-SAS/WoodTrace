@@ -169,8 +169,6 @@ export class UserService implements OnDestroy {
     // Try to retrieve user from local storage.
     const user = this.fetchUserFromLocalStorage();
 
-    console.log("User from local storage", user);
-
     // If found user is differente from state, patch it in state.
     if (user && user.id !== this.store.state.user?.id) {
       this.patchUser(user);
@@ -434,6 +432,7 @@ export class UserService implements OnDestroy {
       movil: user.movil,
       devices: user.devices,
       photo: user.photo,
+      activo: user.activo,
     };
   }
 
@@ -462,6 +461,7 @@ export class UserService implements OnDestroy {
           movil: localStorageUser.movil,
           devices: localStorageUser.devices,
           photo: localStorageUser.photo,
+          activo: localStorageUser.activo,
         }
       : null;
   }

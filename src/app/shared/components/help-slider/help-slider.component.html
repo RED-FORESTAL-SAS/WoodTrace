@@ -1,10 +1,15 @@
-<div class="ion-text-center">
-  <!-- <div class="safe-p-top"></div> -->
+<!-- Se usa en el componente D:\angular\WoodTrace\src\app\pages\auth\intro-->
+<!--Para forzar el enrutamiento a este componente es necesario quitar el Guard de
+D:\angular\WoodTrace\src\app\app-routing.module.ts -->
 
+<div class="ion-text-center">
   <!-- Logo -->
   <img class="logo" src="../../../../assets/icon/wt_Group424.svg" />
 
   <!-- Slider -->
+  <!-- El contenido de los slides se encuentra en 
+    D:\angular\WoodTrace\src\assets\data\help-slides.ts-->
+
   <swiper
     class="swiper"
     [config]="config"
@@ -14,7 +19,7 @@
   >
     <ng-template *ngFor="let h of helpSlides" swiperSlide>
       <div>
-        <ion-grid style="margin-bottom: 20px">
+        <ion-grid style="margin-bottom: 25px">
           <ion-row>
             <ion-col
               ><h1>{{ h.title }}</h1></ion-col
@@ -33,42 +38,6 @@
           <ion-row>
             <ion-col
               ><h6>{{ h.message }}</h6></ion-col
-            >
-          </ion-row>
-        </ion-grid>
-      </div>
-    </ng-template>
-    <ng-template swiperSlide>
-      <div>
-        <ion-grid style="margin-bottom: 20px">
-          <ion-row>
-            <ion-col><h1>Contáctanos</h1></ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col><h4>¡Estamos listos para servirte!</h4></ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col
-              ><h6>
-                Puedes hablar con nosotros por medio de nuestro correo
-                electrónico, teléfono y página web.
-              </h6></ion-col
-            >
-          </ion-row>
-          <ion-row>
-            <ion-col>
-              <img
-                class="img-slide"
-                src="../../../../assets/icon/Fredservicio.svg"
-              />
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col
-              ><h6>
-                Puedes encontrar nuestros datos de contacto dentro del botón de
-                “ayuda” en el menú de tu perfil.
-              </h6></ion-col
             >
           </ion-row>
         </ion-grid>
@@ -95,6 +64,4 @@
       </ion-button>
     </div>
   </div>
-
-  <!-- <div class="safe-p-bottom"></div> -->
 </div>

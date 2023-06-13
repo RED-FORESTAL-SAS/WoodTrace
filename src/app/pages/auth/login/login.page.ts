@@ -18,6 +18,7 @@ import {
   NotFoundFailure,
   PermissionDeniedFailure,
 } from "src/app/utils/failure.utils";
+import { WtUser } from "src/app/models/wt-user";
 
 @Component({
   selector: "app-login",
@@ -61,11 +62,22 @@ export class LoginPage implements OnDestroy {
     this.loginIn.next(true);
     this.loading = true;
 
-    let user: User = {
+    /** @todo manejar el estado activo e inactivo entonces para poder loguearse */
+
+    let user: WtUser = {
       id: "",
       email: this.email.value,
       password: this.password.value,
+      fullName: "",
+      docType: 0,
+      docNumber: "",
       emailVerified: null,
+      genero: "",
+      fNacimiento: null,
+      movil: "",
+      devices: [],
+      photo: "",
+      activo: true,
     };
 
     this.firebaseSvc.Login(user).catch((e) => {

@@ -86,17 +86,18 @@
         <span *ngIf="genero.errors?.['required']">Selecciona un genero</span>
       </div>
 
-      <!-- Fecha de nacimiento  -->
-      <app-input-gradient
+      <!-- Fecha de nacimiento -->
+      <!-- <app-input-gradient
         label="Fecha de nacimiento"
         type="date"
         [formControlValue]="fNacimiento"
-      ></app-input-gradient>
+      >
+      </app-input-gradient>
       <div class="validators" *ngIf="fNacimiento.touched && fNacimiento.errors">
         <span *ngIf="fNacimiento.errors?.['required']"
           >Selecciona una fecha de nacimiento</span
         >
-      </div>
+      </div> -->
 
       <!-- Tipo de documento  -->
       <app-input-gradient

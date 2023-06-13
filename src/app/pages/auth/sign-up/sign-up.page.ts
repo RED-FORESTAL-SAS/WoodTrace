@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormControl, Validators } from "@angular/forms";
 import { BehaviorSubject, Subscription } from "rxjs";
 import { filter, switchMap, take, tap } from "rxjs/operators";
-import { User } from "src/app/models/user.model";
+import { WtUser } from "src/app/models/wt-user";
 import { FirebaseService } from "src/app/services/firebase.service";
 import { UtilsService } from "src/app/services/utils.service";
 import {
@@ -36,7 +36,7 @@ export class SignUpPage implements OnInit, OnDestroy {
       "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&.+])[A-Za-zd$@$!%*?&].{8,16}"
     ),
   ]);
-  docType = new FormControl("", [Validators.required]);
+  docType = new FormControl(0, [Validators.required]);
   docNumber = new FormControl("", [
     Validators.required,
     Validators.minLength(6),
@@ -44,6 +44,7 @@ export class SignUpPage implements OnInit, OnDestroy {
   genero = new FormControl("", [Validators.required]);
   fNacimiento = new FormControl(null, [Validators.required]);
   movil = new FormControl("", [Validators.required, Validators.minLength(10)]);
+  photo = new FormControl("", [Validators.required]);
 
   docTypes = [];
   generoTypes = [];
@@ -140,7 +141,7 @@ export class SignUpPage implements OnInit, OnDestroy {
     this.utilsSvc.presentLoading();
 
     try {
-      let user: User = {
+      let user: WtUser = {
         id: "",
         email: this.email.value,
         password: this.password.value,
@@ -149,9 +150,15 @@ export class SignUpPage implements OnInit, OnDestroy {
         docNumber: this.docNumber.value,
         emailVerified: false,
         genero: this.genero.value,
+        /**
+         * @todo hay que ajustar la manera en la que se guarda la fecha de nacimiento en el registro
+         * y por qué la herramienta no funciona bien en el apk.
+         */
         fNacimiento: this.fNacimiento.value,
         movil: this.movil.value,
+        photo: this.photo.value,
         devices: [this.utilsSvc.getFromLocalStorage("currentDevice")],
+        activo: true,
       };
 
       // Register user against Firebase Authentication.

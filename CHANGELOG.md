@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [MARIO/RED-10-AUTH] - 2023-06-13
+
+- Eliminar módulos que nos e van a usar: Chenge-pasword, devices, operators, properties.
+- Ajustes de estilos en todos los módulos de auth y tabs/profile
+- Limpieza de código en todos los módulos de auth y tabs/profile
+- Cambio en la manera en la que se consulta/modifica en wt-user y sus datos.
+- Implementación de funcionalidad para eliminar cuenta.
+- remplazo de icons, img a la luz de los nuevos cambios de figma.
+
 ## [MARIO/RED-10-AUTH] - 2023-06-02
 
 - Crear componentes analysis-list, analysis-result, report-details.

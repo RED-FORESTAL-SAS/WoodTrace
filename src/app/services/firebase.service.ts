@@ -27,6 +27,7 @@ import {
   limit,
   query,
 } from "@angular/fire/firestore";
+import { WtUser } from "../models/wt-user";
 
 /**
  * @todo @diana Esta clase contiene dependencias a módulos de angular fire en modo compat. Esto
@@ -85,7 +86,7 @@ export class FirebaseService {
    * @param user Username.
    * @param password Password.
    */
-  Login(user: User): Promise<any> {
+  Login(user: WtUser): Promise<any> {
     return this.auth.signInWithEmailAndPassword(user.email, user.password);
   }
 
@@ -94,7 +95,7 @@ export class FirebaseService {
    * autentica al usuario en firebase auth
    */
 
-  createUser(user: User) {
+  createUser(user: WtUser) {
     return this.auth.createUserWithEmailAndPassword(user.email, user.password);
   }
 

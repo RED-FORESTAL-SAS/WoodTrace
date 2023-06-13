@@ -2,7 +2,6 @@ import { Component, OnInit } from "@angular/core";
 import { FormControl, Validators } from "@angular/forms";
 import { FirebaseService } from "src/app/services/firebase.service";
 import { UtilsService } from "src/app/services/utils.service";
-import { License } from "src/app/models/license.model";
 import { WtLicense } from "src/app/models/wt-license";
 import { Observable } from "rxjs";
 import { UserService } from "src/app/services/user.service";
@@ -41,32 +40,6 @@ export class MembershipPage implements OnInit {
   ngOnInit() {}
 
   ionViewWillEnter() {}
-
-  /**
-   * It creates a license object and then adds it to the licenses collection in Firestore
-   * Admin function
-   */
-  generateLicenses() {
-    let numberOfLicense = 5; //How many licenses you want to create
-
-    let license: License = {
-      userId: null,
-      dateInit: null,
-      dateEnd: null,
-      months: 3, //Number of months the license will be available
-    };
-
-    for (let i = 1; i < numberOfLicense + 1; i++) {
-      this.firebaseSvc
-        .addToCollection("licenses", license)
-        .then((res) => {
-          if (i == numberOfLicense) {
-            this.utilsSvc.presentToast("¡Licencias creadas exitosamente!");
-          }
-        })
-        .catch((err) => console.log(err));
-    }
-  }
 
   /**
    * It gets the license from the database and checks if it's valid. If it is, it saves the license in

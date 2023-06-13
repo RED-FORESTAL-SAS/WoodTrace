@@ -30,4 +30,13 @@ export const helpSlides = [
     img: "assets/icon/Reportes.svg",
     message: "Puedes descargar los reportes en cualquier momento.",
   },
+  {
+    title: "Contáctanos",
+    subtitle: "¡Estamos listos para servirte!",
+    indication:
+      "Puedes hablar con nosotros por medio de nuestro correo electrónico, teléfono y página web.",
+    img: "../../../../assets/icon/Fredservicio.svg",
+    message:
+      "Puedes encontrar nuestros datos de contacto dentro del botón de “ayuda” en el menú de tu perfil.",
+  },
 ];

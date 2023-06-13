@@ -38,6 +38,7 @@ export class ReportService {
     this.store.patch({
       activeReport: this.fetchActiveReportFromLocalStorage(),
       reports: this.fetchReportsFromLocalStorage(),
+      // isFirstReport: this.fetchIsFirstReportFromLocalStorage(),
     });
   }
 

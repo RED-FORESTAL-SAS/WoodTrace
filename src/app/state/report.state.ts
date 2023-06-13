@@ -22,4 +22,9 @@ export interface ReportState {
    * Reports created/syncronized with Firestore.
    */
   reports: WtReport[];
+
+  /**
+   * Bandera para mostrar el help del reporte ...
+   */
+  isFirstReport: boolean;
 }

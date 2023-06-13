@@ -3,7 +3,6 @@ import { FormControl } from "@angular/forms";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 import { Observable, Subscription } from "rxjs";
 import { take, tap } from "rxjs/operators";
-import { User } from "src/app/models/user.model";
 import { WtUser } from "src/app/models/wt-user";
 import { FirebaseService } from "src/app/services/firebase.service";
 import { UserService } from "src/app/services/user.service";
@@ -24,28 +23,19 @@ import { UtilsService } from "src/app/services/utils.service";
 export class ProfilePage implements OnInit, OnDestroy {
   photo = new FormControl("");
   loadingPhoto: boolean;
+  loading: boolean;
 
   private sbs: Subscription[] = [];
-
-  user = {} as User;
-
-  loading: boolean;
 
   /** Observable with active license or null. */
   public user$: Observable<WtUser | null>;
 
   constructor(
     private firebaseSvc: FirebaseService,
-    private utilsSvc: UtilsService,
-    private userService: UserService
+    private userService: UserService,
+    private utilsSvc: UtilsService
   ) {
     this.user$ = this.userService.user;
-
-    this.sbs.push(
-      this.user$.subscribe((user) => {
-        console.log("User in profile page", user);
-      })
-    );
   }
 
   ngOnInit() {
@@ -64,20 +54,12 @@ export class ProfilePage implements OnInit, OnDestroy {
           take(1),
           tap({
             next: (user) => {
-              console.log(user.email);
               this.photo.setValue(user.photo);
             },
           })
         )
         .subscribe()
     );
-  }
-
-  /**
-   * This function sets the values of the form fields to the values of the user object
-   */
-  getUser() {
-    this.photo.setValue(this.user.photo);
   }
 
   /**
@@ -98,6 +80,7 @@ export class ProfilePage implements OnInit, OnDestroy {
     this.loadingPhoto = true;
 
     this.photo.setValue(image.dataUrl);
+    console.log(this.photo.value);
     this.loadingPhoto = false;
     this.updateUser();
   }
@@ -106,55 +89,46 @@ export class ProfilePage implements OnInit, OnDestroy {
    * It updates the user information in the database.
    */
   async updateUser() {
-    if (this.user.photo !== this.photo.value) {
-      this.user.photo = await this.firebaseSvc.uploadPhoto(
-        "wt_users/" + this.user.id + "/profile",
-        this.photo.value
-      );
-      console.log(this.user.photo);
-    }
+    this.sbs.push(
+      this.userService.user
+        .pipe(
+          take(1),
+          tap({
+            next: async (user) => {
+              const patchData = {
+                ...user,
+                photo: await this.firebaseSvc.uploadPhoto(
+                  "wt_users/" + user.id + "/profile",
+                  this.photo.value
+                ),
+              };
+              this.userService.patchUser(patchData);
 
-    this.loading = true;
-    this.firebaseSvc.UpdateCollection("wt_users", this.user).then(
-      (res) => {
-        this.utilsSvc.presentToast("Actualizado con éxito");
-        this.utilsSvc.routerLink("/tabs/profile/admin-account");
-        this.loading = false;
-      },
-      (err) => {
-        console.log(err);
+              this.loading = true;
+              this.firebaseSvc.UpdateCollection("wt_users", patchData).then(
+                (res) => {
+                  this.utilsSvc.presentToast(
+                    " Foto de perfil actualizada con éxito"
+                  );
+                  this.loading = false;
+                },
+                (err) => {
+                  console.log(err);
 
-        this.utilsSvc.presentToast(
-          "No tienes conexión actualmente los datos se subiran una vez se restablesca la conexión"
-        );
-        this.loading = false;
-      }
+                  this.utilsSvc.presentToast(
+                    "No tienes conexión actualmente los datos se subiran una vez se restablesca la conexión"
+                  );
+                  this.loading = false;
+                }
+              );
+            },
+          })
+        )
+        .subscribe()
     );
   }
 
   logOut() {
     this.firebaseSvc.logout();
-  }
-
-  eliminarCuenta() {
-    this.utilsSvc.presentAlertConfirm({
-      header: "Eliminar la cuenta",
-      message: "¿Está seguro de que desea eliminar la cuenta?",
-      buttons: [
-        {
-          text: "Cancelar",
-          handler: () => {},
-        },
-        {
-          text: "Continuar",
-          handler: () => {
-            /** @todo falta definir las políticas de eliminación de cuentas y la funcionalidad.  */
-            this.utilsSvc.presentToast(
-              ":P Falta desarrollar esta funcionalidad. "
-            );
-          },
-        },
-      ],
-    });
   }
 }

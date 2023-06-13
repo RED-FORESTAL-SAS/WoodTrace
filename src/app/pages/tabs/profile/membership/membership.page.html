@@ -1,25 +1,16 @@
-<app-header backButton="/tabs/profile" title="Membresía"></app-header>
+<app-header backButton="/tabs/profile" title="Administrar cuenta"></app-header>
 
 <ion-content>
   <div *ngIf="license$ | async as license">
     <ion-grid>
       <ion-row>
         <ion-col class="ion-text-center">
-          <h3>Detalle de la membresía</h3>
+          <h3>Membresía</h3>
         </ion-col>
       </ion-row>
-      <ion-row class="elipse">
-        <ion-col class="ion-text-right">
-          <img
-            style="width: 70%; height: 70%"
-            src="../../../../assets/icon/wt_licencia4.svg"
-          />
-        </ion-col>
-        <ion-col class="ion-text-left">
-          <img
-            style="padding-top: 70px"
-            src="../../../../assets/icon/wt_licencia3.svg"
-          />
+      <ion-row>
+        <ion-col class="ion-text-center">
+          <img src="../../../../assets/img/licenced-img.svg" />
         </ion-col>
       </ion-row>
       <ion-row>
@@ -59,27 +50,18 @@
       <ion-grid>
         <ion-row>
           <ion-col class="ion-text-center">
-            <h3 style="margin: 0px 50px 50px 50px">
+            <h3 style="margin: 0px 50px 20px 50px">
               Ingresa el código de licencia
             </h3>
           </ion-col>
         </ion-row>
-        <ion-row class="elipse">
+        <ion-row>
           <ion-col class="ion-text-center">
-            <img
-              style="padding-top: 60px"
-              src="../../../../assets/icon/wt_licencia1.svg"
-            />
-          </ion-col>
-          <ion-col style="vertical-align: top">
-            <img
-              style="width: 70%; height: 70%"
-              src="../../../../assets/icon/wt_licencia2.svg"
-            />
+            <img src="../../../../assets/img/nonlicence-img.svg" />
           </ion-col>
         </ion-row>
         <ion-row>
-          <ion-col style="padding-top: 50px">
+          <ion-col style="padding-top: 20px">
             <app-input-gradient
               max="20"
               label="Código"
@@ -87,7 +69,6 @@
               [formControlValue]="redeemCode"
             >
             </app-input-gradient>
-            <!-- <div class="note">El código de licencia expira una vez redimido.</div> -->
             <div
               class="validators"
               *ngIf="redeemCode.dirty && redeemCode.errors"

@@ -34,7 +34,7 @@
               <tr *ngFor="let report of reports$ | async; index as i">
                 <td>{{ report.placa }}</td>
                 <td>{{ report.municipio }}</td>
-                <td>{{ report.fCreado }}</td>
+                <td>{{ report.fCreado | timestamp | date: 'dd-MM-yyyy' }}</td>
                 <td>
                   <ion-icon
                     class="option-icon"
