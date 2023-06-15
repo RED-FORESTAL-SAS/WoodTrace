@@ -1,16 +1,16 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { IonicModule } from '@ionic/angular';
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
+import { IonicModule } from "@ionic/angular";
 
-import { StepperComponent } from './stepper.component';
+import { StepperComponent } from "./stepper.component";
 
-describe('StepperComponent', () => {
+describe("StepperComponent", () => {
   let component: StepperComponent;
   let fixture: ComponentFixture<StepperComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ StepperComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [StepperComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(StepperComponent);
@@ -18,7 +18,7 @@ describe('StepperComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

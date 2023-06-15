@@ -1,13 +1,13 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { NgModule } from "@angular/core";
+import { Routes, RouterModule } from "@angular/router";
 
-import { TermsAndConditionsPage } from './terms-and-conditions.page';
+import { TermsAndConditionsPage } from "./terms-and-conditions.page";
 
 const routes: Routes = [
   {
-    path: '',
-    component: TermsAndConditionsPage
-  }
+    path: "",
+    component: TermsAndConditionsPage,
+  },
 ];
 
 @NgModule({

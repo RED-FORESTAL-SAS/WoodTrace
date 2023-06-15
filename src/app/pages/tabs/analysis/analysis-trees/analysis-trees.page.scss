@@ -1,60 +1,58 @@
-.option-icon{
-    font-size: 25px;
+.option-icon {
+  font-size: 25px;
 }
 
-.wrapper{
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.msg{
-    text-align: center;
-    border: 1px solid #dddbdb;
-    padding: 15px;
-    border-radius: 15px;
-    margin: 10px 10px 20px 10px;
+.msg {
+  text-align: center;
+  border: 1px solid #dddbdb;
+  padding: 15px;
+  border-radius: 15px;
+  margin: 10px 10px 20px 10px;
 }
 
-.table-container{
-    padding: 20px 5px 5px 5px;
+.table-container {
+  padding: 20px 5px 5px 5px;
 }
 
-ion-icon{
-    color: var(--ion-color-primary);
+ion-icon {
+  color: var(--ion-color-primary);
 }
 
-.btn-container{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-left: 10px;
-    padding-right: 10px;
-
-   
+.btn-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
-ion-button{
-    width: 150px;
-    height: 35px;
-    font-size: 13px;
+ion-button {
+  width: 150px;
+  height: 35px;
+  font-size: 13px;
 }
 
-table{
-    width: 100%;
-    th{
-        padding-bottom: 15px;
-        font-size: 14px;
+table {
+  width: 100%;
+  th {
+    padding-bottom: 15px;
+    font-size: 14px;
+  }
+
+  tr {
+    border-bottom: 1px solid var(--ion-color-primary);
+
+    td {
+      padding-top: 10px;
+      padding-bottom: 10px;
+      font-size: 13px;
+      text-align: center;
     }
-
-    tr{
-        border-bottom: 1px solid var(--ion-color-primary);
-
-        td{
-            padding-top: 10px;
-            padding-bottom: 10px;
-            font-size: 13px;
-            text-align: center;
-        }
-    }
+  }
 }

@@ -1,14 +1,25 @@
-<app-header backButton="/tabs/profile/admin-account" title="Operadores"></app-header>
+<app-header
+  backButton="/tabs/profile/admin-account"
+  title="Operadores"
+></app-header>
 <ion-content class="ion-padding">
-
-<h6 class="ion-padding-bottom">Añadir Operador</h6>
+  <h6 class="ion-padding-bottom">Añadir Operador</h6>
 
   <!-- Nombre completo  -->
-  <app-input-gradient max="50" label="Nombre Completo" type="text" [formControlValue]="fullName">
+  <app-input-gradient
+    max="50"
+    label="Nombre Completo"
+    type="text"
+    [formControlValue]="fullName"
+  >
   </app-input-gradient>
   <div class="validators" *ngIf="fullName.dirty && fullName.errors">
-    <span *ngIf="fullName.errors?.['required']">Ingresa nombre completo del operador</span>
-    <span *ngIf="fullName.errors?.['minlength']">El nombre debe contener mínimo 4 caracteres</span>
+    <span *ngIf="fullName.errors?.['required']"
+      >Ingresa nombre completo del operador</span
+    >
+    <span *ngIf="fullName.errors?.['minlength']"
+      >El nombre debe contener mínimo 4 caracteres</span
+    >
   </div>
 
   <!-- Button -->
@@ -38,7 +49,9 @@
     </ion-buttons>
   </ion-item>
 
-  <app-empty-array *ngIf="user.operators && !user.operators.length" iconSrc="assets/icon/icon-perfil.svg" text="No tienes operadores actualmente"></app-empty-array>
-  
-
+  <app-empty-array
+    *ngIf="user.operators && !user.operators.length"
+    iconSrc="assets/icon/icon-perfil.svg"
+    text="No tienes operadores actualmente"
+  ></app-empty-array>
 </ion-content>

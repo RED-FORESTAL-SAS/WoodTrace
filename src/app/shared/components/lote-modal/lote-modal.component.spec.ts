@@ -1,16 +1,16 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { IonicModule } from '@ionic/angular';
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
+import { IonicModule } from "@ionic/angular";
 
-import { LoteModalComponent } from './lote-modal.component';
+import { LoteModalComponent } from "./lote-modal.component";
 
-describe('LoteModalComponent', () => {
+describe("LoteModalComponent", () => {
   let component: LoteModalComponent;
   let fixture: ComponentFixture<LoteModalComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ LoteModalComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [LoteModalComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LoteModalComponent);
@@ -18,7 +18,7 @@ describe('LoteModalComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

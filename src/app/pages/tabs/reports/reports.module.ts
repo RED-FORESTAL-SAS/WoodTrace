@@ -1,13 +1,13 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FormsModule } from "@angular/forms";
 
-import { IonicModule } from '@ionic/angular';
+import { IonicModule } from "@ionic/angular";
 
-import { ReportsPageRoutingModule } from './reports-routing.module';
+import { ReportsPageRoutingModule } from "./reports-routing.module";
 
-import { ReportsPage } from './reports.page';
-import { SharedModule } from 'src/app/shared/shared.module';
+import { ReportsPage } from "./reports.page";
+import { SharedModule } from "src/app/shared/shared.module";
 
 @NgModule({
   imports: [
@@ -15,8 +15,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
     FormsModule,
     IonicModule,
     ReportsPageRoutingModule,
-    SharedModule
+    SharedModule,
   ],
-  declarations: [ReportsPage]
+  declarations: [ReportsPage],
 })
 export class ReportsPageModule {}

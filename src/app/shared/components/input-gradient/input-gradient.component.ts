@@ -1,18 +1,17 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { Component, Input, OnInit } from "@angular/core";
+import { FormControl } from "@angular/forms";
 
 interface Option {
-  value: any,
+  value: any;
   content: string;
 }
 
 @Component({
-  selector: 'app-input-gradient',
-  templateUrl: './input-gradient.component.html',
-  styleUrls: ['./input-gradient.component.scss'],
+  selector: "app-input-gradient",
+  templateUrl: "./input-gradient.component.html",
+  styleUrls: ["./input-gradient.component.scss"],
 })
 export class InputGradientComponent implements OnInit {
-
   @Input() formControlValue: FormControl;
   @Input() label: string;
   @Input() type: string;
@@ -23,28 +22,23 @@ export class InputGradientComponent implements OnInit {
 
   hide: boolean = true;
   isPassword: boolean;
-  noInputTypes = ['select','button','currency'];
-  mask = { prefix: 'COP    ', thousands: '.', decimal: ',',align: 'left' }
-  constructor() {
-  }
+  noInputTypes = ["select", "button", "currency"];
+  mask = { prefix: "COP    ", thousands: ".", decimal: ",", align: "left" };
+  constructor() {}
 
-  ngOnInit() { 
-
-    if(this.type == 'password'){
-      this.isPassword = true
+  ngOnInit() {
+    if (this.type == "password") {
+      this.isPassword = true;
     }
-    
   }
 
-
-  showAndHide(){
+  showAndHide() {
     this.hide = !this.hide;
-    
-    if(this.hide){
-      this.type = 'password'
-    }else{
-      this.type = 'text'
+
+    if (this.hide) {
+      this.type = "password";
+    } else {
+      this.type = "text";
     }
-    
   }
 }

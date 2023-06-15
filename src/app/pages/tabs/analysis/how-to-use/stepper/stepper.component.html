@@ -1,9 +1,11 @@
 <ion-item lines="none">
-  <ion-label><h1>Paso {{slideActive}}</h1> </ion-label>
+  <ion-label
+    ><h1>Paso {{ slideActive }}</h1>
+  </ion-label>
   <span slot="end">
     <div class="btn-gradient">
       <ion-button routerLink="/tabs/analysis/take-photos" size="md" mode="ios">
-        <span>{{slideActive == '3' ? 'Entendido' : 'Omitir'}}</span>
+        <span>{{ slideActive == "3" ? "Entendido" : "Omitir" }}</span>
       </ion-button>
     </div>
   </span>

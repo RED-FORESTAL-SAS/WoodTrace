@@ -1,18 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
-import { User } from 'src/app/models/user.model';
-import { FirebaseService } from 'src/app/services/firebase.service';
-import { UtilsService } from 'src/app/services/utils.service';
+import { Component, OnInit } from "@angular/core";
+import { FormControl, Validators } from "@angular/forms";
+import { ModalController } from "@ionic/angular";
+import { User } from "src/app/models/user.model";
+import { FirebaseService } from "src/app/services/firebase.service";
+import { UtilsService } from "src/app/services/utils.service";
 
 @Component({
-  selector: 'app-password-required',
-  templateUrl: './password-required.component.html',
-  styleUrls: ['./password-required.component.scss'],
+  selector: "app-password-required",
+  templateUrl: "./password-required.component.html",
+  styleUrls: ["./password-required.component.scss"],
 })
 export class PasswordRequiredComponent implements OnInit {
-
-  password = new FormControl('', [Validators.required]);
+  password = new FormControl("", [Validators.required]);
   loading: boolean;
 
   user = {} as User;
@@ -21,14 +20,11 @@ export class PasswordRequiredComponent implements OnInit {
     private modalController: ModalController,
     private utilsSvc: UtilsService,
     private firebaseSvc: FirebaseService
-  ) {
-   
-   }
+  ) {}
 
   ngOnInit() {
     this.user = this.utilsSvc.getCurrentUser();
   }
-
 
   close() {
     this.modalController.dismiss();
@@ -38,25 +34,27 @@ export class PasswordRequiredComponent implements OnInit {
    * The function checks the password and if it's correct, it logs the user in
    */
   checkPassword() {
-    
     //set password in the user object
     this.user.password = this.password.value;
 
     this.loading = true;
 
-    this.firebaseSvc.Login(this.user).then(res => {
-      this.loading = false;
-      this.modalController.dismiss({checked: true});
+    this.firebaseSvc.Login(this.user).then(
+      (res) => {
+        this.loading = false;
+        this.modalController.dismiss({ checked: true });
+      },
+      (err) => {
+        this.loading = false;
+        let error = this.utilsSvc.getError(err);
 
-    }, err => {
-  
-      this.loading = false;
-      let error = this.utilsSvc.getError(err);
-
-      if (error !== 'El correo electrónico que ingresaste ya está registrado') {
-        this.utilsSvc.presentToast(error);
+        if (
+          error !== "El correo electrónico que ingresaste ya está registrado"
+        ) {
+          this.utilsSvc.presentToast(error);
+        }
       }
-    })
+    );
   }
 
   validator() {
@@ -67,4 +65,3 @@ export class PasswordRequiredComponent implements OnInit {
     return true;
   }
 }
-

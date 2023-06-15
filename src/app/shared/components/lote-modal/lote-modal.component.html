@@ -8,12 +8,18 @@
         <div>Selecciona el lote al que pertenecen los árboles analizados</div>
       </div>
 
-
       <!-- Lote -->
-      <app-input-gradient [selectOptions]="properties" label="Lote" type="select" [formControlValue]="property">
+      <app-input-gradient
+        [selectOptions]="properties"
+        label="Lote"
+        type="select"
+        [formControlValue]="property"
+      >
       </app-input-gradient>
       <div class="validators" *ngIf="property.touched && property.errors">
-        <span *ngIf="property.errors?.['required']">Selecciona el lote al que pertenecen los árboles analizados</span>
+        <span *ngIf="property.errors?.['required']"
+          >Selecciona el lote al que pertenecen los árboles analizados</span
+        >
       </div>
 
       <!-- Button -->
@@ -31,9 +37,6 @@
           </span>
         </ion-button>
       </div>
-
-
     </div>
   </div>
-
 </ion-content>

@@ -1,23 +1,32 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { User } from 'src/app/models/user.model';
-import { FirebaseService } from 'src/app/services/firebase.service';
-import { UtilsService } from 'src/app/services/utils.service';
-import { docTypes } from 'src/assets/data/document-types';
+import { Component, OnInit } from "@angular/core";
+import { FormControl, Validators } from "@angular/forms";
+import { User } from "src/app/models/user.model";
+import { FirebaseService } from "src/app/services/firebase.service";
+import { UtilsService } from "src/app/services/utils.service";
+import { docTypes } from "src/assets/data/document-types";
 
 @Component({
-  selector: 'app-sign-up',
-  templateUrl: './sign-up.page.html',
-  styleUrls: ['./sign-up.page.scss'],
+  selector: "app-sign-up",
+  templateUrl: "./sign-up.page.html",
+  styleUrls: ["./sign-up.page.scss"],
 })
 export class SignUpPage implements OnInit {
-
-  fullName = new FormControl('', [Validators.required, Validators.minLength(4)])
-  email = new FormControl('', [Validators.required, Validators.email])
-  password = new FormControl('', [Validators.required, Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&.+])[A-Za-z\d$@$!%*?&].{8,16}')]);
-  docType = new FormControl('', [Validators.required])
-  docNumber = new FormControl('', [Validators.required, Validators.minLength(6)])
-
+  fullName = new FormControl("", [
+    Validators.required,
+    Validators.minLength(4),
+  ]);
+  email = new FormControl("", [Validators.required, Validators.email]);
+  password = new FormControl("", [
+    Validators.required,
+    Validators.pattern(
+      "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&.+])[A-Za-zd$@$!%*?&].{8,16}"
+    ),
+  ]);
+  docType = new FormControl("", [Validators.required]);
+  docNumber = new FormControl("", [
+    Validators.required,
+    Validators.minLength(6),
+  ]);
 
   docTypes = [];
 
@@ -25,58 +34,52 @@ export class SignUpPage implements OnInit {
     private firebaseSvc: FirebaseService,
     private utilsSvc: UtilsService
   ) {
-
     /* This is a listener that listens for the enter key to be pressed. If the enter key is pressed, and
     the validator() function returns true, the createUser() function is called. */
-    window.addEventListener('keyup', e => {
-      if (e.key == 'Enter' && this.validator()) {
-        this.createUser()
+    window.addEventListener("keyup", (e) => {
+      if (e.key == "Enter" && this.validator()) {
+        this.createUser();
       }
-    })
-
+    });
   }
 
   ngOnInit() {
     this.docTypes = docTypes;
   }
 
-
   /**
    * It creates a new user in Firebase Authentication and then saves the user's information in the
    * database
    */
   createUser() {
-
     let user: User = {
-      id: '',
+      id: "",
       email: this.email.value,
       password: this.password.value,
       fullName: this.fullName.value,
       docType: this.docType.value,
       docNumber: this.docNumber.value,
       emailVerified: false,
-      devices: [this.utilsSvc.getFromLocalStorage('currentDevice')]
-    }
+      devices: [this.utilsSvc.getFromLocalStorage("currentDevice")],
+    };
 
     this.utilsSvc.presentLoading();
 
-    this.firebaseSvc.createUser(user).then(res => {
+    this.firebaseSvc.createUser(user).then(
+      (res) => {
+        user.id = res.user.uid;
+        this.saveUserInfo(user);
 
-      user.id = res.user.uid;
-      this.saveUserInfo(user);
+        this.utilsSvc.dismissLoading();
+      },
+      (err) => {
+        let error = this.utilsSvc.getError(err);
 
-      this.utilsSvc.dismissLoading();
-
-    }, err => {
-
-      let error = this.utilsSvc.getError(err);
-
-      this.utilsSvc.dismissLoading();
-      this.utilsSvc.presentToast(error);
-    })
+        this.utilsSvc.dismissLoading();
+        this.utilsSvc.presentToast(error);
+      }
+    );
   }
-
-
 
   /**
    * The function takes a user object as a parameter, then calls the presentLoading() function from the
@@ -93,15 +96,18 @@ export class SignUpPage implements OnInit {
     delete user.password;
 
     this.utilsSvc.presentLoading();
-    this.firebaseSvc.addToCollectionById('users', user).then(res => {
-      this.utilsSvc.saveLocalStorage('user', user);
-      this.firebaseSvc.sendEmailVerification();
-      this.utilsSvc.routerLink('/email-verification');
-      this.resetForm();
-      this.utilsSvc.dismissLoading();
-    }, err => {
-      this.utilsSvc.dismissLoading();
-    })
+    this.firebaseSvc.addToCollectionById("users", user).then(
+      (res) => {
+        this.utilsSvc.saveLocalStorage("user", user);
+        this.firebaseSvc.sendEmailVerification();
+        this.utilsSvc.routerLink("/email-verification");
+        this.resetForm();
+        this.utilsSvc.dismissLoading();
+      },
+      (err) => {
+        this.utilsSvc.dismissLoading();
+      }
+    );
   }
 
   /**
@@ -114,8 +120,6 @@ export class SignUpPage implements OnInit {
     this.docType.reset();
     this.docNumber.reset();
   }
-
-
 
   /**
    * If the form field are invalid, return false. Otherwise, return true
@@ -141,4 +145,3 @@ export class SignUpPage implements OnInit {
     return true;
   }
 }
-

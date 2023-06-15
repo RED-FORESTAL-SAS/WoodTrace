@@ -1,65 +1,92 @@
 <app-header backButton="/tabs/analysis" title="Análisis"></app-header>
 <ion-content>
-
   <div class="wrapper">
+    <div *ngIf="operators.length && properties.length" class="form">
+      <!-- Especie -->
+      <app-input-gradient
+        [selectOptions]="speciesList"
+        label="Especie"
+        type="select"
+        [formControlValue]="species"
+      >
+      </app-input-gradient>
+      <div class="validators" *ngIf="species.touched && species.errors">
+        <span *ngIf="species.errors?.['required']"
+          >Selecciona la especie a analizar</span
+        >
+      </div>
 
-  
-  <div *ngIf="operators.length && properties.length" class="form">
+      <!-- Operador -->
+      <app-input-gradient
+        [selectOptions]="operators"
+        label="Operador"
+        type="select"
+        [formControlValue]="operator"
+      >
+      </app-input-gradient>
+      <div class="validators" *ngIf="operator.touched && operator.errors">
+        <span *ngIf="operator.errors?.['required']"
+          >Selecciona el operador asignado a este análisis</span
+        >
+      </div>
 
-    <!-- Especie -->
-    <app-input-gradient [selectOptions]="speciesList" label="Especie" type="select" [formControlValue]="species">
-    </app-input-gradient>
-    <div class="validators" *ngIf="species.touched && species.errors">
-      <span *ngIf="species.errors?.['required']">Selecciona la especie a analizar</span>
+      <!-- Cantidad de árboles en producción -->
+      <app-input-gradient
+        max="5"
+        label="Cantidad de árboles en producción"
+        type="number"
+        [formControlValue]="treeQuantity"
+      >
+      </app-input-gradient>
+      <div class="validators" *ngIf="treeQuantity.dirty && treeQuantity.errors">
+        <span *ngIf="treeQuantity.errors?.['required']"
+          >Ingresa la cantidad de árboles en producción</span
+        >
+        <span *ngIf="treeQuantity.errors?.['min']"
+          >Debe haber al menos un árbol en producción</span
+        >
+      </div>
+
+      <!-- Precio por kilogramos -->
+      <app-input-gradient
+        label="Precio por kilogramo"
+        type="currency"
+        [formControlValue]="priceKg"
+      >
+      </app-input-gradient>
+      <div class="validators" *ngIf="priceKg.dirty && priceKg.errors">
+        <span *ngIf="priceKg.errors?.['required']"
+          >Ingresa el precio por kilogramo</span
+        >
+      </div>
+
+      <!-- Button -->
+      <div *ngIf="!loading" class="btn-gradient">
+        <ion-button (click)="submit()" [disabled]="!validator()" mode="ios">
+          <span>Comenzar</span>
+        </ion-button>
+      </div>
+
+      <!-- Button Loading-->
+      <div *ngIf="loading" class="btn-gradient">
+        <ion-button class="btn-loading" disabled mode="ios">
+          <span>
+            <ion-spinner slot="end" color="dark"></ion-spinner>
+          </span>
+        </ion-button>
+      </div>
     </div>
-
-    <!-- Operador -->
-    <app-input-gradient [selectOptions]="operators" label="Operador" type="select" [formControlValue]="operator">
-    </app-input-gradient>
-    <div class="validators" *ngIf="operator.touched && operator.errors">
-      <span *ngIf="operator.errors?.['required']">Selecciona el operador asignado a este análisis</span>
-    </div>
-
-
-    <!-- Cantidad de árboles en producción -->
-    <app-input-gradient max="5" label="Cantidad de árboles en producción" type="number"
-      [formControlValue]="treeQuantity">
-    </app-input-gradient>
-    <div class="validators" *ngIf="treeQuantity.dirty && treeQuantity.errors">
-      <span *ngIf="treeQuantity.errors?.['required']">Ingresa la cantidad de árboles en producción</span>
-      <span *ngIf="treeQuantity.errors?.['min']">Debe haber al menos un árbol en producción</span>
-    </div>
-
-    <!-- Precio por kilogramos -->
-    <app-input-gradient label="Precio por kilogramo" type="currency" [formControlValue]="priceKg">
-    </app-input-gradient>
-    <div class="validators" *ngIf="priceKg.dirty && priceKg.errors">
-      <span *ngIf="priceKg.errors?.['required']">Ingresa el precio por kilogramo</span>
-    </div>
-
-    <!-- Button -->
-    <div *ngIf="!loading" class="btn-gradient">
-      <ion-button (click)="submit()" [disabled]="!validator()" mode="ios">
-        <span>Comenzar</span>
-      </ion-button>
-    </div>
-
-    <!-- Button Loading-->
-    <div *ngIf="loading" class="btn-gradient">
-      <ion-button class="btn-loading" disabled mode="ios">
-        <span>
-          <ion-spinner slot="end" color="dark"></ion-spinner>
-        </span>
-      </ion-button>
-    </div>
-
   </div>
-
-</div>
   <!-- Si no existen Operadores o Lotes -->
-  <div *ngIf="!operators.length || !properties.length" class="ion-padding-horizontal" style="padding-top: 20vh;">
-    <app-empty-array iconSrc="assets/icon/icon-perfil.svg"
-      text="Debes tener registrados operadores y lotes para hacer un análisis. Ve a la sección de administrar cuenta en tu perfil para agregarlos">
+  <div
+    *ngIf="!operators.length || !properties.length"
+    class="ion-padding-horizontal"
+    style="padding-top: 20vh"
+  >
+    <app-empty-array
+      iconSrc="assets/icon/icon-perfil.svg"
+      text="Debes tener registrados operadores y lotes para hacer un análisis. Ve a la sección de administrar cuenta en tu perfil para agregarlos"
+    >
     </app-empty-array>
 
     <!-- Ir al perfil -->
@@ -68,8 +95,5 @@
         <span>Perfil</span>
       </ion-button>
     </div>
-
   </div>
-
-
 </ion-content>

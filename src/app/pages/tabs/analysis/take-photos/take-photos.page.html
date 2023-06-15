@@ -1,42 +1,60 @@
 <app-header backButton="/tabs/analysis" title="Análisis"></app-header>
 
 <ion-content>
-
-  <div style="padding: 20px 20px 0px 20px;" *ngIf="currentAnalysis().pendingTrees.length || currentAnalysis().trees.length" class="btn-gradient ion-text-end">
-    <ion-button size="small" routerLink="/tabs/analysis/analysis-trees/pending" mode="ios">
+  <div
+    style="padding: 20px 20px 0px 20px"
+    *ngIf="currentAnalysis().pendingTrees.length || currentAnalysis().trees.length"
+    class="btn-gradient ion-text-end"
+  >
+    <ion-button
+      size="small"
+      routerLink="/tabs/analysis/analysis-trees/pending"
+      mode="ios"
+    >
       <span>Ir al resumen</span>
     </ion-button>
   </div>
 
-  <p>Para analizar el arbol debes tomar 4 fotos, una desde cada lado del arbol</p>
+  <p>
+    Para analizar el arbol debes tomar 4 fotos, una desde cada lado del arbol
+  </p>
 
   <ion-grid fixed>
     <ion-row>
-      <ion-col (click)="removePhoto(i, p.side)" *ngFor="let p of photos; index as i" size="6">
-        
+      <ion-col
+        (click)="removePhoto(i, p.side)"
+        *ngFor="let p of photos; index as i"
+        size="6"
+      >
         <div class="side-label">{{p.side}}</div>
         <div class="square">
-          <ion-icon (click)="removePhoto(i, p.side)" class="remove-photo" color="light" name="close-circle"></ion-icon>
-          <img [src]="p.file">
+          <ion-icon
+            (click)="removePhoto(i, p.side)"
+            class="remove-photo"
+            color="light"
+            name="close-circle"
+          ></ion-icon>
+          <img [src]="p.file" />
         </div>
       </ion-col>
 
       <ion-col *ngFor="let s of sides" size="6">
         <div class="side-label">{{s}}</div>
         <ion-card (click)="takePhoto(s)">
-          <ion-icon name="add-circle"></ion-icon> 
+          <ion-icon name="add-circle"></ion-icon>
         </ion-card>
       </ion-col>
-
     </ion-row>
   </ion-grid>
 
-   <!-- Button *ngIf="!loading && photos.length == 4" -->
-   <div class="btn-gradient">
-    <ion-button [disabled]="photos.length !== 4" (click)="saveTree()" mode="ios">
+  <!-- Button *ngIf="!loading && photos.length == 4" -->
+  <div class="btn-gradient">
+    <ion-button
+      [disabled]="photos.length !== 4"
+      (click)="saveTree()"
+      mode="ios"
+    >
       <span>Añadir Árbol</span>
     </ion-button>
   </div>
-
-
 </ion-content>

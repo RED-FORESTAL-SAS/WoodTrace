@@ -1,15 +1,15 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FormsModule } from "@angular/forms";
 
-import { IonicModule } from '@ionic/angular';
+import { IonicModule } from "@ionic/angular";
 
-import { HowToUsePageRoutingModule } from './how-to-use-routing.module';
+import { HowToUsePageRoutingModule } from "./how-to-use-routing.module";
 
-import { HowToUsePage } from './how-to-use.page';
-import { SharedModule } from 'src/app/shared/shared.module';
-import { SwiperModule } from 'swiper/angular';
-import { StepperComponent } from './stepper/stepper.component';
+import { HowToUsePage } from "./how-to-use.page";
+import { SharedModule } from "src/app/shared/shared.module";
+import { SwiperModule } from "swiper/angular";
+import { StepperComponent } from "./stepper/stepper.component";
 
 @NgModule({
   imports: [
@@ -17,9 +17,9 @@ import { StepperComponent } from './stepper/stepper.component';
     FormsModule,
     IonicModule,
     HowToUsePageRoutingModule,
-    SharedModule, 
-    SwiperModule
+    SharedModule,
+    SwiperModule,
   ],
-  declarations: [HowToUsePage, StepperComponent]
+  declarations: [HowToUsePage, StepperComponent],
 })
 export class HowToUsePageModule {}

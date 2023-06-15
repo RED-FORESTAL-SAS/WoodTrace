@@ -1,55 +1,83 @@
 <ion-content>
-
-
   <div class="wrapper">
-
     <div>
-
       <div class="user-info">
-        <ion-icon *ngIf="!currentUser().photo" class="default-photo" name="person-circle-outline"></ion-icon>
+        <ion-icon
+          *ngIf="!currentUser().photo"
+          class="default-photo"
+          name="person-circle-outline"
+        ></ion-icon>
 
         <ion-avatar class="photo" *ngIf="currentUser().photo">
-            <img [src]="currentUser().photo" />
-        </ion-avatar> 
+          <img [src]="currentUser().photo" />
+        </ion-avatar>
 
         <h5 class="ion-no-margin name">{{currentUser().fullName}}</h5>
         <div class="active">
-          <ion-text *ngIf="currentUser().license && currentUser().license.remainingDays" color="primary">Miembro Activo</ion-text>
-          <ion-text *ngIf="!currentUser().license" color="medium">Miembro Inactivo</ion-text>
+          <ion-text
+            *ngIf="currentUser().license && currentUser().license.remainingDays"
+            color="primary"
+            >Miembro Activo</ion-text
+          >
+          <ion-text *ngIf="!currentUser().license" color="medium"
+            >Miembro Inactivo</ion-text
+          >
         </div>
       </div>
 
-      
       <div class="btn-container">
         <!-- Administrar cuenta -->
-        <app-input-gradient (click)="passwordRequired()" icon="create-outline" label="Administrar Cuenta" type="button">
+        <app-input-gradient
+          (click)="passwordRequired()"
+          icon="create-outline"
+          label="Administrar Cuenta"
+          type="button"
+        >
         </app-input-gradient>
 
         <!-- Membresia -->
-        <app-input-gradient routerLink="membership" icon="star-outline" label="Membresia" type="button">
+        <app-input-gradient
+          routerLink="membership"
+          icon="star-outline"
+          label="Membresia"
+          type="button"
+        >
         </app-input-gradient>
 
         <!-- Ayuda -->
-        <app-input-gradient routerLink="help" icon="help-circle-outline" label="Ayuda" type="button">
+        <app-input-gradient
+          routerLink="help"
+          icon="help-circle-outline"
+          label="Ayuda"
+          type="button"
+        >
         </app-input-gradient>
 
         <!-- Términos y condiciones -->
-        <app-input-gradient routerLink="terms-and-conditions" icon="document-text-outline"
-          label="Términos y Condiciones" type="button"></app-input-gradient>
+        <app-input-gradient
+          routerLink="terms-and-conditions"
+          icon="document-text-outline"
+          label="Términos y Condiciones"
+          type="button"
+        ></app-input-gradient>
 
         <!-- Políticas de privacidad -->
-        <app-input-gradient routerLink="privacy-policies" icon="shield-checkmark-outline"
-          label="Políticas de privacidad" type="button"></app-input-gradient>
+        <app-input-gradient
+          routerLink="privacy-policies"
+          icon="shield-checkmark-outline"
+          label="Políticas de privacidad"
+          type="button"
+        ></app-input-gradient>
 
-          <!-- Cerrar sesión -->
-        <app-input-gradient (click)="logOut()" icon="log-out-outline" label="Cerrar Sesión" type="button">
+        <!-- Cerrar sesión -->
+        <app-input-gradient
+          (click)="logOut()"
+          icon="log-out-outline"
+          label="Cerrar Sesión"
+          type="button"
+        >
         </app-input-gradient>
-
       </div>
-
     </div>
-
   </div>
-
-
 </ion-content>

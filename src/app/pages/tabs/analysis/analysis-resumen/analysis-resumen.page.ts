@@ -1,15 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { FirebaseService } from 'src/app/services/firebase.service';
-import { UtilsService } from 'src/app/services/utils.service';
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { FirebaseService } from "src/app/services/firebase.service";
+import { UtilsService } from "src/app/services/utils.service";
 
 @Component({
-  selector: 'app-analysis-resumen',
-  templateUrl: './analysis-resumen.page.html',
-  styleUrls: ['./analysis-resumen.page.scss'],
+  selector: "app-analysis-resumen",
+  templateUrl: "./analysis-resumen.page.html",
+  styleUrls: ["./analysis-resumen.page.scss"],
 })
 export class AnalysisResumenPage implements OnInit {
-
   date = Date.now();
 
   analysis: any;
@@ -19,22 +18,17 @@ export class AnalysisResumenPage implements OnInit {
     private utilsSvc: UtilsService,
     private actRoute: ActivatedRoute
   ) {
-
-    this.tree = parseInt(this.actRoute.snapshot.paramMap.get('tree'));
+    this.tree = parseInt(this.actRoute.snapshot.paramMap.get("tree"));
     this.analysis = this.analysisFormData().trees[this.tree];
-
-
   }
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 
   analysisFormData() {
-    return this.utilsSvc.getFromLocalStorage('analysis');
+    return this.utilsSvc.getFromLocalStorage("analysis");
   }
 
   submit() {
-    this.utilsSvc.routerLink('/tabs/analysis/analysis-trees/ready')
+    this.utilsSvc.routerLink("/tabs/analysis/analysis-trees/ready");
   }
 }

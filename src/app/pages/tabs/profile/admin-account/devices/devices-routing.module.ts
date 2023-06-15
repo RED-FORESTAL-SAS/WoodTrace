@@ -1,13 +1,13 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { NgModule } from "@angular/core";
+import { Routes, RouterModule } from "@angular/router";
 
-import { DevicesPage } from './devices.page';
+import { DevicesPage } from "./devices.page";
 
 const routes: Routes = [
   {
-    path: '',
-    component: DevicesPage
-  }
+    path: "",
+    component: DevicesPage,
+  },
 ];
 
 @NgModule({

@@ -1,26 +1,31 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { ModalController } from '@ionic/angular';
-import { User } from 'src/app/models/user.model';
-import { FirebaseService } from 'src/app/services/firebase.service';
-import { UtilsService } from 'src/app/services/utils.service';
-import { PasswordRequiredComponent } from 'src/app/shared/components/password-required/password-required.component';
-import { docTypes } from 'src/assets/data/document-types';
-import { UpdatePasswordComponent } from './components/update-password/update-password.component';
+import { Component, OnInit } from "@angular/core";
+import { FormControl, Validators } from "@angular/forms";
+import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
+import { ModalController } from "@ionic/angular";
+import { User } from "src/app/models/user.model";
+import { FirebaseService } from "src/app/services/firebase.service";
+import { UtilsService } from "src/app/services/utils.service";
+import { PasswordRequiredComponent } from "src/app/shared/components/password-required/password-required.component";
+import { docTypes } from "src/assets/data/document-types";
+import { UpdatePasswordComponent } from "./components/update-password/update-password.component";
 
 @Component({
-  selector: 'app-owner',
-  templateUrl: './owner.page.html',
-  styleUrls: ['./owner.page.scss'],
+  selector: "app-owner",
+  templateUrl: "./owner.page.html",
+  styleUrls: ["./owner.page.scss"],
 })
 export class OwnerPage implements OnInit {
-
-  fullName = new FormControl('', [Validators.required, Validators.minLength(4)])
-  email = new FormControl('', [Validators.required, Validators.email]);
-  docType = new FormControl('', [Validators.required])
-  docNumber = new FormControl('', [Validators.required, Validators.minLength(6)])
-  photo = new FormControl('');
+  fullName = new FormControl("", [
+    Validators.required,
+    Validators.minLength(4),
+  ]);
+  email = new FormControl("", [Validators.required, Validators.email]);
+  docType = new FormControl("", [Validators.required]);
+  docNumber = new FormControl("", [
+    Validators.required,
+    Validators.minLength(6),
+  ]);
+  photo = new FormControl("");
 
   docTypes = [];
 
@@ -33,25 +38,22 @@ export class OwnerPage implements OnInit {
     private firebaseSvc: FirebaseService,
     private utilsSvc: UtilsService,
     private modalController: ModalController
-  ) {
-
-  }
+  ) {}
 
   ngOnInit() {
     this.docTypes = docTypes;
   }
-
 
   ionViewWillEnter() {
     this.user = this.utilsSvc.getCurrentUser();
     this.getUser();
   }
 
-/**
- * We're setting the values of the form controls to the values of the user object
- */
+  /**
+   * We're setting the values of the form controls to the values of the user object
+   */
   getUser() {
-    this.email.setValue(this.user.email)
+    this.email.setValue(this.user.email);
     this.email.disable();
     this.fullName.setValue(this.user.fullName);
     this.docType.setValue(this.user.docType);
@@ -59,37 +61,39 @@ export class OwnerPage implements OnInit {
     this.photo.setValue(this.user.photo);
   }
 
-
- /**
-  * It updates the user information in the database.
-  */
+  /**
+   * It updates the user information in the database.
+   */
   updateUser() {
-
     this.user.fullName = this.fullName.value;
     this.user.docType = this.docType.value;
     this.user.docNumber = this.docNumber.value;
 
-    this.utilsSvc.saveLocalStorage('user', this.user);
+    this.utilsSvc.saveLocalStorage("user", this.user);
 
     this.loading = true;
-    this.firebaseSvc.UpdateCollection('users', this.user).then(res => {
-      this.utilsSvc.presentToast('Actualizado con éxito');
-      this.loading = false;
-    }, err => {
-      this.utilsSvc.presentToast('No tienes conexión actualmente los datos se subiran una vez se restablesca la conexión');
-      this.loading = false;
-    })
+    this.firebaseSvc.UpdateCollection("users", this.user).then(
+      (res) => {
+        this.utilsSvc.presentToast("Actualizado con éxito");
+        this.loading = false;
+      },
+      (err) => {
+        this.utilsSvc.presentToast(
+          "No tienes conexión actualmente los datos se subiran una vez se restablesca la conexión"
+        );
+        this.loading = false;
+      }
+    );
   }
 
-async updatePassword() {
-  const modal = await this.modalController.create({
-  component: UpdatePasswordComponent,
-  cssClass: 'modal-fink-app'
-  });
+  async updatePassword() {
+    const modal = await this.modalController.create({
+      component: UpdatePasswordComponent,
+      cssClass: "modal-fink-app",
+    });
 
-  await modal.present();
-
-}
+    await modal.present();
+  }
 
   /**
    * If the form field are invalid, return false. Otherwise, return true

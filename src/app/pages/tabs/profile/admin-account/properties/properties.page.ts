@@ -1,19 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
-import { User } from 'src/app/models/user.model';
-import { FirebaseService } from 'src/app/services/firebase.service';
-import { UtilsService } from 'src/app/services/utils.service';
-import { PasswordRequiredComponent } from 'src/app/shared/components/password-required/password-required.component';
+import { Component, OnInit } from "@angular/core";
+import { FormControl, Validators } from "@angular/forms";
+import { ModalController } from "@ionic/angular";
+import { User } from "src/app/models/user.model";
+import { FirebaseService } from "src/app/services/firebase.service";
+import { UtilsService } from "src/app/services/utils.service";
+import { PasswordRequiredComponent } from "src/app/shared/components/password-required/password-required.component";
 
 @Component({
-  selector: 'app-properties',
-  templateUrl: './properties.page.html',
-  styleUrls: ['./properties.page.scss'],
+  selector: "app-properties",
+  templateUrl: "./properties.page.html",
+  styleUrls: ["./properties.page.scss"],
 })
 export class PropertiesPage implements OnInit {
-
-  fullName = new FormControl('', [Validators.required, Validators.minLength(4)]);
+  fullName = new FormControl("", [
+    Validators.required,
+    Validators.minLength(4),
+  ]);
 
   user = {} as User;
   loading: boolean;
@@ -22,11 +24,9 @@ export class PropertiesPage implements OnInit {
     private firebaseSvc: FirebaseService,
     private utilsSvc: UtilsService,
     private modalController: ModalController
-  ) { }
+  ) {}
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 
   ionViewWillEnter() {
     this.user = this.utilsSvc.getCurrentUser();
@@ -35,28 +35,33 @@ export class PropertiesPage implements OnInit {
     }
   }
 
-/* The above code is adding a new property to the user object and then saving it to the local storage. */
+  /* The above code is adding a new property to the user object and then saving it to the local storage. */
   addProperty() {
     this.user.properties.push(this.fullName.value);
-    this.utilsSvc.saveLocalStorage('user', this.user);
+    this.utilsSvc.saveLocalStorage("user", this.user);
     this.updateProperties();
   }
 
   removeProperty(index) {
     this.user.properties.splice(index, 1);
-    this.utilsSvc.saveLocalStorage('user', this.user);
+    this.utilsSvc.saveLocalStorage("user", this.user);
     this.updateProperties();
   }
 
   updateProperties() {
     this.loading = true;
-    this.firebaseSvc.UpdateCollection('users', this.user).then(res => {
-      this.fullName.reset();
-      this.loading = false;
-    }, err => {
-      this.utilsSvc.presentToast('No tienes conexión actualmente los datos se subiran una vez se restablesca la conexión');
-      this.loading = false;
-    })
+    this.firebaseSvc.UpdateCollection("users", this.user).then(
+      (res) => {
+        this.fullName.reset();
+        this.loading = false;
+      },
+      (err) => {
+        this.utilsSvc.presentToast(
+          "No tienes conexión actualmente los datos se subiran una vez se restablesca la conexión"
+        );
+        this.loading = false;
+      }
+    );
   }
 
   /**

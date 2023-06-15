@@ -1,13 +1,13 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FormsModule } from "@angular/forms";
 
-import { IonicModule } from '@ionic/angular';
+import { IonicModule } from "@ionic/angular";
 
-import { HelpPageRoutingModule } from './help-routing.module';
+import { HelpPageRoutingModule } from "./help-routing.module";
 
-import { HelpPage } from './help.page';
-import { SharedModule } from 'src/app/shared/shared.module';
+import { HelpPage } from "./help.page";
+import { SharedModule } from "src/app/shared/shared.module";
 
 @NgModule({
   imports: [
@@ -15,8 +15,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
     FormsModule,
     IonicModule,
     HelpPageRoutingModule,
-    SharedModule
+    SharedModule,
   ],
-  declarations: [HelpPage]
+  declarations: [HelpPage],
 })
 export class HelpPageModule {}

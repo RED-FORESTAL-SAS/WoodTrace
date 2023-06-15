@@ -1,16 +1,16 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { IonicModule } from '@ionic/angular';
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
+import { IonicModule } from "@ionic/angular";
 
-import { EmptyArrayComponent } from './empty-array.component';
+import { EmptyArrayComponent } from "./empty-array.component";
 
-describe('EmptyArrayComponent', () => {
+describe("EmptyArrayComponent", () => {
   let component: EmptyArrayComponent;
   let fixture: ComponentFixture<EmptyArrayComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ EmptyArrayComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [EmptyArrayComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EmptyArrayComponent);
@@ -18,7 +18,7 @@ describe('EmptyArrayComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

@@ -16,7 +16,7 @@
 @import "~@ionic/angular/css/normalize.css";
 @import "~@ionic/angular/css/structure.css";
 @import "~@ionic/angular/css/typography.css";
-@import '~@ionic/angular/css/display.css';
+@import "~@ionic/angular/css/display.css";
 
 /* Optional CSS utils that can be commented out */
 @import "~@ionic/angular/css/padding.css";
@@ -25,155 +25,167 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
-@import 'animate.css';
-@import 'swiper/scss';
-@import 'swiper/scss/navigation';
-@import 'swiper/scss/pagination';
+@import "animate.css";
+@import "swiper/scss";
+@import "swiper/scss/navigation";
+@import "swiper/scss/pagination";
 
-
-.safe-p-top{
-    padding-top: constant(safe-area-inset-top); // for ios 13+
-    padding-top: env(safe-area-inset-top); // for previous ios versions
+.safe-p-top {
+  padding-top: constant(safe-area-inset-top); // for ios 13+
+  padding-top: env(safe-area-inset-top); // for previous ios versions
 }
 
-.safe-p-bottom{
-    padding-bottom: constant(safe-area-inset-bottom); // for ios 13+
-    padding-bottom: env(safe-area-inset-bottom); // for previous ios versions
+.safe-p-bottom {
+  padding-bottom: constant(safe-area-inset-bottom); // for ios 13+
+  padding-bottom: env(safe-area-inset-bottom); // for previous ios versions
 }
 
-
-.alert-wrapper{
-    width: 90% !important;
+.alert-wrapper {
+  width: 90% !important;
 }
 
-.alert-button-inner .sc-ion-alert-md{
-    white-space: normal !important;
+.alert-button-inner .sc-ion-alert-md {
+  white-space: normal !important;
 }
 
-ion-content{
-    user-select: text;
+ion-content {
+  user-select: text;
 }
 
-ion-button{
-    text-transform: capitalize;
+ion-button {
+  text-transform: capitalize;
 }
 
-ion-segment-button{
-    text-transform: capitalize;
+ion-segment-button {
+  text-transform: capitalize;
 }
 
-.modal-fink-app{
-    --height: 410px;
-    --border-radius: 15px;
-    padding: 15px;
+.modal-fink-app {
+  --height: 410px;
+  --border-radius: 15px;
+  padding: 15px;
 }
 
-.alert-fink-app{
-    --height: 360px;
-    --border-radius: 15px;
-    padding: 15px;
+.alert-fink-app {
+  --height: 360px;
+  --border-radius: 15px;
+  padding: 15px;
 }
 
-.bullet-active{
-    background: linear-gradient(var(--ion-color-secondary), var(--ion-color-primary)); 
-    opacity: 100%;
-    width: 10px;
-    height: 10px;
+.bullet-active {
+  background: linear-gradient(
+    var(--ion-color-secondary),
+    var(--ion-color-primary)
+  );
+  opacity: 100%;
+  width: 10px;
+  height: 10px;
 }
 
 .text-gradient {
-    background: linear-gradient(var(--ion-color-secondary), var(--ion-color-primary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+  background: linear-gradient(
+    var(--ion-color-secondary),
+    var(--ion-color-primary)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .validators {
-    padding: 0px 0px 10px 0px;
-    color: var(--ion-color-danger);
-    font-size: 13px;
+  padding: 0px 0px 10px 0px;
+  color: var(--ion-color-danger);
+  font-size: 13px;
 }
 
 .line-gradient {
-    background: linear-gradient(to right, var(--ion-color-secondary), var(--ion-color-primary));
-    width: 100vw;
-    height: 1px;
+  background: linear-gradient(
+    to right,
+    var(--ion-color-secondary),
+    var(--ion-color-primary)
+  );
+  width: 100vw;
+  height: 1px;
 }
 
 .default-photo {
-    font-size: 120px;
-    border: 1.5px solid var(--ion-color-primary);
-    border-radius: 100%;
+  font-size: 120px;
+  border: 1.5px solid var(--ion-color-primary);
+  border-radius: 100%;
 }
 
 .photo {
-    margin: 0 auto;
-    width: 120px;
-    height: 120px;
-    border: 2px solid var(--ion-color-primary);
+  margin: 0 auto;
+  width: 120px;
+  height: 120px;
+  border: 2px solid var(--ion-color-primary);
 }
 
 .btn-gradient {
+  text-align: center;
+  padding-top: 20px;
 
-    text-align: center;
-    padding-top: 20px;
+  ion-button {
+    text-transform: capitalize;
+    font-weight: 400;
+    --background: linear-gradient(
+      to right,
+      var(--ion-color-secondary),
+      var(--ion-color-primary)
+    );
+    --background-activated: linear-gradient(
+      to left,
+      var(--ion-color-secondary),
+      var(--ion-color-primary)
+    );
+    --border-radius: 15px;
 
-    ion-button {
-        text-transform: capitalize;
-        font-weight: 400;
-        --background: linear-gradient(to right, var(--ion-color-secondary), var(--ion-color-primary));
-        --background-activated: linear-gradient(to left, var(--ion-color-secondary), var(--ion-color-primary));
-        --border-radius: 15px;
-
-        span {
-            padding: 15px;
-        }
+    span {
+      padding: 15px;
     }
+  }
 }
-
 
 //============= Avatar Group ==============
 .avatar {
-    width: 50px;
-    height: 50px;
-    overflow: hidden;
-    border-radius: 50%;
-    position: relative;
-    background: #4a6fa7; 
-    border: 1px solid var(--ion-color-primary);
-  
-  }
-  
-  .avatar img {
-    object-fit: cover;
-    width: 100%;
-    height: 100%;
-  }
-  
-  .avatar-group {
-    display: flex;
-  }
-  
-  .avatar-group.rtl {
-    direction: rtl;
-  }
-  
-  .avatar-group.rtl .avatar:hover:not(:last-of-type) {
-    transform: translate(5px);
-  }
-  
-  .avatar-group .avatar {
-    margin-left: -20px;
-    transition: transform 0.3s ease;
-    cursor: pointer;
-  }
-  
-  .avatar-group .avatar:first-child {
-    margin-left: 0px;
-    transition: transform 0.3s ease;
-    cursor: pointer;
-  }
-  
-  .avatar-group .avatar:hover:not(:last-of-type) {
-    transform: translate(-5px);
-  }
-  
+  width: 50px;
+  height: 50px;
+  overflow: hidden;
+  border-radius: 50%;
+  position: relative;
+  background: #4a6fa7;
+  border: 1px solid var(--ion-color-primary);
+}
+
+.avatar img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.avatar-group {
+  display: flex;
+}
+
+.avatar-group.rtl {
+  direction: rtl;
+}
+
+.avatar-group.rtl .avatar:hover:not(:last-of-type) {
+  transform: translate(5px);
+}
+
+.avatar-group .avatar {
+  margin-left: -20px;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.avatar-group .avatar:first-child {
+  margin-left: 0px;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.avatar-group .avatar:hover:not(:last-of-type) {
+  transform: translate(-5px);
+}

@@ -1,28 +1,32 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { NgModule } from "@angular/core";
+import { Routes, RouterModule } from "@angular/router";
 
-import { TabsPage } from './tabs.page';
+import { TabsPage } from "./tabs.page";
 
 const routes: Routes = [
   {
-    path: '',
+    path: "",
     component: TabsPage,
-    children:[
+    children: [
       {
-        path: 'profile',
-        loadChildren: () => import('./profile/profile.module').then( m => m.ProfilePageModule)
+        path: "profile",
+        loadChildren: () =>
+          import("./profile/profile.module").then((m) => m.ProfilePageModule),
       },
       {
-        path: 'analysis',
-        loadChildren: () => import('./analysis/analysis.module').then( m => m.AnalysisPageModule)
+        path: "analysis",
+        loadChildren: () =>
+          import("./analysis/analysis.module").then(
+            (m) => m.AnalysisPageModule
+          ),
       },
       {
-        path: 'reports',
-        loadChildren: () => import('./reports/reports.module').then( m => m.ReportsPageModule)
-      }
-    ]
+        path: "reports",
+        loadChildren: () =>
+          import("./reports/reports.module").then((m) => m.ReportsPageModule),
+      },
+    ],
   },
- 
 ];
 
 @NgModule({

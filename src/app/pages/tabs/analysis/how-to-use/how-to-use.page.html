@@ -1,25 +1,29 @@
 <app-header backButton="/tabs/analysis" title="Como Analizar"></app-header>
 
 <ion-content>
-
-
-
-  <swiper class="swiper" [config]="config" #swiper [virtual]="true" (slideChange)="onSlideChange($event)">
-
+  <swiper
+    class="swiper"
+    [config]="config"
+    #swiper
+    [virtual]="true"
+    (slideChange)="onSlideChange($event)"
+  >
     <!-- Paso 1 -->
     <ng-template swiperSlide>
       <app-stepper slideActive="1"></app-stepper>
 
       <div class="ion-text-center d-flex">
         <div>
-               <p>Pon el celular frente al árbol en modo vertical</p>
+          <p>Pon el celular frente al árbol en modo vertical</p>
 
-        <div class="ion-padding-vertical">
-          <img style="width: 230px;margin-left: 80px;" src="assets/icon/analisis-ayuda-1.svg" alt="">
+          <div class="ion-padding-vertical">
+            <img
+              style="width: 230px; margin-left: 80px"
+              src="assets/icon/analisis-ayuda-1.svg"
+              alt=""
+            />
+          </div>
         </div>
-        </div>
-   
-
       </div>
     </ng-template>
 
@@ -27,35 +31,39 @@
     <ng-template swiperSlide>
       <app-stepper slideActive="2"></app-stepper>
       <div class="ion-text-center d-flex">
-
         <div>
           <p>Toca el botón de en medio para tomar la fotografía</p>
           <div class="height: 280px;">
-              <img style="width: 230px; transform: rotate(90deg);padding-top: 170px; margin-left: 140px;" src="assets/icon/analisis-ayuda-4.svg" alt=""> 
+            <img
+              style="
+                width: 230px;
+                transform: rotate(90deg);
+                padding-top: 170px;
+                margin-left: 140px;
+              "
+              src="assets/icon/analisis-ayuda-4.svg"
+              alt=""
+            />
           </div>
         </div>
-       
-     
       </div>
     </ng-template>
-
-    
 
     <!-- Paso 3 -->
     <ng-template swiperSlide>
       <app-stepper slideActive="3"></app-stepper>
       <div class="ion-text-center d-flex">
-
         <div>
           <p>Debes tomar 4 fotos, una desde cada lado del arbol</p>
-        <div style="height: 340px;">
-             <img style="width: 300px;" src="assets/icon/analisis-ayuda-8.svg" alt="">
+          <div style="height: 340px">
+            <img
+              style="width: 300px"
+              src="assets/icon/analisis-ayuda-8.svg"
+              alt=""
+            />
+          </div>
         </div>
-       
-        </div>
-        
       </div>
     </ng-template>
-
   </swiper>
 </ion-content>

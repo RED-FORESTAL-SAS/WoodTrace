@@ -1,13 +1,13 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FormsModule } from "@angular/forms";
 
-import { IonicModule } from '@ionic/angular';
+import { IonicModule } from "@ionic/angular";
 
-import { AnalysisTreesPageRoutingModule } from './analysis-trees-routing.module';
+import { AnalysisTreesPageRoutingModule } from "./analysis-trees-routing.module";
 
-import { AnalysisTreesPage } from './analysis-trees.page';
-import { SharedModule } from 'src/app/shared/shared.module';
+import { AnalysisTreesPage } from "./analysis-trees.page";
+import { SharedModule } from "src/app/shared/shared.module";
 
 @NgModule({
   imports: [
@@ -15,8 +15,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
     FormsModule,
     IonicModule,
     AnalysisTreesPageRoutingModule,
-    SharedModule
+    SharedModule,
   ],
-  declarations: [AnalysisTreesPage]
+  declarations: [AnalysisTreesPage],
 })
 export class AnalysisTreesPageModule {}

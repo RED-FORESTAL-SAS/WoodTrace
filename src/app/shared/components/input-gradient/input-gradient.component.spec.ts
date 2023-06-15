@@ -1,16 +1,16 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { IonicModule } from '@ionic/angular';
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
+import { IonicModule } from "@ionic/angular";
 
-import { InputGradientComponent } from './input-gradient.component';
+import { InputGradientComponent } from "./input-gradient.component";
 
-describe('InputGradientComponent', () => {
+describe("InputGradientComponent", () => {
   let component: InputGradientComponent;
   let fixture: ComponentFixture<InputGradientComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ InputGradientComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [InputGradientComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(InputGradientComponent);
@@ -18,7 +18,7 @@ describe('InputGradientComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });
