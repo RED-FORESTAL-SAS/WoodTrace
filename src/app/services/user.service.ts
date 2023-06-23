@@ -153,9 +153,25 @@ export class UserService implements OnDestroy {
    *
    * @param user
    */
-  patchUser(user: WtUser | null): void {
+  async patchUser(
+    user: WtUser | null,
+    patchDb: boolean = false
+  ): Promise<void> {
     this.saveUserToLocalStorage(user);
     this.store.patch({ user: user });
+    if (patchDb && user) {
+      return this.firebase.update(`${USERS_FB_COLLECTION}/${user.id}`, {
+        fullName: user.fullName,
+        docType: user.docType,
+        docNumber: user.docNumber,
+        genero: user.genero,
+        fNacimiento: user.fNacimiento,
+        movil: user.movil,
+        photo: user.photo,
+        activo: user.activo,
+        firstReport: user.firstReport,
+      });
+    }
   }
 
   /**
@@ -171,7 +187,7 @@ export class UserService implements OnDestroy {
 
     // If found user is differente from state, patch it in state.
     if (user && user.id !== this.store.state.user?.id) {
-      this.patchUser(user);
+      await this.patchUser(user);
     }
 
     // Watch auth state for changes to update user.
@@ -222,10 +238,10 @@ export class UserService implements OnDestroy {
             next: async (user: WtUser | null) => {
               // If found user is differente from state, patch it in state.
               if (user && user.id !== this.store.state.user?.id) {
-                this.patchUser(user);
+                await this.patchUser(user);
               }
             },
-            error: (e) => {
+            error: async (e) => {
               console.log("error", e);
 
               // If device is offline, do not change state and fail silently.
@@ -240,7 +256,7 @@ export class UserService implements OnDestroy {
                 e instanceof UnauthenticatedFailure ||
                 e instanceof NotFoundFailure
               ) {
-                this.patchUser(null);
+                await this.patchUser(null);
                 return;
 
                 // Otherwise, just console log error if in development mode.
@@ -324,7 +340,7 @@ export class UserService implements OnDestroy {
    */
   public async signOut(): Promise<void> {
     await signOut(this.auth).catch((e) => {});
-    this.patchUser(null);
+    await this.patchUser(null);
     this.patchLicense(null);
     this.patchCompany(null);
   }
@@ -433,6 +449,7 @@ export class UserService implements OnDestroy {
       devices: user.devices,
       photo: user.photo,
       activo: user.activo,
+      firstReport: user.firstReport,
     };
   }
 
@@ -462,6 +479,7 @@ export class UserService implements OnDestroy {
           devices: localStorageUser.devices,
           photo: localStorageUser.photo,
           activo: localStorageUser.activo,
+          firstReport: localStorageUser.firstReport,
         }
       : null;
   }

@@ -45,10 +45,11 @@ registerLocaleData(es);
     BrowserModule,
     IonicModule.forRoot({ mode: "md" }),
     AppRoutingModule,
+    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
     AngularFirestoreModule,
-    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+
     provideAuth(() => {
       const auth = getAuth();
       if (environment.useEmulators) {

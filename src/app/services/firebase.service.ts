@@ -14,10 +14,13 @@ import {
 import { getAuth, updatePassword, User as FirebaseUser } from "firebase/auth";
 import { Observable, of } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
-import { NotFoundFailure } from "../utils/failure.utils";
+import { FailureUtils, NotFoundFailure } from "../utils/failure.utils";
 import { QueryConstraint } from "../types/query-constraint.type";
 import {
+  DocumentData,
+  DocumentReference,
   Firestore,
+  addDoc,
   collection,
   collectionData,
   doc,
@@ -26,8 +29,10 @@ import {
   getDocs,
   limit,
   query,
+  updateDoc,
 } from "@angular/fire/firestore";
 import { WtUser } from "../models/wt-user";
+import { environment } from "src/environments/environment";
 
 /**
  * @todo @diana Esta clase contiene dependencias a módulos de angular fire en modo compat. Esto
@@ -93,6 +98,7 @@ export class FirebaseService {
   /** Crear un nuevo usuario
    * @param user
    * autentica al usuario en firebase auth
+   * @deprecated Este método tiene dependiencas desactualizadas.
    */
 
   createUser(user: WtUser) {
@@ -360,5 +366,43 @@ export class FirebaseService {
       }
       return data as T;
     });
+  }
+
+  /**
+   * Actualizar un documento en Firestore dado el path y los datos que vayan a actualizarse.
+   *
+   * @param docPath path del documento (colección/id).
+   * @param data Partial con los campos a actualizar.
+   * @returns
+   * @throws Failure
+   */
+  public async update<T>(docPath: string, data: Partial<T>): Promise<void> {
+    return updateDoc<DocumentData>(doc(this.firestore, docPath), data).catch(
+      (e: unknown) => {
+        const f = FailureUtils.errorToFailure(e);
+        if (!environment.production) {
+          console.groupCollapsed(
+            `🧰 Firebase Service update [${docPath}] [error]`
+          );
+          console.log(data);
+          console.groupEnd();
+        }
+        throw f;
+      }
+    );
+  }
+
+  /**
+   * Craer un documento en Firestore dado el path y los datos que vayan a crearse.
+   *
+   * @param colPath path de la colección.
+   * @param data  Datos del documento sea completo o Partial.
+   * @returns
+   */
+  public async create<T>(
+    colPath: string,
+    data: T | Partial<T>
+  ): Promise<DocumentReference<DocumentData>> {
+    return addDoc<DocumentData>(collection(this.firestore, colPath), data);
   }
 }

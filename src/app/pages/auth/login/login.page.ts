@@ -62,7 +62,9 @@ export class LoginPage implements OnDestroy {
     this.loginIn.next(true);
     this.loading = true;
 
-    /** @todo manejar el estado activo e inactivo entonces para poder loguearse */
+    /** @todo @Mario manejar el estado activo e inactivo entonces para poder loguearse.
+     * De hecho hay que revisar esta manera de loguearse, porque no es la mejor.
+     */
 
     let user: WtUser = {
       id: "",
@@ -78,6 +80,7 @@ export class LoginPage implements OnDestroy {
       devices: [],
       photo: "",
       activo: true,
+      firstReport: false,
     };
 
     this.firebaseSvc.Login(user).catch((e) => {

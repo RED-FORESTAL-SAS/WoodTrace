@@ -12,10 +12,7 @@
         type="select"
         [formControlValue]="departamento"
       ></app-input-costum>
-      <div
-        class="validators"
-        *ngIf="departamento.touched && departamento.errors"
-      >
+      <div class="validators" *ngIf="departamento.dirty && departamento.errors">
         <span *ngIf="departamento.errors?.['required']"
           >Selecciona el departamento donde está ubicada la empresa</span
         >
@@ -31,7 +28,7 @@
         [formControlValue]="municipio"
         (disabled)="!departamento.value"
       ></app-input-costum>
-      <div class="validators" *ngIf="municipio.touched && municipio.errors">
+      <div class="validators" *ngIf="municipio.dirty && municipio.errors">
         <span *ngIf="municipio.errors?.['required']"
           >Selecciona el municipio donde está ubicada la empresa</span
         >
@@ -59,21 +56,32 @@
         >
       </div>
 
-      <!-- Añadir Ubicación -->
-      <div
-        *ngIf="longitude && latitude"
-        class="animate__animated animate__fadeIn label"
-      >
-        Ubicación
-      </div>
-      <app-input-gradient
-        class=".label-left"
-        icon="location-outline"
-        label="{{longitude && latitude ? latitude+', '+longitude : 'Añadir Ubicación'}}"
-        type="button"
-        (click)="getCurrentPosition()"
-      >
-      </app-input-gradient>
+      <ion-grid>
+        <ion-row class="btn" routerLink="help-desk">
+          <ion-col align-items-center class="bg-icon-btn" size="2">
+            <ion-icon
+              style="font-size: 25px"
+              src="../../../../assets/icon/location_analysis.svg"
+              (click)="getCurrentPosition()"
+            ></ion-icon>
+          </ion-col>
+
+          <ion-col
+            *ngIf="!(longitude && latitude)"
+            align-items-start
+            class="label-btn"
+          >
+            Ubicación
+          </ion-col>
+          <ion-col
+            *ngIf="longitude && latitude"
+            align-items-start
+            class="label-btn"
+          >
+            {{ latitude }}, {{ longitude }}
+          </ion-col>
+        </ion-row>
+      </ion-grid>
 
       <!-- Button -->
       <div *ngIf="!loading" class="btn-gradient">

@@ -18,7 +18,6 @@ import { UtilsService } from "src/app/services/utils.service";
    * necesario. Lo que debe hacerse es un refactor en el metodo UserService.retrieveAuthenticatedUser()
    * para que se recalcule cuando se hace nuevamente la autenticación.
    */
-  providers: [UserService],
 })
 export class ProfilePage implements OnInit, OnDestroy {
   photo = new FormControl("");
@@ -39,6 +38,9 @@ export class ProfilePage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.user$.subscribe((user) => {
+      console.log(user);
+    });
     this.populateForm();
   }
 

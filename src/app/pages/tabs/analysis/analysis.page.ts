@@ -99,14 +99,14 @@ export class AnalysisPage implements OnDestroy {
                   "¿Deseas sobrescribir el análisis previo por uno nuevo?",
                 buttons: [
                   {
-                    text: "Cancelar",
-                    handler: () => {},
-                  },
-                  {
                     text: "Nuevo análisis",
                     handler: () => {
                       this.continueWithNewReport();
                     },
+                  },
+                  {
+                    text: "Cancelar",
+                    handler: () => {},
                   },
                 ],
               });

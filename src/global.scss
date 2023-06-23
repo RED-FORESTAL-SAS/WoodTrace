@@ -41,7 +41,7 @@
 }
 
 .alert-wrapper {
-  width: 90% !important;
+  width: 95% !important;
 }
 
 .alert-button-inner .sc-ion-alert-md {
@@ -49,7 +49,26 @@
 }
 
 .alert-button.sc-ion-alert-md {
-  color: var(--ion-color-secondary);
+  text-align: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  span {
+    text-transform: capitalize;
+    height: 40px;
+    font-weight: 400;
+    background: var(--ion-color-primary);
+    border-radius: 25px;
+    color: #282f37;
+    padding: 15px;
+  }
+}
+
+.alert-message.sc-ion-alert-md {
+  text-align: center;
+}
+
+.alert-head.sc-ion-alert-md {
+  text-align: center;
 }
 
 .alert-radio-inner.sc-ion-alert-md {
@@ -71,6 +90,12 @@ ion-segment-button {
 .modal-fink-app {
   --height: 510px;
   --border-radius: 25px;
+  padding: 15px;
+}
+
+.modal-especie {
+  --height: 85%;
+  --border-radius: 10px;
   padding: 15px;
 }
 

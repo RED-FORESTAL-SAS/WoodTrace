@@ -29,6 +29,7 @@ export interface WtUser {
   }>;
   photo: string;
   activo: boolean;
+  firstReport: boolean;
 }
 
 /**
@@ -56,4 +57,5 @@ export interface LocalStorageWtUser {
   }>;
   photo: string;
   activo: boolean;
+  firstReport: boolean;
 }

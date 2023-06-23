@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## [MARIO/RED-10-AUTH] - 2023-06-13 (Diana)
+
+- Eliminar módulos que nos e van a usar: stepper. lote-modal.
+- Crear componete especie-modal y agregar funcionalidad en take-photos.
+- Agregar iconos e imágenes según figma.
+- Agregar campo firstReport a interface wtUser y toda la funcionalidad para que se setee la
+  primera vez que haga un reporte.
+- Limpiar código en módulos analysis, analysis-form how-to-use, take-photos.
+- firebaseService: Crear funciones update y create.
+- userService: complementar la función pathcUser.
+
 ## [MARIO/RED-10-AUTH] - 2023-06-13
 
 - Eliminar módulos que nos e van a usar: Chenge-pasword, devices, operators, properties.

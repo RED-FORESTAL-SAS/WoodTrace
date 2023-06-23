@@ -159,6 +159,7 @@ export class SignUpPage implements OnInit, OnDestroy {
         photo: this.photo.value,
         devices: [this.utilsSvc.getFromLocalStorage("currentDevice")],
         activo: true,
+        firstReport: true,
       };
 
       // Register user against Firebase Authentication.

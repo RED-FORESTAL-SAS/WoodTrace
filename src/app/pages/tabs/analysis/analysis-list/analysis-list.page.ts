@@ -1,12 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { FirebaseService } from "src/app/services/firebase.service";
 import { UtilsService } from "src/app/services/utils.service";
-import { Filesystem, Directory } from "@capacitor/filesystem";
-import { Urls } from "src/app/models/urls.model";
 import { ImagesService } from "src/app/services/images.service";
 import { ActivatedRoute } from "@angular/router";
 import { PdfService } from "src/app/services/pdf.service";
-import { LoteModalComponent } from "src/app/shared/components/lote-modal/lote-modal.component";
 import { ReportService } from "src/app/services/report.service";
 import { WtReport } from "src/app/models/wt-report";
 import { Observable, Subscription } from "rxjs";

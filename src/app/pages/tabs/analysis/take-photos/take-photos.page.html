@@ -3,22 +3,30 @@
 <ion-content>
   <ion-grid fixed>
     <ion-row>
-      <ion-col align-items-center>
-        <div class="form">
-          <app-input-costum
-            [selectOptions]="this.especies"
-            [viewField]="'nombreCienticifo'"
-            [valueField]="'nombreCienticifo'"
-            label="Especie"
-            type="select"
-            [formControlValue]="especie"
-          ></app-input-costum>
-          <div class="validators" *ngIf="especie.touched && especie.errors">
-            <span *ngIf="especie.errors?.['required']"
-              >Selecciona el departamento donde está ubicada la empresa</span
-            >
-          </div>
-        </div>
+      <ion-col align-items-center class="btn-container">
+        <ion-row class="btn" (click)="openEspecie()">
+          <ion-col align-items-center class="bg-icon-btn" size="2">
+            <ion-icon
+              style="font-size: 24px"
+              src="../../../../assets/icon/especie_search.svg"
+            ></ion-icon>
+          </ion-col>
+
+          <ion-col
+            *ngIf="!this.especie.value"
+            align-items-start
+            class="label-btn"
+          >
+            Seleccionar especie
+          </ion-col>
+          <ion-col
+            *ngIf="this.especie.value"
+            align-items-start
+            class="label-btn"
+          >
+            {{ this.especie.value }}
+          </ion-col>
+        </ion-row>
       </ion-col>
     </ion-row>
     <ion-row>

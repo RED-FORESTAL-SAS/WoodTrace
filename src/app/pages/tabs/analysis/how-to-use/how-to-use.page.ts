@@ -23,8 +23,6 @@ export class HowToUsePage implements OnInit {
     pagination: { clickable: true, bulletActiveClass: "bullet-active" },
   };
 
-  helpSlides = [];
-
   slideActive: number = 0;
 
   constructor(

@@ -3,13 +3,13 @@ import { FormControl } from "@angular/forms";
 import { ModalController } from "@ionic/angular";
 import { docTypes } from "src/assets/data/document-types";
 import { UpdatePasswordComponent } from "./owner/components/update-password/update-password.component";
-import { UserService } from "src/app/services/user.service";
 import { WtUser } from "src/app/models/wt-user";
 import { Observable, Subscription } from "rxjs";
 import { Timestamp } from "../../../../../app/types/timestamp.type";
 import { UtilsService } from "src/app/services/utils.service";
 import { take, tap } from "rxjs/operators";
 import { FirebaseService } from "src/app/services/firebase.service";
+import { UserService } from "src/app/services/user.service";
 
 @Component({
   selector: "app-admin-account",
@@ -40,6 +40,9 @@ export class AdminAccountPage implements OnInit, OnDestroy {
     private firebaseSvc: FirebaseService
   ) {
     this.user$ = this.userService.user;
+    this.user$.subscribe((user) => {
+      console.log(user);
+    });
   }
 
   ngOnInit() {

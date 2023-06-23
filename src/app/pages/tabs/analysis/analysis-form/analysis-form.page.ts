@@ -1,14 +1,21 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormControl, Validators } from "@angular/forms";
-import { User } from "src/app/models/user.model";
-import { FirebaseService } from "src/app/services/firebase.service";
 import { UtilsService } from "src/app/services/utils.service";
-import { colombia } from "src/assets/data/colombia-departments-towns";
 import { Geolocation } from "@capacitor/geolocation";
 import { ReportService } from "src/app/services/report.service";
-import { skipWhile, switchMap, take, tap } from "rxjs/operators";
-import { BehaviorSubject, Subscription } from "rxjs";
+import {
+  skipWhile,
+  switchMap,
+  take,
+  tap,
+  withLatestFrom,
+} from "rxjs/operators";
+import { BehaviorSubject, Observable, Subscription } from "rxjs";
 import { pais } from "src/assets/data/country";
+import { WtUser } from "src/app/models/wt-user";
+import { UserService } from "src/app/services/user.service";
+import { WtReport } from "src/app/models/wt-report";
+import { NoNetworkFailure } from "src/app/utils/failure.utils";
 
 @Component({
   selector: "app-analysis-form",
@@ -31,7 +38,8 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
   departamentos = [];
   municipios = [];
 
-  user = {} as User;
+  /** Observable with active license or null. */
+  public user$: Observable<WtUser | null>;
 
   loading: boolean;
 
@@ -40,8 +48,10 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
 
   constructor(
     private reportService: ReportService,
-    private utilsSvc: UtilsService
+    private utilsSvc: UtilsService,
+    private userService: UserService
   ) {
+    this.user$ = this.userService.user;
     // Wire up event handlers.
     this.updateReportHandler();
   }
@@ -74,7 +84,6 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
                 );
                 this.municipios = dpto.division.map((division) => division);
               }
-
               this.departamento.setValue(report.departamento);
               this.municipio.setValue(report.municipio);
               this.guia.setValue(report.guia);
@@ -113,9 +122,14 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
         .asObservable()
         .pipe(
           skipWhile((v) => v === null),
-          switchMap((_) => this.reportService.activeReport.pipe(take(1))),
+          switchMap((_) =>
+            this.reportService.activeReport.pipe(
+              take(1),
+              withLatestFrom(this.userService.user)
+            )
+          ),
           tap({
-            next: (report) => {
+            next: async ([report, user]: [WtReport, WtUser]) => {
               // Extract form values.
               const patchData = {
                 ...report,
@@ -130,7 +144,22 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
               };
 
               this.reportService.patchActiveReport(patchData);
-              this.utilsSvc.routerLink("/tabs/analysis/how-to-use");
+              if (user.firstReport !== false) {
+                const patchData = {
+                  ...user,
+                  firstReport: false,
+                };
+                await this.userService.patchUser(patchData, true).catch((e) => {
+                  if (e instanceof NoNetworkFailure) {
+                    this.utilsSvc.presentToast(
+                      "No se pudo guardar la información, por favor verifica tu conexión a internet."
+                    );
+                  }
+                });
+                this.utilsSvc.routerLink("/tabs/analysis/how-to-use");
+              } else {
+                this.utilsSvc.routerLink("/tabs/analysis/take-photos");
+              }
             },
           })
         )
