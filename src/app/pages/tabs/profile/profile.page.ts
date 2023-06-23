@@ -1,12 +1,14 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy } from "@angular/core";
 import { FormControl } from "@angular/forms";
-import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
-import { Observable, Subscription } from "rxjs";
-import { take, tap } from "rxjs/operators";
+import { BehaviorSubject, Observable, Subscription } from "rxjs";
+import { isEqual } from "lodash";
+import { distinctUntilChanged, skip, switchMap, tap } from "rxjs/operators";
 import { WtUser } from "src/app/models/wt-user";
-import { FirebaseService } from "src/app/services/firebase.service";
 import { UserService } from "src/app/services/user.service";
 import { UtilsService } from "src/app/services/utils.service";
+import { CameraService } from "src/app/services/camera.service";
+import { Router } from "@angular/router";
+import { UserStore } from "src/app/state/user.store";
 
 @Component({
   selector: "app-profile",
@@ -19,118 +21,93 @@ import { UtilsService } from "src/app/services/utils.service";
    * para que se recalcule cuando se hace nuevamente la autenticación.
    */
 })
-export class ProfilePage implements OnInit, OnDestroy {
+export class ProfilePage implements OnDestroy {
   photo = new FormControl("");
   loadingPhoto: boolean;
   loading: boolean;
 
   private sbs: Subscription[] = [];
 
-  /** Observable with active license or null. */
+  /** Observable with active User. Null if no User is active. */
   public user$: Observable<WtUser | null>;
 
+  /** Evento que se dispara cuando se hace click en el botón de filtrar. */
+  public uploadPhotoClickEvent = new BehaviorSubject<number | null>(null);
+
   constructor(
-    private firebaseSvc: FirebaseService,
     private userService: UserService,
+    private cameraService: CameraService,
+    private router: Router,
     private utilsSvc: UtilsService
   ) {
-    this.user$ = this.userService.user;
+    // Watch events and User.
+    this.watchUploadPhotoClicks();
+    this.user$ = this.userService.user.pipe(distinctUntilChanged(isEqual));
+
+    // Redirect to login if user signs out.
+    this.sbs.push(
+      this.user$.pipe(skip(1)).subscribe((user) => {
+        if (user === null) {
+          console.log("Logout. Redirect to login");
+          this.router.navigate(["login"]);
+        }
+      })
+    );
   }
 
-  ngOnInit() {
-    this.user$.subscribe((user) => {
-      console.log(user);
-    });
-    this.populateForm();
-  }
-
+  /**
+   * Destroy subscriptions.
+   */
   ngOnDestroy(): void {
-    console.log("Running ngOnDestroy on ProfilePage");
     this.sbs.forEach((s) => s.unsubscribe());
   }
 
-  populateForm() {
-    this.sbs.push(
-      this.userService.user
-        .pipe(
-          take(1),
-          tap({
-            next: (user) => {
-              this.photo.setValue(user.photo);
-            },
-          })
-        )
-        .subscribe()
-    );
+  /**
+   * UplodPhoto click event.
+   */
+  public onUploadPhotoClick(): void {
+    this.uploadPhotoClickEvent.next(Date.now());
   }
 
   /**
-   * It takes a photo, uploads it to Firebase Storage, and then updates the user's profile photo in the
-   * database
+   * Build subscription for the uploadPhotoClickEvent.
    */
-  async uploadPhoto() {
-    const image = await Camera.getPhoto({
-      quality: 70,
-      allowEditing: true,
-      resultType: CameraResultType.DataUrl,
-      promptLabelHeader: "Foto de perfil",
-      promptLabelPhoto: "Selecciona una imagen",
-      promptLabelPicture: "Toma una foto",
-      source: CameraSource.Prompt,
-    });
+  private watchUploadPhotoClicks(): void {
+    this.uploadPhotoClickEvent
+      .asObservable()
+      .pipe(
+        skip(1),
+        switchMap((_) => this.userService.online),
+        tap({
+          next: async (online) => {
+            if (!online) {
+              this.utilsSvc.presentToast("No tienes conexión a internet.");
+              return;
+            }
 
-    this.loadingPhoto = true;
+            const photo = await this.cameraService.pickOrTakePhoto({
+              promptLabelHeader: "Foto de perfil",
+            });
+            if (!photo) return;
 
-    this.photo.setValue(image.dataUrl);
-    console.log(this.photo.value);
-    this.loadingPhoto = false;
-    this.updateUser();
-  }
-
-  /**
-   * It updates the user information in the database.
-   */
-  async updateUser() {
-    this.sbs.push(
-      this.userService.user
-        .pipe(
-          take(1),
-          tap({
-            next: async (user) => {
-              const patchData = {
-                ...user,
-                photo: await this.firebaseSvc.uploadPhoto(
-                  "wt_users/" + user.id + "/profile",
-                  this.photo.value
-                ),
-              };
-              this.userService.patchUser(patchData);
-
-              this.loading = true;
-              this.firebaseSvc.UpdateCollection("wt_users", patchData).then(
-                (res) => {
-                  this.utilsSvc.presentToast(
-                    " Foto de perfil actualizada con éxito"
-                  );
-                  this.loading = false;
-                },
-                (err) => {
-                  console.log(err);
-
-                  this.utilsSvc.presentToast(
-                    "No tienes conexión actualmente los datos se subiran una vez se restablesca la conexión"
-                  );
-                  this.loading = false;
-                }
+            this.loadingPhoto = true;
+            await this.userService.updateUserPhoto(photo).catch((e) => {
+              /**
+               * @todo @mario Refinar los mensajes de error.
+               */
+              this.utilsSvc.presentToast(
+                "Ocurrió un error al subir el archivo. Por favor intente de nuevo."
               );
-            },
-          })
-        )
-        .subscribe()
-    );
+            });
+            this.loadingPhoto = false;
+          },
+        })
+      )
+      .subscribe();
   }
 
-  logOut() {
-    this.firebaseSvc.logout();
+  public async signOut(): Promise<void> {
+    await this.userService.signOut();
+    // this.router.navigate(["login"]);
   }
 }

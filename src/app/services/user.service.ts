@@ -3,7 +3,7 @@ import { LocalStorageRepository } from "../infrastructure/local-storage.reposito
 import { CURRENT_USER_LS_KEY } from "../constants/current-user-ls-key.constant";
 import { UserStore } from "../state/user.store";
 import { WtCompany } from "../models/wt-company";
-import { Observable, Subscription } from "rxjs";
+import { Observable, Subscription, of } from "rxjs";
 import {
   catchError,
   distinctUntilChanged,
@@ -36,6 +36,8 @@ import {
 import { USERS_FB_COLLECTION } from "../constants/users-fb-collection";
 import { LocalStorageWtUser, WtUser } from "../models/wt-user";
 import { environment } from "src/environments/environment";
+import { Photo } from "./camera.service";
+import { NetworkRepository } from "../infrastructure/network.repository";
 
 export class UserFailure extends Failure {}
 
@@ -51,6 +53,7 @@ export class UserService implements OnDestroy {
     private firebase: FirebaseService,
     private localStorage: LocalStorageRepository,
     private licenseService: LicenseService,
+    private network: NetworkRepository,
     private store: UserStore
   ) {
     this.sbs.push(
@@ -120,12 +123,30 @@ export class UserService implements OnDestroy {
   }
 
   /**
+   * Returns photo of current authenticated user from state.
+   *
+   * @todo @mario Cargar en el localstorage la foto de perfil en formato base64, para que pueda
+   * cargarse en el perfil cuando no haya internet. En el profile.page.html también hay que cambiar
+   * el src de la imagen para que cargue desde el localstorage.
+   */
+  get userPhotoDataUrl(): Observable<string | null> {
+    return this.store.state$.pipe(map((state) => state.userPhotoPath));
+  }
+
+  /**
    * Returns the current authenticated user from state.
    *
    * @returns
    */
   get currentUser(): WtUser | null {
     return this.store.state.user;
+  }
+
+  /**
+   * Returns if device is online or not.
+   */
+  get online(): Observable<boolean> {
+    return this.network.online$;
   }
 
   /**
@@ -151,27 +172,63 @@ export class UserService implements OnDestroy {
   /**
    * Patches user in state and in localstorage.
    *
-   * @param user
+   * @param user Partial of WtUser or null.
+   * @throws {FirestoreFailure} if User document update fails.
+   * @returns
    */
   async patchUser(
-    user: WtUser | null,
+    user: Partial<WtUser> | null,
     patchDb: boolean = false
   ): Promise<void> {
-    this.saveUserToLocalStorage(user);
-    this.store.patch({ user: user });
+    const mergedUser = user ? { ...this.store.state.user, ...user } : null;
+
     if (patchDb && user) {
-      return this.firebase.update(`${USERS_FB_COLLECTION}/${user.id}`, {
-        fullName: user.fullName,
-        docType: user.docType,
-        docNumber: user.docNumber,
-        genero: user.genero,
-        fNacimiento: user.fNacimiento,
-        movil: user.movil,
-        photo: user.photo,
-        activo: user.activo,
-        firstReport: user.firstReport,
+      console.log("Update Data");
+      console.log({
+        fullName: mergedUser.fullName,
+        docType: mergedUser.docType,
+        docNumber: mergedUser.docNumber,
+        genero: mergedUser.genero,
+        fNacimiento: mergedUser.fNacimiento,
+        movil: mergedUser.movil,
+        photo: mergedUser.photo,
+        activo: mergedUser.activo,
+        firstReport: mergedUser.firstReport,
+      });
+
+      await this.firebase.update(`${USERS_FB_COLLECTION}/${mergedUser.id}`, {
+        fullName: mergedUser.fullName,
+        docType: mergedUser.docType,
+        docNumber: mergedUser.docNumber,
+        genero: mergedUser.genero,
+        fNacimiento: mergedUser.fNacimiento,
+        movil: mergedUser.movil,
+        photo: mergedUser.photo,
+        activo: mergedUser.activo,
+        firstReport: !!mergedUser.firstReport,
       });
     }
+
+    this.saveUserToLocalStorage(mergedUser);
+    this.store.patch({ user: mergedUser });
+    return;
+  }
+
+  /**
+   * Uploads photo to storage and updates user photo in state and database.
+   *
+   * @param photo {Photo} object with dataUrl to upload.
+   * @throws {StorageFailure} if photo upload fails.
+   * @throws {FirestoreFailure} if User document update fails.
+   */
+  async updateUserPhoto(photo: Photo): Promise<void> {
+    const downloadUrl = await this.firebase.uploadStringToStorage(
+      photo,
+      `${USERS_FB_COLLECTION}/${this.store.state.user?.id}/profile`,
+      `${this.store.state.user?.id}_profile_photo`
+    );
+    await this.patchUser({ photo: downloadUrl }, true);
+    return;
   }
 
   /**
@@ -194,11 +251,6 @@ export class UserService implements OnDestroy {
     this.sbs.push(
       authState(this.auth) // The observer is only triggered on sign-in or sign-out!
         .pipe(
-          tap({
-            next: (authSt) => {
-              console.log("AuthState changed", authSt);
-            },
-          }),
           catchError((e) => {
             // Transform Firebase Auth errors into app Failures.
             const failure = FailureUtils.errorToFailure(e);
@@ -207,6 +259,10 @@ export class UserService implements OnDestroy {
           switchMap((firebaseUser: FirebaseUser | null) => {
             // If authState didn't return a user, fail.
             if (!firebaseUser) {
+              /**
+               * @todo @mario Definir si es neceario este error. Genera que al hacer logout, se
+               * muestre un error.
+               */
               throw new UnauthenticatedFailure("Usuario no autenticado.");
             }
 
@@ -271,7 +327,8 @@ export class UserService implements OnDestroy {
                 }
               }
             },
-          })
+          }),
+          catchError((e) => of())
         )
         .subscribe()
     );
@@ -409,8 +466,8 @@ export class UserService implements OnDestroy {
    *
    * @param report
    */
-  private saveUserToLocalStorage(report: WtUser | null): void {
-    const userToBeSaved = report ? this.userToLocalStorage(report) : null;
+  private saveUserToLocalStorage(user: WtUser | null): void {
+    const userToBeSaved = user ? this.userToLocalStorage(user) : null;
     this.localStorage.save<LocalStorageWtUser>(
       CURRENT_USER_LS_KEY,
       userToBeSaved
@@ -444,7 +501,12 @@ export class UserService implements OnDestroy {
       docNumber: user.docNumber,
       emailVerified: user.emailVerified,
       genero: user.genero,
-      fNacimiento: user.fNacimiento,
+      fNacimiento:
+        user.fNacimiento &&
+        user.fNacimiento.nanoseconds &&
+        user.fNacimiento.seconds
+          ? user.fNacimiento
+          : null,
       movil: user.movil,
       devices: user.devices,
       photo: user.photo,
@@ -471,10 +533,15 @@ export class UserService implements OnDestroy {
           docNumber: localStorageUser.docNumber,
           emailVerified: localStorageUser.emailVerified,
           genero: localStorageUser.genero,
-          fNacimiento: new Timestamp(
-            localStorageUser.fNacimiento.seconds,
+          fNacimiento:
+            localStorageUser.fNacimiento &&
+            localStorageUser.fNacimiento.seconds &&
             localStorageUser.fNacimiento.nanoseconds
-          ),
+              ? new Timestamp(
+                  localStorageUser.fNacimiento.seconds,
+                  localStorageUser.fNacimiento.nanoseconds
+                )
+              : null,
           movil: localStorageUser.movil,
           devices: localStorageUser.devices,
           photo: localStorageUser.photo,

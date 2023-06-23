@@ -146,13 +146,16 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
               this.reportService.patchActiveReport(patchData);
               if (user.firstReport !== false) {
                 const patchData = {
-                  ...user,
                   firstReport: false,
                 };
                 await this.userService.patchUser(patchData, true).catch((e) => {
                   if (e instanceof NoNetworkFailure) {
                     this.utilsSvc.presentToast(
                       "No se pudo guardar la información, por favor verifica tu conexión a internet."
+                    );
+                  } else {
+                    this.utilsSvc.presentToast(
+                      "Ocurrió un error al guardar. Por favor intente de nuevo."
                     );
                   }
                 });

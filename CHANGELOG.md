@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## [RED-22] - 2023-06-23 (Mario)
+
+- Instalar plugin @capacitor/network para detectar conexión de red.
+- Agregar NetworkRepository.
+- Agregar CameraService, para centralizar el uso de la camar apropiadamente.
+- ProfilePage: Ajustar subida y guardado en firebase de foto del perfil.
+- FirebaseUser: Agregar métodos para subir imágenes y marcar los otros métodos como deprecated.
+- UserService: Fixes en los métodos patchUser y otros métodos secundarios.
+- UserState: Agregar campo userPhotoPath para guardar la foto local.
+
 ## [MARIO/RED-10-AUTH] - 2023-06-13 (Diana)
 
 - Eliminar módulos que nos e van a usar: stepper. lote-modal.
