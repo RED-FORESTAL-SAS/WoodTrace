@@ -13,7 +13,11 @@
         <div>
           <h1>Paso 1</h1>
           <p>Selecciona la especie reportada de la madera a analizar</p>
-          <img src="assets/img/paso1_analysis.svg" alt="" />
+          <img
+            style="padding-bottom: 20px"
+            src="assets/img/paso1_analysis.svg"
+            alt=""
+          />
         </div>
       </div>
     </ng-template>
@@ -22,7 +26,11 @@
         <div>
           <h1>Paso 2</h1>
           <p>Toma una foto o sube una que hayas tomado antes.</p>
-          <img src="assets/img/paso2_analysis.svg" alt="" />
+          <img
+            style="padding-bottom: 20px"
+            src="assets/img/paso2_analysis.svg"
+            alt=""
+          />
         </div>
       </div>
     </ng-template>
@@ -34,7 +42,11 @@
           <p>
             Asegurate de tener una lupa x60 en la cámara posterior del celular.
           </p>
-          <img src="assets/img/paso3-gif_analysis.gif" alt="" />
+          <img
+            style="padding-bottom: 20px"
+            src="assets/img/paso3-gif_analysis.gif"
+            alt=""
+          />
         </div>
       </div>
     </ng-template>
@@ -47,7 +59,11 @@
             Toma una muestra de la madera, acerca el celular, tómale una foto,
             verifica el análisis y guardalo.
           </p>
-          <img src="assets/img/paso4_analysis.svg" alt="" />
+          <img
+            style="padding-bottom: 20px"
+            src="assets/img/paso4_analysis.svg"
+            alt=""
+          />
         </div>
       </div>
     </ng-template>
@@ -61,7 +77,11 @@
             Perfecto! Por ultimo, añade muestras al reporte o generalo para
             finalizar.
           </p>
-          <img src="assets/img/paso5-analisys.svg" alt="" />
+          <img
+            style="padding-bottom: 20px"
+            src="assets/img/paso5-analisys.svg"
+            alt=""
+          />
         </div>
       </div>
     </ng-template>
@@ -73,13 +93,13 @@
         <span>Volver</span>
       </ion-button>
     </div>
-    <div *ngIf="slideActive !== 3" class="btn-gradient">
+    <div *ngIf="slideActive !== 4" class="btn-gradient">
       <ion-button (click)="slideNext()" mode="ios">
         <span>Siguiente</span>
       </ion-button>
     </div>
 
-    <div *ngIf="slideActive === 3" class="btn-gradient">
+    <div *ngIf="slideActive === 4" class="btn-gradient">
       <ion-button (click)="goToRoot()" mode="ios">
         <span>Entendido </span>
       </ion-button>

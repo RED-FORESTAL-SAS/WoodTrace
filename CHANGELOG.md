@@ -10,6 +10,18 @@
 - FailureUtils: Ajustar imports.
 - AppModule: Fix para que no haya errores con los imports que usan la versión compat de angular fire.
 
+## [MARIO/RED-10-AUTH] - 2023-06-26 (Diana)
+
+- Eliminar iconos que no se usan.
+- Crar loading-modal.
+- Crear error-modal.
+- Hacer que el especie-modal cuere con el backbotton.
+- Limpiar codigo en Analysis-result, analysis-list, report, report-details.
+- Agregar la img de la lupa en implements.
+- Agregar opción de Tutorial análisis en help-desk
+- Ajustar imágenes de los pasos del how-to-use
+- Agregar campos personaType, fullName, doctype y docNumber a analisys-form.
+
 ## [RED-22] - 2023-06-23 (Mario)
 
 - Instalar plugin @capacitor/network para detectar conexión de red.
