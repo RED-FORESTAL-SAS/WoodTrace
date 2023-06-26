@@ -1,6 +1,5 @@
 import { FieldValue } from "../types/field-value.type";
 import { Timestamp } from "../types/timestamp.type";
-import { serverTimestamp } from "../utils/date.utils";
 
 /**
  * Describe una imagen de alta resolución tomada a una muestra de madera, que se almacena localmente
@@ -88,6 +87,6 @@ export const NEW_WT_WOOD: WtWood = {
   especie: "",
   acierto: null,
   wtUserId: "",
-  fCreado: serverTimestamp(),
-  fModificado: serverTimestamp(),
+  fCreado: null,
+  fModificado: null,
 };

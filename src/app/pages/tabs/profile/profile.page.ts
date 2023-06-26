@@ -43,16 +43,6 @@ export class ProfilePage implements OnDestroy {
     // Watch events and User.
     this.watchUploadPhotoClicks();
     this.user$ = this.userService.user.pipe(distinctUntilChanged(isEqual));
-
-    // Redirect to login if user signs out.
-    this.sbs.push(
-      this.user$.pipe(skip(1)).subscribe((user) => {
-        if (user === null) {
-          console.log("Logout. Redirect to login");
-          this.router.navigate(["login"]);
-        }
-      })
-    );
   }
 
   /**
@@ -108,6 +98,6 @@ export class ProfilePage implements OnDestroy {
 
   public async signOut(): Promise<void> {
     await this.userService.signOut();
-    // this.router.navigate(["login"]);
+    window.location.replace("/login");
   }
 }

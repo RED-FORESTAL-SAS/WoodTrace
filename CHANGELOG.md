@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## [RED-22] - 2023-06-26 (Mario)
+
+- user.model.ts/wt-woods.ts Limpiar imports que causan errores.
+- Agregar todos para mario y diana.
+- Cerrar sesión limpiamente desde ProfilePage.
+- TabsPage: Limpiar código inutil.
+- UserService: Fix retrieveAuthenticatedUser para que incluya la respuesta online/offline.
+- FailureUtils: Ajustar imports.
+- AppModule: Fix para que no haya errores con los imports que usan la versión compat de angular fire.
+
 ## [RED-22] - 2023-06-23 (Mario)
 
 - Instalar plugin @capacitor/network para detectar conexión de red.

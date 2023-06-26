@@ -7,6 +7,7 @@ import { BehaviorSubject, Subscription } from "rxjs";
 import { skipWhile, switchMap, take, tap } from "rxjs/operators";
 import { especie } from "src/assets/data/especies";
 import { EspecieModalComponent } from "src/app/shared/components/especie-modal/especie-modal.component";
+import { ModalController } from "@ionic/angular";
 
 @Component({
   selector: "app-take-photos",
@@ -27,7 +28,8 @@ export class TakePhotosPage implements OnInit, OnDestroy {
 
   constructor(
     private utilsSvc: UtilsService,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private modalController: ModalController
   ) {
     this.saveWoodHandler();
   }
@@ -131,6 +133,31 @@ export class TakePhotosPage implements OnInit, OnDestroy {
     });
     if (selected) {
       this.especie.setValue(selected.especie.nombreCienticifo);
+    }
+  }
+
+  /**
+   * @todo @diana Mover esta lógica donde deba ir.
+   */
+  async onAnalizarHandler() {
+    const modalLoading = await this.modalController.create({
+      component: EspecieModalComponent, // @todo @diana poner otro componente.
+      cssClass: "modal-especie", // @todo @diana poner otra clase.
+    });
+    modalLoading.present();
+
+    try {
+      const result = await this.reportService.analyzeWood();
+      modalLoading.dismiss();
+
+      /**
+       * @todo @diana Hacer lo que haya que hacer con el resultado.
+       */
+    } catch (e) {
+      /**
+       * @todo @diana Abrir el modal del error.
+       */
+      modalLoading.dismiss();
     }
   }
 }

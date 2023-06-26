@@ -75,7 +75,7 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
             next: (report) => {
               console.log(report);
               /**
-               * @todo revisar el populate que si se esté poblando como debe y
+               * @todo @diana revisar el populate que si se esté poblando como debe y
                * cómo hacemos para no duplicar este código.
                */
               if (report.departamento !== "") {
@@ -176,6 +176,10 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
    */
   async getCurrentPosition() {
     this.utilsSvc.presentLoading();
+
+    /**
+     * @todo @mario Verficar que sí haya permisos para usar el gps y que sí esté activado.
+     */
 
     const coordinates = await Geolocation.getCurrentPosition();
     this.utilsSvc.dismissLoading();

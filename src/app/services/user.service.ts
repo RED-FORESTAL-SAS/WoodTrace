@@ -10,6 +10,7 @@ import {
   map,
   switchMap,
   tap,
+  withLatestFrom,
 } from "rxjs/operators";
 import { WtLicense } from "../models/wt-license";
 import { LicenseFailure, LicenseService } from "./license.service";
@@ -41,9 +42,7 @@ import { NetworkRepository } from "../infrastructure/network.repository";
 
 export class UserFailure extends Failure {}
 
-@Injectable({
-  providedIn: "root",
-})
+@Injectable({ providedIn: "root" })
 export class UserService implements OnDestroy {
   private sbs: Subscription[] = [];
 
@@ -183,19 +182,6 @@ export class UserService implements OnDestroy {
     const mergedUser = user ? { ...this.store.state.user, ...user } : null;
 
     if (patchDb && user) {
-      console.log("Update Data");
-      console.log({
-        fullName: mergedUser.fullName,
-        docType: mergedUser.docType,
-        docNumber: mergedUser.docNumber,
-        genero: mergedUser.genero,
-        fNacimiento: mergedUser.fNacimiento,
-        movil: mergedUser.movil,
-        photo: mergedUser.photo,
-        activo: mergedUser.activo,
-        firstReport: mergedUser.firstReport,
-      });
-
       await this.firebase.update(`${USERS_FB_COLLECTION}/${mergedUser.id}`, {
         fullName: mergedUser.fullName,
         docType: mergedUser.docType,
@@ -232,21 +218,13 @@ export class UserService implements OnDestroy {
   }
 
   /**
-   * Retrieves the authenticated user from local storage, their license and company from localstorage and watches
-   * authState changes to load user, license and company, when authstate changes.
+   * watches authState changes to load user, license and company. If authState is null, tries to
+   * retrieve authenticated user from local storage.
    *
    * @returns Promise<void> Nothing is returned. User, License and Company must be obtained using
    * UserService getters. keep it inmutable!
    */
   public async retrieveAuthenticatedUser(): Promise<void> {
-    // Try to retrieve user from local storage.
-    const user = this.fetchUserFromLocalStorage();
-
-    // If found user is differente from state, patch it in state.
-    if (user && user.id !== this.store.state.user?.id) {
-      await this.patchUser(user);
-    }
-
     // Watch auth state for changes to update user.
     this.sbs.push(
       authState(this.auth) // The observer is only triggered on sign-in or sign-out!
@@ -257,13 +235,15 @@ export class UserService implements OnDestroy {
             throw failure;
           }),
           switchMap((firebaseUser: FirebaseUser | null) => {
-            // If authState didn't return a user, fail.
+            // If authState didn't return a user, returns null.
             if (!firebaseUser) {
+              return of(null);
+
               /**
-               * @todo @mario Definir si es neceario este error. Genera que al hacer logout, se
-               * muestre un error.
+               * @dev Do not throw Failures here because it will cause the app to fail when user sings out.
+               *
+               * throw new UnauthenticatedFailure("Usuario no autenticado.");
                */
-              throw new UnauthenticatedFailure("Usuario no autenticado.");
             }
 
             // Retrieve user from database, to get the latest data.
@@ -276,19 +256,34 @@ export class UserService implements OnDestroy {
                   throw failure;
                 }),
                 distinctUntilChanged((prev, curr) => prev.id === curr.id), // Avoid duplicated emissions.
-                map((user: WtUser | undefined) => {
-                  // If user was not found, fail.
-                  if (!user) {
-                    throw new NotFoundFailure("Usuario no encontrado.");
-                  }
-
-                  // Otherwise, return user with emailVerified flag.
-                  return {
-                    ...user,
-                    emailVerified: firebaseUser.emailVerified,
-                  };
-                })
+                map((user) => ({
+                  ...user,
+                  emailVerified: firebaseUser.emailVerified,
+                }))
               );
+          }),
+          withLatestFrom(this.online),
+          map(([user, online]: [WtUser | undefined, boolean]) => {
+            // If user was not found, try to retrieve it from local storage.
+            if (!user) {
+              const localStorageUser = this.fetchUserFromLocalStorage();
+
+              // If there was no user in localstorage, check if there is internet connection
+              // then throw appropriated Failure.
+              if (!localStorageUser) {
+                if (!online) {
+                  throw new NoNetworkFailure("No hay conexión a internet");
+                } else {
+                  throw new NotFoundFailure("Usuario no encontrado.");
+                }
+              }
+
+              // Patch user in state and return it.
+              this.store.patch({ user: localStorageUser });
+              return localStorageUser;
+            }
+
+            return user;
           }),
           tap({
             next: async (user: WtUser | null) => {
@@ -400,6 +395,13 @@ export class UserService implements OnDestroy {
     await this.patchUser(null);
     this.patchLicense(null);
     this.patchCompany(null);
+
+    /**
+     * @dev Esto es necesario porque al hacer signOut. Al forzar la recarga del login se eliminan los
+     * errores que puedan haber ocurrido y se refresca el estado de la app. Sino, en el nuevo inicio
+     * falla la carga de los datos del usuario (Del perfil).
+     */
+    // window.location.replace("/login");
   }
 
   /**

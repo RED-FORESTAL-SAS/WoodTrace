@@ -62,7 +62,8 @@ export class LoginPage implements OnDestroy {
     this.loginIn.next(true);
     this.loading = true;
 
-    /** @todo @Mario manejar el estado activo e inactivo entonces para poder loguearse.
+    /**
+     * @todo @Mario manejar el estado activo e inactivo entonces para poder loguearse.
      * De hecho hay que revisar esta manera de loguearse, porque no es la mejor.
      */
 
@@ -155,6 +156,11 @@ export class LoginPage implements OnDestroy {
               this.utilsSvc.routerLink("/tabs/profile");
               this.resetForm();
             }
+
+            /**
+             * @todo @mario Modificar el método authState, para que devuelva un WtUser y no un User.
+             * @todo @diana Agregar condicional para verificar el campo "activo" del usuario.
+             */
           },
           error: async (e) => {
             if (this.loginIn.value) {

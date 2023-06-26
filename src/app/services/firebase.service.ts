@@ -1,9 +1,14 @@
-import { Injectable } from "@angular/core";
+import { Inject, Injectable, Optional } from "@angular/core";
 import { AngularFireAuth } from "@angular/fire/compat/auth";
 import { AngularFirestore } from "@angular/fire/compat/firestore";
 import { AngularFireStorage } from "@angular/fire/compat/storage";
 import { Router } from "@angular/router";
 import { User } from "../models/user.model";
+
+/**
+ * @todo @mario Estos imports deberían eliminarse y usarse los imports de @angular/fire/storage.
+ * Es necesario hacer refactor para que sea compatible la implementación.
+ */
 import {
   getStorage as getStorageLegacy,
   ref as refLegacy,
@@ -11,7 +16,13 @@ import {
   uploadBytes as uploadBytesLegacy,
   deleteObject as deleteObjectLegacy,
 } from "firebase/storage";
+
+/**
+ * @todo @mario Estos imports deberían eliminarse y usarse los imports de @angular/fire/auth.
+ * Es necesario hacer refactor para que sea compatible la implementación.
+ */
 import { getAuth, updatePassword, User as FirebaseUser } from "firebase/auth";
+
 import { Observable, of } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
 import { FailureUtils, NotFoundFailure } from "../utils/failure.utils";
@@ -40,7 +51,6 @@ import {
 import { WtUser } from "../models/wt-user";
 import { environment } from "src/environments/environment";
 import { Photo } from "./camera.service";
-import { ImageExtension } from "../types/image-extension.type";
 
 /**
  * @todo @diana Esta clase contiene dependencias a módulos de angular fire en modo compat. Esto
@@ -52,10 +62,10 @@ import { ImageExtension } from "../types/image-extension.type";
 export class FirebaseService {
   user = {} as User;
   constructor(
-    private firestore: Firestore,
+    @Inject(Firestore) private firestore: Firestore,
     private router: Router,
     /** @deprecated: Should use firebase modular imports instead. */
-    private auth: AngularFireAuth,
+    @Optional() private auth: AngularFireAuth,
     /** @deprecated: Should use firebase modular imports instead. */
     private storage: AngularFireStorage,
     /** @deprecated: Should use firebase modular imports instead. */

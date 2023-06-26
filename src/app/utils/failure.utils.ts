@@ -1,5 +1,5 @@
-import { FirestoreError } from "firebase/firestore";
-import { FirebaseError } from "firebase/app";
+import { FirebaseError } from "@angular/fire/app";
+import { FirestoreError } from "@angular/fire/firestore";
 import { environment } from "src/environments/environment";
 
 export class FailureUtils {
