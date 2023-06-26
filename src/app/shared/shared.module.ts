@@ -15,6 +15,8 @@ import { DownloadTypeComponent } from "./components/download-type/download-type.
 import { NgxCurrencyModule } from "ngx-currency";
 import { TimeStampPipe } from "./components/pipes/timestamp.pipe";
 import { EspecieModalComponent } from "./components/especie-modal/especie-modal.component";
+import { LoadingModalComponent } from "./components/loading-modal/loading-modal.component";
+import { ErrorModalComponent } from "./components/error-modal/error-modal.component";
 
 @NgModule({
   declarations: [
@@ -28,6 +30,8 @@ import { EspecieModalComponent } from "./components/especie-modal/especie-modal.
     FinkAlertComponent,
     DownloadTypeComponent,
     EspecieModalComponent,
+    LoadingModalComponent,
+    ErrorModalComponent,
     TimeStampPipe,
   ],
   exports: [
@@ -41,6 +45,8 @@ import { EspecieModalComponent } from "./components/especie-modal/especie-modal.
     FinkAlertComponent,
     DownloadTypeComponent,
     EspecieModalComponent,
+    LoadingModalComponent,
+    ErrorModalComponent,
     TimeStampPipe,
   ],
   imports: [

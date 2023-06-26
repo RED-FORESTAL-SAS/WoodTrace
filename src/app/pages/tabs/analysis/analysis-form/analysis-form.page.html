@@ -35,6 +35,19 @@
       </div>
 
       <app-input-gradient
+        [selectOptions]="personaTypes"
+        label="Tipo de persona"
+        type="select"
+        [formControlValue]="personaType"
+      ></app-input-gradient>
+      <div class="validators" *ngIf="personaType.touched && personaType.errors">
+        <span *ngIf="personaType.errors?.['required']"
+          >Selecciona un genero</span
+        >
+      </div>
+
+      <app-input-gradient
+        *ngIf="personaType.value === 'vehiculo'"
         label="Número de guía"
         type="string"
         [formControlValue]="guia"
@@ -45,6 +58,7 @@
       </div>
 
       <app-input-gradient
+        *ngIf="personaType.value === 'vehiculo'"
         label="Placa"
         type="string"
         [formControlValue]="placa"
@@ -56,8 +70,58 @@
         >
       </div>
 
+      <app-input-gradient
+        *ngIf="personaType.value === 'persona'"
+        max="50"
+        label="Nombre Completo"
+        type="text"
+        [formControlValue]="fullName"
+      >
+      </app-input-gradient>
+      <div class="validators" *ngIf="fullName.dirty && fullName.errors">
+        <span *ngIf="fullName.errors?.['required']"
+          >Ingresa tu nombre completo</span
+        >
+        <span *ngIf="fullName.errors?.['minlength']"
+          >El nombre debe contener mínimo 4 caracteres</span
+        >
+      </div>
+
+      <!-- Tipo de documento  -->
+      <app-input-gradient
+        *ngIf="personaType.value === 'persona'"
+        [selectOptions]="docTypes"
+        label="Tipo de documento"
+        type="select"
+        [formControlValue]="docType"
+      ></app-input-gradient>
+      <div class="validators" *ngIf="docType.touched && docType.errors">
+        <span *ngIf="docType.errors?.['required']"
+          >Selecciona el tipo de documento de identidad</span
+        >
+      </div>
+
+      <!-- Número de documento  -->
+      <app-input-gradient
+        *ngIf="personaType.value === 'persona'"
+        max="15"
+        min="6"
+        label="No. de documento"
+        type="tel"
+        [formControlValue]="docNumber"
+      >
+      </app-input-gradient>
+      <div class="validators" *ngIf="docNumber.dirty && docNumber.errors">
+        <span *ngIf="docNumber.errors?.['required']"
+          >Ingresa el número del documento de identidad</span
+        >
+        <span *ngIf="docNumber.errors?.['minlength']"
+          >El número del documento debe contener mínimo 6 caracteres</span
+        >
+      </div>
+
       <ion-grid>
-        <ion-row class="btn" routerLink="help-desk">
+        <ion-row class="btn">
           <ion-col align-items-center class="bg-icon-btn" size="2">
             <ion-icon
               style="font-size: 25px"
@@ -70,6 +134,7 @@
             *ngIf="!(longitude && latitude)"
             align-items-start
             class="label-btn"
+            (click)="getCurrentPosition()"
           >
             Ubicación
           </ion-col>

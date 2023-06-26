@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## [MARIO/RED-10-AUTH] - 2023-06-26 (Diana)
+
+- Eliminar iconos que no se usan.
+- Crar loading-modal.
+- Crear error-modal.
+- Hacer que el especie-modal cuere con el backbotton.
+- Limpiar codigo en Analysis-result, analysis-list, report, report-details.
+- Agregar la img de la lupa en implements.
+- Agregar opción de Tutorial análisis en help-desk
+- Ajustar imágenes de los pasos del how-to-use
+- Agregar campos personaType, fullName, doctype y docNumber a analisys-form.
+
 ## [MARIO/RED-10-AUTH] - 2023-06-13 (Diana)
 
 - Eliminar módulos que nos e van a usar: stepper. lote-modal.

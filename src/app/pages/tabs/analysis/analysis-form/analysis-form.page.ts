@@ -16,6 +16,8 @@ import { WtUser } from "src/app/models/wt-user";
 import { UserService } from "src/app/services/user.service";
 import { WtReport } from "src/app/models/wt-report";
 import { NoNetworkFailure } from "src/app/utils/failure.utils";
+import { personaTypes } from "src/assets/data/persona-types";
+import { docTypes } from "src/assets/data/document-types";
 
 @Component({
   selector: "app-analysis-form",
@@ -25,18 +27,24 @@ import { NoNetworkFailure } from "src/app/utils/failure.utils";
 export class AnalysisFormPage implements OnInit, OnDestroy {
   departamento = new FormControl("", [Validators.required]);
   municipio = new FormControl("", [Validators.required]);
-  guia = new FormControl("", [Validators.required]);
-  placa = new FormControl("", [Validators.required]);
+  guia = new FormControl("", []);
+  placa = new FormControl("", []);
+  personaType = new FormControl("", [Validators.required]);
+  fullName = new FormControl("", [Validators.minLength(4)]);
+  docType = new FormControl(0, []);
+  docNumber = new FormControl("", [Validators.minLength(6)]);
 
   latitude: number;
   longitude: number;
-
-  private sbs: Subscription[] = [];
 
   pais = pais;
   option = "Division[]";
   departamentos = [];
   municipios = [];
+  personaTypes = [];
+  docTypes = [];
+
+  private sbs: Subscription[] = [];
 
   /** Observable with active license or null. */
   public user$: Observable<WtUser | null>;
@@ -57,6 +65,8 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.docTypes = docTypes;
+    this.personaTypes = personaTypes;
     this.departamentos = pais.division.map((division) => division);
     this.populateForm();
     this.onChanges();
@@ -88,6 +98,10 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
               this.municipio.setValue(report.municipio);
               this.guia.setValue(report.guia);
               this.placa.setValue(report.placa);
+              this.personaType.setValue(report.personaType);
+              this.fullName.setValue(report.fullName);
+              this.docType.setValue(report.docType);
+              this.docNumber.setValue(report.docNumber);
               this.latitude = report.ubicacion.lat;
               this.longitude = report.ubicacion.lng;
             },
@@ -135,6 +149,10 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
                 ...report,
                 departamento: this.departamento.value,
                 municipio: this.municipio.value,
+                personaType: this.personaType.value,
+                fullName: this.fullName.value,
+                docType: this.docType.value,
+                docNumber: this.docNumber.value,
                 guia: this.guia.value,
                 placa: this.placa.value,
                 ubicacion: {

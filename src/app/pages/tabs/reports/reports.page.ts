@@ -1,8 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FormControl } from "@angular/forms";
-import { Observable, Subscription } from "rxjs";
+import { Observable } from "rxjs";
 import { WtReport } from "src/app/models/wt-report";
-import { FirebaseService } from "src/app/services/firebase.service";
 import { ReportService } from "src/app/services/report.service";
 import { UtilsService } from "src/app/services/utils.service";
 
@@ -16,12 +15,9 @@ export class ReportsPage implements OnInit {
 
   public reports$: Observable<WtReport[]>;
 
-  private sbs: Subscription[] = [];
-
   constructor(
     private reportService: ReportService,
-    private utilsSvc: UtilsService,
-    private firebaseSvc: FirebaseService
+    private utilsSvc: UtilsService
   ) {
     this.reports$ = this.reportService.reports;
   }
