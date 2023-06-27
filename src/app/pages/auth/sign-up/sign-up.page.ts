@@ -79,7 +79,7 @@ export class SignUpPage implements OnInit, OnDestroy {
         .asObservable()
         .pipe(
           filter((registered) => registered === true),
-          switchMap(() => this.firebaseSvc.authState),
+          switchMap(() => this.firebaseSvc.authStateLegacy),
           filter((user) => user !== null),
           tap({
             next: async (user) => {
@@ -88,7 +88,9 @@ export class SignUpPage implements OnInit, OnDestroy {
 
               // If not verified yet, redirect to email verification, instead redirect to app.
               if (user.emailVerified === false) {
-                await this.firebaseSvc.sendEmailVerification().catch((e) => {});
+                await this.firebaseSvc
+                  .sendEmailVerificationLegacy()
+                  .catch((e) => {});
                 this.firebaseSvc.signOut();
                 this.utilsSvc.routerLink("/email-verification");
                 this.resetForm();
@@ -151,8 +153,8 @@ export class SignUpPage implements OnInit, OnDestroy {
         emailVerified: false,
         genero: this.genero.value,
         /**
-         * @todo hay que ajustar la manera en la que se guarda la fecha de nacimiento en el registro
-         * y por qué la herramienta no funciona bien en el apk.
+         * @todo @mario hay que ajustar la manera en la que se guarda la fecha de nacimiento en el
+         * registro y por qué la herramienta no funciona bien en el apk.
          */
         fNacimiento: this.fNacimiento.value,
         movil: this.movil.value,

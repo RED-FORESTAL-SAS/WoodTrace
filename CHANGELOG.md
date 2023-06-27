@@ -2,6 +2,10 @@
 
 ## [RED-22] - 2023-06-26 (Mario)
 
+- LoginPage: Hacer refactor para verificar si el usuario está activo. Quitar dependencias de FirebasService.
+- FirebaseService/UserService: Mover métodos para evitar dependencias directas de los componentes
+  al FirebaseService.
+- Agregar todos al SignUpPage
 - user.model.ts/wt-woods.ts Limpiar imports que causan errores.
 - Agregar todos para mario y diana.
 - Cerrar sesión limpiamente desde ProfilePage.
