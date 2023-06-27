@@ -51,6 +51,16 @@ import {
 import { WtUser } from "../models/wt-user";
 import { environment } from "src/environments/environment";
 import { Photo } from "./camera.service";
+import {
+  Auth,
+  authState,
+  sendEmailVerification,
+  signInWithEmailAndPassword,
+  signOut,
+  UserCredential,
+} from "@angular/fire/auth";
+
+export { FirebaseUser };
 
 /**
  * @todo @diana Esta clase contiene dependencias a módulos de angular fire en modo compat. Esto
@@ -63,9 +73,10 @@ export class FirebaseService {
   user = {} as User;
   constructor(
     @Inject(Firestore) private firestore: Firestore,
+    @Optional() private auth: Auth,
     private router: Router,
     /** @deprecated: Should use firebase modular imports instead. */
-    @Optional() private auth: AngularFireAuth,
+    @Optional() private authLegacy: AngularFireAuth,
     /** @deprecated: Should use firebase modular imports instead. */
     private storage: AngularFireStorage,
     /** @deprecated: Should use firebase modular imports instead. */
@@ -81,8 +92,8 @@ export class FirebaseService {
    * @throws FirestoreFailure
    * @deprecated Use UserService.user instead.
    */
-  get authState(): Observable<User | null> {
-    return this.auth.authState.pipe(
+  get authStateLegacy(): Observable<User | null> {
+    return this.authLegacy.authState.pipe(
       switchMap((firebaseUser: FirebaseUser | null) => {
         return firebaseUser !== null
           ? this.getDataById("wt_users", firebaseUser.uid)
@@ -104,13 +115,24 @@ export class FirebaseService {
   }
 
   /**
+   * Getter to get current AuthState. Returns an observable of the current Firebase User.
+   */
+  get authState(): Observable<FirebaseUser> {
+    return authState(this.auth);
+  }
+
+  /**
    * Signs in user with email and password.
    *
    * @param user Username.
    * @param password Password.
+   * @deprecated User emailPasswordLogin instead.
    */
   Login(user: WtUser): Promise<any> {
-    return this.auth.signInWithEmailAndPassword(user.email, user.password);
+    return this.authLegacy.signInWithEmailAndPassword(
+      user.email,
+      user.password
+    );
   }
 
   /** Crear un nuevo usuario
@@ -120,7 +142,10 @@ export class FirebaseService {
    */
 
   createUser(user: WtUser) {
-    return this.auth.createUserWithEmailAndPassword(user.email, user.password);
+    return this.authLegacy.createUserWithEmailAndPassword(
+      user.email,
+      user.password
+    );
   }
 
   /**
@@ -128,14 +153,24 @@ export class FirebaseService {
    */
 
   sendRecoveryEmail(email: string) {
-    return this.auth.sendPasswordResetEmail(email);
+    return this.authLegacy.sendPasswordResetEmail(email);
   }
 
   /**
    * Enviar email para verificación
+   * @deprecated
    */
-  async sendEmailVerification() {
-    return (await this.auth.currentUser).sendEmailVerification();
+  async sendEmailVerificationLegacy() {
+    return (await this.authLegacy.currentUser).sendEmailVerification();
+  }
+
+  /**
+   * Sends email verification to authenticated user.
+   *
+   * @returns
+   */
+  async sendEmailVerification(): Promise<void> {
+    return sendEmailVerification(this.auth.currentUser);
   }
 
   /**
@@ -272,7 +307,7 @@ export class FirebaseService {
    * @deprecated use UserService.signOut instead.
    */
   async logout() {
-    await this.auth.signOut();
+    await this.authLegacy.signOut();
     localStorage.removeItem("user");
     localStorage.removeItem("analysis");
     localStorage.removeItem("reports");
@@ -281,13 +316,23 @@ export class FirebaseService {
 
   /**
    * Sign out user and deletes local storage data.
-   * @deprecated use UserService.signOut instead.
    */
   async signOut(): Promise<void> {
-    await this.auth.signOut();
-    localStorage.removeItem("user");
-    localStorage.removeItem("analysis");
-    localStorage.removeItem("reports");
+    await signOut(this.auth).catch((e) => {});
+  }
+
+  /**
+   * Signs user in with email and password.
+   *
+   * @param email
+   * @param password
+   * @returns
+   */
+  public async emailPasswordLogin(
+    email: string,
+    password: string
+  ): Promise<UserCredential | void> {
+    return signInWithEmailAndPassword(this.auth, email, password);
   }
 
   /**

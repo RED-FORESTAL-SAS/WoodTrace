@@ -19,6 +19,7 @@ import {
   PermissionDeniedFailure,
 } from "src/app/utils/failure.utils";
 import { WtUser } from "src/app/models/wt-user";
+import { UserService } from "src/app/services/user.service";
 
 @Component({
   selector: "app-login",
@@ -38,8 +39,8 @@ export class LoginPage implements OnDestroy {
   private authStateSbs: Subscription | null = null;
 
   constructor(
-    private firebaseSvc: FirebaseService,
-    private utilsSvc: UtilsService
+    private utilsSvc: UtilsService,
+    private userService: UserService
   ) {
     /* This is a listener that listens for the enter key to be pressed. If the enter key is pressed, and
     the validator() function returns true, the login() function is called. */
@@ -48,80 +49,57 @@ export class LoginPage implements OnDestroy {
         this.login();
       }
     });
+
+    this.watchAuthState();
   }
 
   /**
    * Sign In user with email and password. If it fails, show toast to user.
    */
   login(): void {
-    // Whatch Firesbase Auth State from first login click.
-    if (!this.authStateSbs) {
-      this.watchAuthState();
-    }
-
     this.loginIn.next(true);
     this.loading = true;
 
-    /**
-     * @todo @Mario manejar el estado activo e inactivo entonces para poder loguearse.
-     * De hecho hay que revisar esta manera de loguearse, porque no es la mejor.
-     */
+    this.userService
+      .emailPasswordLogin(this.email.value, this.password.value)
+      .catch((e) => {
+        const failure = FailureUtils.errorToFailure(e);
+        FailureUtils.log(failure, "LoginPage.ngOnInit");
 
-    let user: WtUser = {
-      id: "",
-      email: this.email.value,
-      password: this.password.value,
-      fullName: "",
-      docType: 0,
-      docNumber: "",
-      emailVerified: null,
-      genero: "",
-      fNacimiento: null,
-      movil: "",
-      devices: [],
-      photo: "",
-      activo: true,
-      firstReport: false,
-    };
+        this.loginIn.next(false);
+        this.loading = false;
 
-    this.firebaseSvc.Login(user).catch((e) => {
-      const failure = FailureUtils.errorToFailure(e);
-      FailureUtils.log(failure, "LoginPage.ngOnInit");
-
-      this.loginIn.next(false);
-      this.loading = false;
-
-      if (
-        failure instanceof AuthNetworkRequestFailedFailure ||
-        failure instanceof AuthTimeoutFailure
-      ) {
-        this.utilsSvc.presentToast(
-          "Parece que tienes problemas con la conexión a internet. Por favor intente de nuevo."
-        );
-      } else if (
-        failure instanceof AuthWrongPasswordFailure ||
-        failure instanceof AuthInvalidEmailFailure
-      ) {
-        this.utilsSvc.presentToast(
-          "Credenciales inválidas. Por favor intenta de nuevo."
-        );
-      } else if (failure instanceof AuthUserNotFoundFailure) {
-        this.utilsSvc.presentToast(
-          "Este usuario no existe. Regístrate para acceder."
-        );
-      } else if (
-        failure instanceof AuthTooManyRequestsFailure ||
-        failure instanceof AuthUserDisabledFailure
-      ) {
-        this.utilsSvc.presentToast(
-          "Parece que hay problemas con tu usuario. Por favor contacta al administrador."
-        );
-      } else {
-        this.utilsSvc.presentToast(
-          "Ocurrió un Error desconocido. Por favor intente de nuevo."
-        );
-      }
-    });
+        if (
+          failure instanceof AuthNetworkRequestFailedFailure ||
+          failure instanceof AuthTimeoutFailure
+        ) {
+          this.utilsSvc.presentToast(
+            "Parece que tienes problemas con la conexión a internet. Por favor intente de nuevo."
+          );
+        } else if (
+          failure instanceof AuthWrongPasswordFailure ||
+          failure instanceof AuthInvalidEmailFailure
+        ) {
+          this.utilsSvc.presentToast(
+            "Credenciales inválidas. Por favor intenta de nuevo."
+          );
+        } else if (failure instanceof AuthUserNotFoundFailure) {
+          this.utilsSvc.presentToast(
+            "Este usuario no existe. Regístrate para acceder."
+          );
+        } else if (
+          failure instanceof AuthTooManyRequestsFailure ||
+          failure instanceof AuthUserDisabledFailure
+        ) {
+          this.utilsSvc.presentToast(
+            "Parece que hay problemas con tu usuario. Por favor contacta al administrador."
+          );
+        } else {
+          this.utilsSvc.presentToast(
+            "Ocurrió un Error desconocido. Por favor intente de nuevo."
+          );
+        }
+      });
   }
 
   /**
@@ -130,37 +108,40 @@ export class LoginPage implements OnDestroy {
    */
   watchAuthState(): void {
     this.authStateSbs = combineLatest([
-      this.firebaseSvc.authState,
+      this.userService.authState,
       this.loginIn.asObservable(),
     ])
-      // this.firebaseSvc.authState
       .pipe(
         // Only hear authState during active/valid user login action.
-        filter(([user, loginIn]: [User, boolean]) => {
-          // filter((user) => {
+        filter(([user, loginIn]: [WtUser, boolean]) => {
           return user !== null && loginIn === true;
         }),
         tap({
-          next: ([user, loginIn]: [User, boolean]) => {
-            // next: (user) => {
-            this.utilsSvc.saveLocalStorage("user", user);
+          next: async ([user, loginIn]: [WtUser, boolean]) => {
+            // Si el usuario no está activo, no permitirle entrar.
+            if (!user.activo) {
+              this.utilsSvc.presentToast(
+                "Usuario sin privilegios para ejecutar esta acción."
+              );
+              await this.userService.signOut();
+              this.loading = false;
+              this.loginIn.next(false);
+              return;
+            }
+
+            this.userService.patchUser(user);
             this.loading = false;
             this.loginIn.next(false);
 
             if (!user.emailVerified) {
               this.unwatchAuthState();
               this.utilsSvc.routerLink("/email-verification");
-              this.firebaseSvc.sendEmailVerification();
+              this.userService.sendEmailVerification();
             } else {
               this.unwatchAuthState();
               this.utilsSvc.routerLink("/tabs/profile");
               this.resetForm();
             }
-
-            /**
-             * @todo @mario Modificar el método authState, para que devuelva un WtUser y no un User.
-             * @todo @diana Agregar condicional para verificar el campo "activo" del usuario.
-             */
           },
           error: async (e) => {
             if (this.loginIn.value) {
@@ -177,17 +158,20 @@ export class LoginPage implements OnDestroy {
                 this.utilsSvc.presentToast(
                   "Por favor regístrate para acceder."
                 );
-                await this.firebaseSvc.signOut();
+                await this.userService.signOut();
                 this.resetForm();
               } else if (failure instanceof PermissionDeniedFailure) {
                 this.utilsSvc.presentToast(
                   "Usuario sin privilegios para ejecutar esta acción."
                 );
-                this.firebaseSvc.signOut();
+                await this.userService.signOut();
+                this.resetForm();
               } else {
                 this.utilsSvc.presentToast(
                   "Ocurrió un Error desconocido. Por favor intente de nuevo."
                 );
+                await this.userService.signOut();
+                this.resetForm();
               }
 
               this.loading = false;

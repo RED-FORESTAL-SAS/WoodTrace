@@ -15,7 +15,7 @@ import {
 import { WtLicense } from "../models/wt-license";
 import { LicenseFailure, LicenseService } from "./license.service";
 import { CompanyFailure, CompanyService } from "./company.service";
-import { FirebaseService } from "./firebase.service";
+import { FirebaseService, FirebaseUser } from "./firebase.service";
 import { Timestamp } from "../types/timestamp.type";
 import { limit, orderBy, where } from "../types/query-constraint.type";
 import { LICENCES_FB_COLLECTION } from "../constants/licenses-fb-collection";
@@ -28,17 +28,12 @@ import {
   UnauthenticatedFailure,
 } from "../utils/failure.utils";
 import { COMPANYS_FB_COLLECTION } from "../constants/compays-fb-collection";
-import {
-  Auth,
-  authState,
-  signOut,
-  User as FirebaseUser,
-} from "@angular/fire/auth";
 import { USERS_FB_COLLECTION } from "../constants/users-fb-collection";
 import { LocalStorageWtUser, WtUser } from "../models/wt-user";
 import { environment } from "src/environments/environment";
 import { Photo } from "./camera.service";
 import { NetworkRepository } from "../infrastructure/network.repository";
+import { UserCredential } from "@angular/fire/auth";
 
 export class UserFailure extends Failure {}
 
@@ -47,7 +42,6 @@ export class UserService implements OnDestroy {
   private sbs: Subscription[] = [];
 
   constructor(
-    @Optional() private auth: Auth,
     private companyService: CompanyService,
     private firebase: FirebaseService,
     private localStorage: LocalStorageRepository,
@@ -149,6 +143,34 @@ export class UserService implements OnDestroy {
   }
 
   /**
+   * Getters that returns a WtUser from a AuthState/Firebase or null if not autenticated.
+   *
+   * @returns Observable<User | null>
+   * @throws FirestoreFailure
+   */
+  get authState(): Observable<WtUser | null> {
+    return this.firebase.authState.pipe(
+      switchMap((firebaseUser: FirebaseUser | null) => {
+        return firebaseUser !== null
+          ? this.firebase
+              .doc$<WtUser>(`${USERS_FB_COLLECTION}/${firebaseUser.uid}`)
+              .pipe(
+                map((user: WtUser | undefined) => {
+                  // If user doesn't exist in user collection, fail.
+                  if (user === undefined) {
+                    throw new NotFoundFailure(
+                      "El usuario no existe en la base de datos."
+                    );
+                  }
+                  return { ...user, emailVerified: firebaseUser.emailVerified };
+                })
+              )
+          : of(null);
+      })
+    );
+  }
+
+  /**
    * Patches company in state and in localstorage.
    *
    * @param company
@@ -224,10 +246,10 @@ export class UserService implements OnDestroy {
    * @returns Promise<void> Nothing is returned. User, License and Company must be obtained using
    * UserService getters. keep it inmutable!
    */
-  public async retrieveAuthenticatedUser(): Promise<void> {
+  private async retrieveAuthenticatedUser(): Promise<void> {
     // Watch auth state for changes to update user.
     this.sbs.push(
-      authState(this.auth) // The observer is only triggered on sign-in or sign-out!
+      this.firebase.authState // The observer is only triggered on sign-in or sign-out!
         .pipe(
           catchError((e) => {
             // Transform Firebase Auth errors into app Failures.
@@ -235,6 +257,8 @@ export class UserService implements OnDestroy {
             throw failure;
           }),
           switchMap((firebaseUser: FirebaseUser | null) => {
+            console.log("AuthState changed in UserService", firebaseUser);
+
             // If authState didn't return a user, returns null.
             if (!firebaseUser) {
               return of(null);
@@ -293,8 +317,6 @@ export class UserService implements OnDestroy {
               }
             },
             error: async (e) => {
-              console.log("error", e);
-
               // If device is offline, do not change state and fail silently.
               if (
                 e instanceof AuthNetworkRequestFailedFailure ||
@@ -388,20 +410,36 @@ export class UserService implements OnDestroy {
   }
 
   /**
+   * Signs user in with email and password.
+   *
+   * @param email
+   * @param password
+   * @returns
+   */
+  public async emailPasswordLogin(
+    email: string,
+    password: string
+  ): Promise<UserCredential | void> {
+    return this.firebase.emailPasswordLogin(email, password);
+  }
+
+  /**
    * Signs out current user and updates state.
    */
   public async signOut(): Promise<void> {
-    await signOut(this.auth).catch((e) => {});
+    await this.firebase.signOut();
     await this.patchUser(null);
     this.patchLicense(null);
     this.patchCompany(null);
+  }
 
-    /**
-     * @dev Esto es necesario porque al hacer signOut. Al forzar la recarga del login se eliminan los
-     * errores que puedan haber ocurrido y se refresca el estado de la app. Sino, en el nuevo inicio
-     * falla la carga de los datos del usuario (Del perfil).
-     */
-    // window.location.replace("/login");
+  /**
+   * Sends email verification to authenticated user.
+   *
+   * @returns
+   */
+  async sendEmailVerification(): Promise<void> {
+    return this.firebase.sendEmailVerification();
   }
 
   /**
