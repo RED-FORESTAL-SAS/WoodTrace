@@ -1,5 +1,6 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 import { WtWood } from "src/app/models/wt-wood";
 import { ReportService } from "src/app/services/report.service";
 import { UtilsService } from "src/app/services/utils.service";
@@ -11,11 +12,13 @@ import { SwiperComponent } from "swiper/angular";
   templateUrl: "./how-to-use.page.html",
   styleUrls: ["./how-to-use.page.scss"],
 })
-export class HowToUsePage implements OnInit {
+export class HowToUsePage {
   @ViewChild("swiper", { static: false }) swiper?: SwiperComponent;
 
   /** Observable with active report or null. */
   public activeWood$: Observable<WtWood | null>;
+  /** Observable with boolean indicating if there is an active report or not. */
+  public hasActiveWood$: Observable<boolean>;
 
   config: SwiperOptions = {
     slidesPerView: 1,
@@ -30,9 +33,10 @@ export class HowToUsePage implements OnInit {
     private reportService: ReportService
   ) {
     this.activeWood$ = this.reportService.activeWood;
+    this.hasActiveWood$ = this.reportService.activeWood.pipe(
+      map((wood) => !!wood)
+    );
   }
-
-  ngOnInit() {}
 
   onSlideChange(event) {
     let a = event[0].activeIndex;

@@ -1,10 +1,8 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormControl } from "@angular/forms";
-import { ActivatedRoute } from "@angular/router";
 import { Observable, Subscription } from "rxjs";
 import { take, tap } from "rxjs/operators";
 import { WtWood } from "src/app/models/wt-wood";
-import { FirebaseService } from "src/app/services/firebase.service";
 import { ReportService } from "src/app/services/report.service";
 import { UtilsService } from "src/app/services/utils.service";
 
@@ -25,14 +23,10 @@ export class AnalysisResultPage implements OnInit, OnDestroy {
 
   private sbs: Subscription[] = [];
 
-  date = Date.now();
-
   analysis: any;
   tree: number;
   constructor(
-    private firebaseSvc: FirebaseService,
     private utilsSvc: UtilsService,
-    private actRoute: ActivatedRoute,
     private reportService: ReportService
   ) {
     this.activeWood$ = this.reportService.activeWood;
@@ -79,12 +73,4 @@ export class AnalysisResultPage implements OnInit, OnDestroy {
   onVolver() {
     this.utilsSvc.routerLink("/tabs/analysis/analysis-list");
   }
-
-  // analysisFormData() {
-  //   return this.utilsSvc.getFromLocalStorage("analysis");
-  // }
-
-  // submit() {
-  //   this.utilsSvc.routerLink("/tabs/analysis/analysis-trees/ready");
-  // }
 }

@@ -3,34 +3,12 @@
   color: #000;
 }
 
-.wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.msg {
-  text-align: center;
-  border: 1px solid #dddbdb;
-  padding: 15px;
-  border-radius: 15px;
-  margin: 10px 10px 20px 10px;
-}
-
 .table-container {
   padding: 20px 5px 5px 5px;
 }
 
 ion-icon {
   color: var(--ion-color-primary);
-}
-
-.btn-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-left: 10px;
-  padding-right: 10px;
 }
 
 ion-button {

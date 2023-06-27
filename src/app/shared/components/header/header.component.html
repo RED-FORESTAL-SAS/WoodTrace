@@ -11,13 +11,14 @@
     ></ion-back-button>
     <ion-button
       *ngIf="closeModal"
-      color="primary"
+      color="secondary"
       (click)="close()"
       shape="round"
     >
-      <ion-icon style="font-size: 25px" name="chevron-back"></ion-icon>
-
-      Volver
+      <ion-icon
+        style="font-size: 25px"
+        src="../../../../assets/icon/wt_Icon list=Back.svg"
+      ></ion-icon>
     </ion-button>
   </ion-buttons>
   <ion-title>{{ title }}</ion-title>

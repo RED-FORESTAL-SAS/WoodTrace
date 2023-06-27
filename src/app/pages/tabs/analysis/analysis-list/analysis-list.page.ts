@@ -1,9 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { FirebaseService } from "src/app/services/firebase.service";
 import { UtilsService } from "src/app/services/utils.service";
-import { ImagesService } from "src/app/services/images.service";
-import { ActivatedRoute } from "@angular/router";
-import { PdfService } from "src/app/services/pdf.service";
 import { ReportService } from "src/app/services/report.service";
 import { WtReport } from "src/app/models/wt-report";
 import { Observable, Subscription } from "rxjs";
@@ -15,20 +11,12 @@ import { WtWood } from "src/app/models/wt-wood";
   styleUrls: ["./analysis-list.page.scss"],
 })
 export class AnalysisListPage implements OnInit {
-  // segment: string;
-  // pendingTrees = [];
-
   public report$: Observable<WtReport | null>;
 
   private sbs: Subscription[] = [];
 
-  loading: boolean;
   constructor(
-    private firebaseSvc: FirebaseService,
     private utilsSvc: UtilsService,
-    private imagesSvc: ImagesService,
-    private actRoute: ActivatedRoute,
-    private pdfSvc: PdfService,
     private reportService: ReportService
   ) {
     this.report$ = this.reportService.activeReport;
@@ -100,12 +88,5 @@ export class AnalysisListPage implements OnInit {
         },
       ],
     });
-  }
-
-  //================= Generar reporte ===================
-
-  async generateFiles() {
-    let id = Date.now().toString();
-    // this.pdfSvc.createDoc(id);
   }
 }

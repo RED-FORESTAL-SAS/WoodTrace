@@ -50,6 +50,15 @@ export interface WtReport {
    * reporte en el almacenamiento local. Permite identificar el reporte localmente.
    */
   localId: string;
+  /** tipo de persona a la que se le hace análisis. Si es una persona o es un vehiculo*/
+  personaType: string;
+  /** Si personaType==='persona' nombre completo */
+  fullName: string;
+  /** Si personaType==='persona' tipo documento */
+  docType: number;
+  /** Si personaType==='persona' documento */
+  docNumber: string;
+
   /** Número de la placa del vehículo que transporta la madera. */
   placa: string;
   /** Número de la guía que porta el transportador para la movilización de la madera. */
@@ -102,6 +111,10 @@ export interface Ubicacion {
 export interface LocalStorageWtReport {
   id: string;
   localId: string;
+  personaType: string;
+  fullName: string;
+  docType: number;
+  docNumber: string;
   placa: string;
   guia: string;
   departamento: string;
@@ -129,6 +142,10 @@ export interface LocalStorageWtReport {
 export const NEW_WT_REPORT: WtReport = {
   id: "0",
   localId: "",
+  personaType: "",
+  fullName: "",
+  docType: 0,
+  docNumber: "",
   placa: "",
   guia: "",
   departamento: "",
