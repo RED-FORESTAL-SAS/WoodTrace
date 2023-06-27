@@ -57,8 +57,8 @@ export class AnalysisListPage implements OnInit {
     this.utilsSvc.routerLink("/tabs/analysis/analysis-result");
   }
 
-  nuevoAnalisis() {
-    this.reportService.patchActiveWood(this.reportService.emptyWood);
+  async nuevoAnalisis() {
+    await this.reportService.patchActiveWood(this.reportService.emptyWood);
     this.utilsSvc.routerLink("/tabs/analysis/take-photos");
   }
 

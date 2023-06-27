@@ -1,5 +1,7 @@
 .wrapper {
-  display: flex;
-  justify-content: center;
+  display: grid;
+  justify-items: center;
+  align-items: center;
   padding: 20px 25px 0px 25px;
+  height: 100%;
 }

@@ -9,6 +9,8 @@ import { especie } from "src/assets/data/especies";
 import { EspecieModalComponent } from "src/app/shared/components/especie-modal/especie-modal.component";
 import { ModalController } from "@ionic/angular";
 import { WtWood } from "src/app/models/wt-wood";
+import { LoadingModalComponent } from "src/app/shared/components/loading-modal/loading-modal.component";
+import { ErrorModalComponent } from "src/app/shared/components/error-modal/error-modal.component";
 
 @Component({
   selector: "app-take-photos",
@@ -115,12 +117,6 @@ export class TakePhotosPage implements OnInit, OnDestroy {
           switchMap((_) => this.reportService.activeWood.pipe(take(1))),
           tap({
             next: async (wood) => {
-              if (wood === null) {
-                console.log("wood is null");
-                this.reportService.patchActiveWood(
-                  this.reportService.emptyWood
-                );
-              }
               console.log(wood);
               const patchData = {
                 ...wood,
@@ -132,8 +128,27 @@ export class TakePhotosPage implements OnInit, OnDestroy {
               };
               console.log(patchData);
               this.reportService.patchActiveWood(patchData);
-              await this.reportService.analyzeWood();
-              this.utilsSvc.routerLink("/tabs/analysis/analysis-result");
+
+              const modalLoading = await this.modalController.create({
+                component: LoadingModalComponent,
+                cssClass: "modal-especie",
+              });
+              modalLoading.present();
+
+              try {
+                await this.reportService.analyzeWood();
+                modalLoading.dismiss();
+                this.utilsSvc.routerLink("/tabs/analysis/analysis-result");
+              } catch (e) {
+                const modalLoading = await this.modalController.create({
+                  component: ErrorModalComponent,
+                  cssClass: "modal-especie",
+                });
+                // modalLoading.dismiss();
+              }
+
+              // await this.reportService.analyzeWood();
+              // this.utilsSvc.routerLink("/tabs/analysis/analysis-result");
             },
           })
         )
@@ -156,22 +171,20 @@ export class TakePhotosPage implements OnInit, OnDestroy {
    */
   async onAnalizarHandler() {
     const modalLoading = await this.modalController.create({
-      component: EspecieModalComponent, // @todo @diana poner otro componente.
-      cssClass: "modal-especie", // @todo @diana poner otra clase.
+      component: LoadingModalComponent,
+      cssClass: "modal-especie",
     });
     modalLoading.present();
 
     try {
       const result = await this.reportService.analyzeWood();
       modalLoading.dismiss();
-
-      /**
-       * @todo @diana Hacer lo que haya que hacer con el resultado.
-       */
+      this.utilsSvc.routerLink("/tabs/analysis/analysis-result");
     } catch (e) {
-      /**
-       * @todo @diana Abrir el modal del error.
-       */
+      const modalLoading = await this.modalController.create({
+        component: ErrorModalComponent,
+        cssClass: "modal-especie",
+      });
       modalLoading.dismiss();
     }
   }

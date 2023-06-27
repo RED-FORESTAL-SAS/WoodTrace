@@ -8,19 +8,11 @@ import { UtilsService } from "src/app/services/utils.service";
   styleUrls: ["./error-modal.component.scss"],
 })
 export class ErrorModalComponent implements OnInit {
-  // error = new FormControl("", [Validators.required]);
-  searchString = new FormControl("", []);
-  error: boolean;
-
   constructor(private utilsSvc: UtilsService) {}
 
   ngOnInit() {}
 
-  // selectError(error: error) {
-  //   this.utilsSvc.closeModal({ error });
-  // }
-
-  // buscarError() {
-  //   console.log("buscar error");
-  // }
+  volver() {
+    this.utilsSvc.closeModal({});
+  }
 }

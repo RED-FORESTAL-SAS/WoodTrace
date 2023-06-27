@@ -60,8 +60,8 @@ export class AnalysisResultPage implements OnInit, OnDestroy {
     );
   }
 
-  onRehacer() {
-    this.reportService.patchActiveWood(this.reportService.emptyWood);
+  async onRehacer() {
+    await this.reportService.patchActiveWood(this.reportService.emptyWood);
     this.utilsSvc.routerLink("/tabs/analysis/take-photos");
   }
 

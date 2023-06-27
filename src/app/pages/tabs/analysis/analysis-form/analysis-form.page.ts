@@ -179,6 +179,9 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
                 });
                 this.utilsSvc.routerLink("/tabs/analysis/how-to-use");
               } else {
+                this.reportService.patchActiveWood(
+                  this.reportService.emptyWood
+                );
                 this.utilsSvc.routerLink("/tabs/analysis/take-photos");
               }
             },

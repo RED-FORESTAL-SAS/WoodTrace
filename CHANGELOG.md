@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [RED-22] - 2023-06-27 (Diana)
+
+- Ajustar estilos del loading-modal y error-modal e implementar los componentes en take-photos.
+- Limpieza de código.
+- Resolver bug wood === null cuando se redirige desde analysis-form.
+
 ## [RED-22] - 2023-06-26 (Mario)
 
 - user.model.ts/wt-woods.ts Limpiar imports que causan errores.

@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { Network } from "@capacitor/network";
 import { BehaviorSubject, Observable } from "rxjs";
 import { skip } from "rxjs/operators";
 

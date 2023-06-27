@@ -85,6 +85,7 @@ export class MembershipPage implements OnInit {
           }
 
           this.loading = true;
+          console.log(this.wtUser);
           license[0].wtUserId = this.wtUser.id;
           this.firebaseSvc.UpdateCollection("wt_licenses", license[0]).then(
             (res) => {
