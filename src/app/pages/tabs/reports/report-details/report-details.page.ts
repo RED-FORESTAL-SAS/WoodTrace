@@ -16,6 +16,10 @@ export class ReportDetailsPage implements OnInit {
   placa = new FormControl("", []);
   guia = new FormControl("", []);
   ubicacion = new FormControl({ lat: 0, lng: 0 }, []);
+  personaType = new FormControl("", []);
+  fullName = new FormControl("", []);
+  docType = new FormControl(0, []);
+  docNumber = new FormControl("", []);
   woods: WtWood[] = [];
 
   public activeReport$: Observable<WtReport | null>;
@@ -45,6 +49,10 @@ export class ReportDetailsPage implements OnInit {
               this.placa.setValue(report.placa);
               this.guia.setValue(report.guia);
               this.ubicacion.setValue(report.ubicacion);
+              this.personaType.setValue(report.personaType);
+              this.fullName.setValue(report.fullName);
+              this.docType.setValue(report.docType);
+              this.docNumber.setValue(report.docNumber);
               this.woods = report.woods;
             },
           })

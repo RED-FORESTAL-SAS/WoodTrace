@@ -42,7 +42,7 @@ export class CameraService {
   ): Promise<Photo | null> {
     const defaultConfig: PickOrTakePhotoConfig = {
       quality: 70,
-      allowEditing: true,
+      allowEditing: false,
       promptLabelHeader: "Tomaro seleccionar foto",
       promptLabelPhoto: "Selecciona una imagen",
       promptLabelPicture: "Toma una foto",

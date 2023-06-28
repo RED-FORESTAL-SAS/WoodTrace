@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## [RED-22] - 2023-06-28 (Diana)
+
+- Setear parametro allowEditing: false en camara.service.
+- Agragar campos cuando personatype= persona para el report-details.
+- Hacer patchLicense cuando se redime una licencia para que actualice el estado.
+- Quitar botón tutorial analisis.
+- Ajustar validación de botón analizar en take-photos para que no se habilite hasta que no haya foto y espcie.
+
 ## [RED-22] - 2023-06-27 (Diana)
 
 - Ajustar estilos del loading-modal y error-modal e implementar los componentes en take-photos.

@@ -87,6 +87,7 @@ export class MembershipPage implements OnInit {
           this.loading = true;
           console.log(this.wtUser);
           license[0].wtUserId = this.wtUser.id;
+          this.userService.patchLicense(license[0]);
           this.firebaseSvc.UpdateCollection("wt_licenses", license[0]).then(
             (res) => {
               this.utilsSvc.presentToast("¡Licencia redimida exitosamente!");
