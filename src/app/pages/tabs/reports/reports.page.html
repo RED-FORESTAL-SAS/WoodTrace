@@ -26,13 +26,13 @@
           <ion-col class="table-container">
             <table>
               <thead class="header">
-                <th>Placa</th>
+                <th>Identificación</th>
                 <th>Municipio</th>
                 <th>Fecha</th>
                 <th>Acciones</th>
               </thead>
               <tr *ngFor="let report of reports$ | async; index as i">
-                <td>{{ report.placa }}</td>
+                <td>{{ report.placa }}{{report.docNumber}}</td>
                 <td>{{ report.municipio }}</td>
                 <td>{{ report.fCreado | timestamp | date: 'dd-MM-yyyy' }}</td>
                 <td>

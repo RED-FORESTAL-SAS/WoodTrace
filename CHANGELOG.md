@@ -14,6 +14,9 @@
 - Hacer patchLicense cuando se redime una licencia para que actualice el estado.
 - Quitar botón tutorial analisis.
 - Ajustar validación de botón analizar en take-photos para que no se habilite hasta que no haya foto y espcie.
+- Ajustar los estilos del tab-selected.
+- Agregar imágenes y ajustar contenido del tutorial help/compoments/analysis-help.
+- Quitar backBotton del analysis-list.
 
 ## [RED-22] - 2023-06-27 (Diana)
 
