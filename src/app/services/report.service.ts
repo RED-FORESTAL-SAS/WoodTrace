@@ -118,6 +118,22 @@ export class ReportService {
   }
 
   /**
+   * Permite analizar un Wood, pero con un delay de 5 segundos para simular un error.
+   *
+   * @throws ReportFailure.
+   *
+   * @todo @mario Eliminar este método cuando se implemente la AI.
+   */
+  async analayzedWoodWithFailure(): Promise<void> {
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    throw new ReportFailure(
+      "Error al analizar la muestra.",
+      "mock-error",
+      new AiFailure("mock-error", "mock-error", "mock-error")
+    );
+  }
+
+  /**
    * Patch value for active report, and updates local storage.
    *
    * @param activeReport
@@ -189,7 +205,7 @@ export class ReportService {
    * Then saves it to state into reports field.
    * Then sets active Report to null.
    */
-  public saveActiveReport(): void {
+  public async saveActiveReport(): Promise<void> {
     if (!this.store.state.activeReport) {
       throw new ReportFailure("No hay reporte activo.");
     }

@@ -58,7 +58,7 @@ export class AnalysisListPage implements OnInit {
   }
 
   async nuevoAnalisis() {
-    await this.reportService.patchActiveWood(this.reportService.emptyWood);
+    this.reportService.patchActiveWood(this.reportService.emptyWood);
     this.utilsSvc.routerLink("/tabs/analysis/take-photos");
   }
 
@@ -70,11 +70,11 @@ export class AnalysisListPage implements OnInit {
       buttons: [
         {
           text: "Generar Reporte",
-          handler: () => {
-            this.reportService.saveActiveReport();
+          handler: async () => {
             /**
-             * @todo dentro del saveActiveReport() se implementará la generación de archivos.
+             * @todo @diana Mostrar un loading.
              */
+            await this.reportService.saveActiveReport();
             this.utilsSvc.presentToast("Reporte generado.");
             this.utilsSvc.routerLink("/tabs/reports");
           },
