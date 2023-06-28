@@ -2,6 +2,7 @@
 
 ## [RED-22] - 2023-06-28 (Diana)
 
+- Verificar permisos del GPS en runtime y retroalimentar al usuario apropiadamente.
 - UserService: Hacer que el campo user.photo sea un string base64 en el estado local y una url en Firestore.
 - Agregar archivo para cors y enviar correo con las instrucciones.
 - AuthGuard: Fix para que sea reactivo.
