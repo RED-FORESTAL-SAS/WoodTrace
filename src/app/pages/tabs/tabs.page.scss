@@ -7,13 +7,9 @@ ion-tab-bar {
 
   ion-tab-button {
     --background: transparent;
-    --color: #201a18;
-    --color-selected: var(--ion-color-light-tint);
 
     ion-icon {
-      font-size: 35px;
-      --color: #201a18;
-      --color-selected: var(--ion-color-light-tint);
+      font-size: 37px;
     }
   }
 }

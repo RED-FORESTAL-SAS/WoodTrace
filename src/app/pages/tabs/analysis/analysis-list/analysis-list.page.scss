@@ -1,3 +1,26 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.user-info {
+  position: absolute;
+  top: 0px;
+  height: 100px;
+  width: 84vw;
+  background: var(--ion-color-primary);
+  border-radius: 0px 0px 100px 100px;
+  text-align: center;
+  padding-top: 30px;
+  margin-bottom: 50px;
+}
+
+.btn-container {
+  position: relative;
+  margin-top: 100px;
+  width: 100%;
+}
+
 .option-icon {
   font-size: 15px;
   color: #000;
@@ -5,7 +28,7 @@
 }
 
 .table-container {
-  padding: 20px 5px 5px 5px;
+  padding: 10px 0px 5px 0px;
 }
 
 ion-icon {
