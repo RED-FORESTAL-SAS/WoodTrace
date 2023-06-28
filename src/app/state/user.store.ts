@@ -18,7 +18,6 @@ export class UserStore extends BaseStore<UserState> {
       company: null,
       license: null,
       user: null,
-      userPhotoPath: null,
     });
   }
 }

@@ -81,10 +81,6 @@ export class UserService implements OnDestroy {
         })
     );
 
-    /**
-     * @todo @mario ver si al subir esto de primero, se evita que se pueblen los otros valores nulos.
-     * Deberia ser irrelevante. Tambien podríamos hacer un skip null.
-     */
     // Retrieve authenticated user and watch for changes in authState.
     this.retrieveAuthenticatedUser();
   }
@@ -113,17 +109,6 @@ export class UserService implements OnDestroy {
    */
   get user(): Observable<WtUser | null> {
     return this.store.state$.pipe(map((state) => state.user));
-  }
-
-  /**
-   * Returns photo of current authenticated user from state.
-   *
-   * @todo @mario Cargar en el localstorage la foto de perfil en formato base64, para que pueda
-   * cargarse en el perfil cuando no haya internet. En el profile.page.html también hay que cambiar
-   * el src de la imagen para que cargue desde el localstorage.
-   */
-  get userPhotoDataUrl(): Observable<string | null> {
-    return this.store.state$.pipe(map((state) => state.userPhotoPath));
   }
 
   /**
@@ -194,11 +179,14 @@ export class UserService implements OnDestroy {
    * Patches user in state and in localstorage.
    *
    * @param user Partial of WtUser or null.
+   * @param patchLocalStorage boolean indicating if localsotrage should be patched. Default true.
+   * @param patchDb boolean indicating if Firestore should be patched. Default false.
    * @throws {FirestoreFailure} if User document update fails.
    * @returns
    */
   async patchUser(
     user: Partial<WtUser> | null,
+    patchLocalStorage: boolean = true,
     patchDb: boolean = false
   ): Promise<void> {
     const mergedUser = user ? { ...this.store.state.user, ...user } : null;
@@ -211,13 +199,25 @@ export class UserService implements OnDestroy {
         genero: mergedUser.genero,
         fNacimiento: mergedUser.fNacimiento,
         movil: mergedUser.movil,
-        photo: mergedUser.photo,
+        /**
+         * @dev Do not update "photo" in Firestore. LocalStorage photo is a base64 string.
+         */
         activo: mergedUser.activo,
         firstReport: !!mergedUser.firstReport,
       });
     }
 
-    this.saveUserToLocalStorage(mergedUser);
+    if (patchLocalStorage) {
+      // Photo is saved in localstorage as a base64 string.
+      const photo = mergedUser ? mergedUser.photo : null;
+      if (photo && photo.startsWith("https://firebasestorage")) {
+        const photoDataUrl = await this.firebase.downloadStringFromStorage(
+          mergedUser.photo
+        );
+        mergedUser.photo = photoDataUrl;
+      }
+      this.saveUserToLocalStorage(mergedUser);
+    }
     this.store.patch({ user: mergedUser });
     return;
   }
@@ -235,6 +235,7 @@ export class UserService implements OnDestroy {
       `${USERS_FB_COLLECTION}/${this.store.state.user?.id}/profile`,
       `${this.store.state.user?.id}_profile_photo`
     );
+
     await this.patchUser({ photo: downloadUrl }, true);
     return;
   }
@@ -257,8 +258,6 @@ export class UserService implements OnDestroy {
             throw failure;
           }),
           switchMap((firebaseUser: FirebaseUser | null) => {
-            console.log("AuthState changed in UserService", firebaseUser);
-
             // If authState didn't return a user, returns null.
             if (!firebaseUser) {
               return of(null);
@@ -288,33 +287,32 @@ export class UserService implements OnDestroy {
           }),
           withLatestFrom(this.online),
           map(([user, online]: [WtUser | undefined, boolean]) => {
-            // If user was not found, try to retrieve it from local storage.
-            if (!user) {
-              const localStorageUser = this.fetchUserFromLocalStorage();
-
-              // If there was no user in localstorage, check if there is internet connection
-              // then throw appropriated Failure.
-              if (!localStorageUser) {
-                if (!online) {
-                  throw new NoNetworkFailure("No hay conexión a internet");
-                } else {
-                  throw new NotFoundFailure("Usuario no encontrado.");
-                }
-              }
-
-              // Patch user in state and return it.
-              this.store.patch({ user: localStorageUser });
-              return localStorageUser;
+            // If user was found patch state and localstorage.
+            if (user) {
+              return [user, true];
             }
 
-            return user;
+            // Otherwise, if user was not found, try to retrieve it from local storage.
+            const localStorageUser = this.fetchUserFromLocalStorage();
+            // If localstorage user was found, patch state but not localstorage.
+            if (localStorageUser) {
+              return [localStorageUser, false];
+            }
+
+            // If there was no user in localstorage, check if there is internet connection
+            // then throw appropriated Failure.
+            if (!online) {
+              throw new NoNetworkFailure("No hay conexión a internet");
+            } else {
+              throw new NotFoundFailure("Usuario no encontrado.");
+            }
           }),
           tap({
-            next: async (user: WtUser | null) => {
-              // If found user is differente from state, patch it in state.
-              if (user && user.id !== this.store.state.user?.id) {
-                await this.patchUser(user);
-              }
+            next: async ([user, patchLocalStorage]: [
+              WtUser | undefined,
+              boolean
+            ]) => {
+              await this.patchUser(user, patchLocalStorage);
             },
             error: async (e) => {
               // If device is offline, do not change state and fail silently.

@@ -20,6 +20,7 @@ import {
 } from "src/app/utils/failure.utils";
 import { WtUser } from "src/app/models/wt-user";
 import { UserService } from "src/app/services/user.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-login",
@@ -40,10 +41,13 @@ export class LoginPage implements OnDestroy {
 
   constructor(
     private utilsSvc: UtilsService,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router
   ) {
-    /* This is a listener that listens for the enter key to be pressed. If the enter key is pressed, and
-    the validator() function returns true, the login() function is called. */
+    /**
+     * @dev Listens for the enter key to be pressed. If the enter key is pressed, login() function
+     * is called
+     */
     window.addEventListener("keyup", (e) => {
       if (e.key == "Enter" && this.validator()) {
         this.login();
@@ -130,18 +134,18 @@ export class LoginPage implements OnDestroy {
             }
 
             this.userService.patchUser(user);
-            this.loading = false;
-            this.loginIn.next(false);
 
             if (!user.emailVerified) {
               this.unwatchAuthState();
-              this.utilsSvc.routerLink("/email-verification");
-              this.userService.sendEmailVerification();
+              await this.userService.sendEmailVerification();
+              await this.router.navigate(["/email-verification"]);
             } else {
               this.unwatchAuthState();
-              this.utilsSvc.routerLink("/tabs/profile");
-              this.resetForm();
+              await this.router.navigate(["/tabs/profile"]);
             }
+
+            this.loading = false;
+            this.loginIn.next(false);
           },
           error: async (e) => {
             if (this.loginIn.value) {
