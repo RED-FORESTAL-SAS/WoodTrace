@@ -43,6 +43,7 @@ import {
   updateDoc,
 } from "@angular/fire/firestore";
 import {
+  getBlob,
   getDownloadURL,
   getStorage,
   ref,
@@ -518,6 +519,25 @@ export class FirebaseService {
       }
     );
     return getDownloadURL(fileRef);
+  }
+
+  /**
+   * Returns a promise with a base64 string from a file in Firebase Storage.
+   * This is intended to be used with images.
+   *
+   * @param url
+   * @returns
+   */
+  public async downloadStringFromStorage(url: string): Promise<string> {
+    const httpsReference = ref(getStorage(), url);
+    const blob = await getBlob(httpsReference);
+    const reader = new FileReader();
+    reader.readAsDataURL(blob);
+    return new Promise<string>((resolve) => {
+      reader.onloadend = () => {
+        resolve(reader.result as string);
+      };
+    });
   }
 
   /**

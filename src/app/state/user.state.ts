@@ -21,9 +21,4 @@ export interface UserState {
    * Current authenticated user.
    */
   user: WtUser | null;
-
-  /**
-   * Path to user's photo in localstorage.
-   */
-  userPhotoPath: string | null;
 }
