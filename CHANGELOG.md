@@ -2,6 +2,10 @@
 
 ## [RED-22] - 2023-06-28 (Diana)
 
+- UserService: Hacer que el campo user.photo sea un string base64 en el estado local y una url en Firestore.
+- Agregar archivo para cors y enviar correo con las instrucciones.
+- AuthGuard: Fix para que sea reactivo.
+- Login: Usar router para que los redireccionamientos sean asyncronos y los "loading" funcionen mejor.
 - Setear parametro allowEditing: false en camara.service.
 - Agragar campos cuando personatype= persona para el report-details.
 - Hacer patchLicense cuando se redime una licencia para que actualice el estado.
