@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [RED-22] - 2023-06-29 (Diana)
+
+- Ajustar tamaño de los items de especie-modal.
+
 ## [RED-22] - 2023-06-28 (Diana)
 
 - Verificar permisos del GPS en runtime y retroalimentar al usuario apropiadamente.
