@@ -2,23 +2,22 @@
   <div class="wrapper">
     <ion-grid>
       <ion-row>
-        <ion-col>
-          <h2>Ha ocurrido un error, por favor inténtalo de nuevo</h2>
+        <ion-col class="ion-text-center">
+          <h4>Ha ocurrido un error, por favor inténtalo de nuevo</h4>
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col>
-          <img
-            style="width: 80%; height: 80%"
-            src="../../../../../../../assets/img/frederror-img.svg"
-          />
+        <ion-col class="ion-text-center">
+          <img src="../../../../../../../assets/img/frederror-img.svg" />
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col>
-          <ion-button mode="ios" (click)="volver()">
-            <span>Volver</span>
-          </ion-button>
+        <ion-col align-items-center>
+          <div class="btn-gradient">
+            <ion-button mode="ios" (click)="volver()">
+              <span>Volver</span>
+            </ion-button>
+          </div>
         </ion-col>
       </ion-row>
     </ion-grid>

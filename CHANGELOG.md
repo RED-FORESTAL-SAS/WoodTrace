@@ -3,6 +3,7 @@
 ## [RED-22] - 2023-06-29 (Diana)
 
 - Ajustar tamaño de los items de especie-modal.
+- Ajustar estilos erro-modal.
 
 ## [RED-22] - 2023-06-28 (Diana)
 
