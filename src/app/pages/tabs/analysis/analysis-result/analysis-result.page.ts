@@ -4,7 +4,6 @@ import { Observable, Subscription } from "rxjs";
 import { take, tap } from "rxjs/operators";
 import { WtWood } from "src/app/models/wt-wood";
 import { ReportService } from "src/app/services/report.service";
-import { UtilsService } from "src/app/services/utils.service";
 
 @Component({
   selector: "app-analysis-result",
@@ -25,10 +24,7 @@ export class AnalysisResultPage implements OnInit, OnDestroy {
 
   analysis: any;
   tree: number;
-  constructor(
-    private utilsSvc: UtilsService,
-    private reportService: ReportService
-  ) {
+  constructor(private reportService: ReportService) {
     this.activeWood$ = this.reportService.activeWood;
   }
 
@@ -57,19 +53,5 @@ export class AnalysisResultPage implements OnInit, OnDestroy {
         )
         .subscribe()
     );
-  }
-
-  onRehacer() {
-    this.reportService.patchActiveWood(this.reportService.emptyWood);
-    this.utilsSvc.routerLink("/tabs/analysis/take-photos");
-  }
-
-  onGuardar() {
-    this.reportService.saveActiveWood();
-    this.utilsSvc.routerLink("/tabs/analysis/analysis-list");
-  }
-
-  onVolver() {
-    this.utilsSvc.routerLink("/tabs/analysis/analysis-list");
   }
 }

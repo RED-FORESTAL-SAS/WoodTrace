@@ -163,7 +163,9 @@ export class TakePhotosPage implements OnInit, OnDestroy {
                  */
 
                 modalLoading.dismiss();
-                this.utilsSvc.routerLink("/tabs/analysis/analysis-result");
+                this.utilsSvc.routerLink(
+                  "/tabs/analysis/analysis-result-content"
+                );
                 this.resetForm();
               } catch (e) {
                 const modalError = await this.modalController.create({

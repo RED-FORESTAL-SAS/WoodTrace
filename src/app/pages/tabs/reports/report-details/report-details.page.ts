@@ -45,7 +45,6 @@ export class ReportDetailsPage implements OnInit {
           take(1),
           tap({
             next: (report) => {
-              console.log(report);
               this.placa.setValue(report.placa);
               this.guia.setValue(report.guia);
               this.ubicacion.setValue(report.ubicacion);
@@ -63,6 +62,7 @@ export class ReportDetailsPage implements OnInit {
 
   onViewWood(wood: WtWood) {
     this.reportService.patchActiveWood(wood);
-    this.utilsSvc.routerLink("/tabs/analysis/analysis-result");
+    // this.utilsSvc.routerLink("/tabs/analysis/analysis-result");
+    this.utilsSvc.routerLink("tabs/reports/report-analysis-details");
   }
 }

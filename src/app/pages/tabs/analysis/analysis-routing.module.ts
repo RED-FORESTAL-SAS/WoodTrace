@@ -41,10 +41,26 @@ const routes: Routes = [
     // canActivate: [AnalysisGuard],
   },
   {
+    path: "analysis-result-content",
+    loadChildren: () =>
+      import("./analysis-result-content/analysis-result-content.module").then(
+        (m) => m.AnalysisResultContentPageModule
+      ),
+    // canActivate: [AnalysisGuard],
+  },
+  {
     path: "analysis-list",
     loadChildren: () =>
       import("./analysis-list/analysis-list.module").then(
         (m) => m.AnalysisListPageModule
+      ),
+    // canActivate: [AnalysisGuard],
+  },
+  {
+    path: "analysis-details",
+    loadChildren: () =>
+      import("./analysis-details/analysis-details.module").then(
+        (m) => m.AnalysisDetailsPageModule
       ),
     // canActivate: [AnalysisGuard],
   },

@@ -3,7 +3,11 @@
 ## [RED-22] - 2023-06-29 (Diana)
 
 - Ajustar tamaño de los items de especie-modal.
-- Ajustar estilos erro-modal.
+- Ajustar estilos error-modal.
+- Crear módulos analisis-details, analysis-result-content para contener el resultado y redireccionar botones.
+- Crear componetne contenedor report-analysis-details.
+- Limpiar código
+- Limpiar console.logs
 
 ## [RED-22] - 2023-06-28 (Diana)
 

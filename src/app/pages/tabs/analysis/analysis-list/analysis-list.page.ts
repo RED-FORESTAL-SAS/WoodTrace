@@ -20,12 +20,6 @@ export class AnalysisListPage implements OnInit {
     private reportService: ReportService
   ) {
     this.report$ = this.reportService.activeReport;
-
-    this.sbs.push(
-      this.report$.subscribe((report) => {
-        console.log(report);
-      })
-    );
   }
 
   ngOnInit() {}
@@ -54,7 +48,7 @@ export class AnalysisListPage implements OnInit {
   }
   onViewWood(wood: WtWood) {
     this.reportService.patchActiveWood(wood);
-    this.utilsSvc.routerLink("/tabs/analysis/analysis-result");
+    this.utilsSvc.routerLink("/tabs/analysis/analysis-details");
   }
 
   async nuevoAnalisis() {

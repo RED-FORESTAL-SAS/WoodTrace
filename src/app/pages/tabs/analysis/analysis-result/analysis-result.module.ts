@@ -17,6 +17,8 @@ import { SharedModule } from "src/app/shared/shared.module";
     AnalysisResultPageRoutingModule,
     SharedModule,
   ],
+
   declarations: [AnalysisResultPage],
+  exports: [AnalysisResultPage],
 })
 export class AnalysisResultPageModule {}

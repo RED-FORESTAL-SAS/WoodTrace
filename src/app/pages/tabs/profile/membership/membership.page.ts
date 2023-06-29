@@ -58,7 +58,6 @@ export class MembershipPage implements OnInit {
           this.loading = false;
 
           if (license.length === 0) {
-            console.log("NO hay licencia");
             this.utilsSvc.presentToast(
               "No hay una licencia identificada con este código. "
             );
@@ -85,7 +84,6 @@ export class MembershipPage implements OnInit {
           }
 
           this.loading = true;
-          console.log(this.wtUser);
           license[0].wtUserId = this.wtUser.id;
           this.userService.patchLicense(license[0]);
           this.firebaseSvc.UpdateCollection("wt_licenses", license[0]).then(
