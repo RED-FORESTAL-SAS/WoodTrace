@@ -20,6 +20,7 @@ export interface PickOrTakePhotoConfig {
   promptLabelHeader: string;
   promptLabelPhoto: string;
   promptLabelPicture: string;
+  source: CameraSource;
 }
 
 /**
@@ -46,6 +47,7 @@ export class CameraService {
       promptLabelHeader: "Tomaro seleccionar foto",
       promptLabelPhoto: "Selecciona una imagen",
       promptLabelPicture: "Toma una foto",
+      source: CameraSource.Prompt,
     };
 
     const config = { ...defaultConfig, ...pickOrTakePhotoConfig };
@@ -57,7 +59,7 @@ export class CameraService {
       promptLabelHeader: config.promptLabelHeader,
       promptLabelPhoto: config.promptLabelPhoto,
       promptLabelPicture: config.promptLabelPicture,
-      source: CameraSource.Prompt,
+      source: config.source,
       promptLabelCancel: "Cancelar",
     })
       .then((image) => ({
@@ -69,7 +71,6 @@ export class CameraService {
         return null;
       });
 
-    console.log(image);
     return image;
   }
 }

@@ -11,6 +11,7 @@ import { ModalController } from "@ionic/angular";
 import { WtWood } from "src/app/models/wt-wood";
 import { LoadingModalComponent } from "src/app/shared/components/loading-modal/loading-modal.component";
 import { ErrorModalComponent } from "src/app/shared/components/error-modal/error-modal.component";
+import { CameraService } from "src/app/services/camera.service";
 
 @Component({
   selector: "app-take-photos",
@@ -34,10 +35,19 @@ export class TakePhotosPage implements OnInit, OnDestroy {
   /** Observable with boolean indicating if there is an active report or not. */
   public hasActiveWood$: Observable<boolean>;
 
+  /**
+   * Contiene un conteo para obligar a que el análisis falle siempre la primera vez.
+   * Para poder ver las pantallas de error.
+   *
+   * @todo @diana Borrar esto cuando se termine de probar como se ven los errores en la interfaz.
+   */
+  private failOnCeroCounter = 0;
+
   constructor(
     private utilsSvc: UtilsService,
     private reportService: ReportService,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private cameraService: CameraService
   ) {
     this.activeWood$ = this.reportService.activeWood;
     this.hasActiveWood$ = this.reportService.activeWood.pipe(
@@ -77,14 +87,13 @@ export class TakePhotosPage implements OnInit, OnDestroy {
    * Funciona para cuando se escoge seleccionar una foto del dispositovo
    */
   async uploadPhoto() {
-    const image = await Camera.getPhoto({
-      quality: 70,
-      allowEditing: true,
-      resultType: CameraResultType.DataUrl,
+    const photo = await this.cameraService.pickOrTakePhoto({
       source: CameraSource.Photos,
     });
+    if (!photo) return;
+
     this.loadingPhoto = true;
-    this.photo.setValue(image.dataUrl);
+    this.photo.setValue(photo.dataUrl);
     this.loadingPhoto = false;
   }
 
@@ -92,15 +101,13 @@ export class TakePhotosPage implements OnInit, OnDestroy {
    * Funciona para cuando se toma una foto con la camara del dispositivo
    */
   async takePhoto() {
-    const image = await Camera.getPhoto({
-      quality: 70,
-      allowEditing: true,
-      resultType: CameraResultType.DataUrl,
+    const photo = await this.cameraService.pickOrTakePhoto({
       source: CameraSource.Camera,
     });
+    if (!photo) return;
 
     this.loadingPhoto = true;
-    this.photo.setValue(image.dataUrl);
+    this.photo.setValue(photo.dataUrl);
     this.loadingPhoto = false;
   }
 
@@ -116,39 +123,56 @@ export class TakePhotosPage implements OnInit, OnDestroy {
           skipWhile((v) => v === null),
           switchMap((_) => this.reportService.activeWood.pipe(take(1))),
           tap({
-            next: async (wood) => {
-              console.log(wood);
+            next: async (activeWood) => {
+              // Check if active wood is null.
+              const wood = activeWood
+                ? activeWood
+                : this.reportService.emptyWood;
+
               const patchData = {
                 ...wood,
                 especieDeclarada: this.especie.value,
-                path: this.photo.value,
                 /**
-                 * @todo @Mario falta llenar los campos localPath y url.
+                 * @dev url is a base64 string for localstorage/state and a download url for firebase.
                  */
+                url: this.photo.value,
               };
-              console.log(patchData);
               this.reportService.patchActiveWood(patchData);
 
               const modalLoading = await this.modalController.create({
                 component: LoadingModalComponent,
                 cssClass: "modal-especie",
+                backdropDismiss: false,
               });
               modalLoading.present();
 
               try {
-                await this.reportService.analyzeWood();
+                /**
+                 * @todo @diana Eliminar el "if" y el "else" y dejar solo la llamada al método analyzeWood, así:
+                 *
+                 * await this.reportService.analyzeWood();
+                 */
+                if (this.failOnCeroCounter !== 0) {
+                  await this.reportService.analyzeWood();
+                } else {
+                  this.failOnCeroCounter += 1;
+                  await this.reportService.analayzedWoodWithFailure();
+                }
+                /**
+                 * @todo @diana Eliminar hasta aquí.
+                 */
+
                 modalLoading.dismiss();
                 this.utilsSvc.routerLink("/tabs/analysis/analysis-result");
+                this.resetForm();
               } catch (e) {
-                const modalLoading = await this.modalController.create({
+                const modalError = await this.modalController.create({
                   component: ErrorModalComponent,
                   cssClass: "modal-especie",
                 });
-                // modalLoading.dismiss();
+                modalError.present();
+                modalLoading.dismiss();
               }
-
-              // await this.reportService.analyzeWood();
-              // this.utilsSvc.routerLink("/tabs/analysis/analysis-result");
             },
           })
         )
@@ -167,25 +191,10 @@ export class TakePhotosPage implements OnInit, OnDestroy {
   }
 
   /**
-   * @todo @diana Mover esta lógica donde deba ir.
+   * Reset form fields.
    */
-  async onAnalizarHandler() {
-    const modalLoading = await this.modalController.create({
-      component: LoadingModalComponent,
-      cssClass: "modal-especie",
-    });
-    modalLoading.present();
-
-    try {
-      const result = await this.reportService.analyzeWood();
-      modalLoading.dismiss();
-      this.utilsSvc.routerLink("/tabs/analysis/analysis-result");
-    } catch (e) {
-      const modalLoading = await this.modalController.create({
-        component: ErrorModalComponent,
-        cssClass: "modal-especie",
-      });
-      modalLoading.dismiss();
-    }
+  private resetForm(): void {
+    this.especie.reset();
+    this.photo.reset();
   }
 }

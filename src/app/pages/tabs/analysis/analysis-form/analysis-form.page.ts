@@ -22,7 +22,6 @@ import {
 } from "src/app/utils/failure.utils";
 import { personaTypes } from "src/assets/data/persona-types";
 import { docTypes } from "src/assets/data/document-types";
-import { PermissionState } from "@capacitor/core";
 
 @Component({
   selector: "app-analysis-form",
@@ -88,7 +87,6 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
           take(1),
           tap({
             next: (report) => {
-              console.log(report);
               /**
                * @todo @diana revisar el populate que si se esté poblando como debe y
                * cómo hacemos para no duplicar este código.

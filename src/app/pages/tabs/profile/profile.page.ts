@@ -8,18 +8,11 @@ import { UserService } from "src/app/services/user.service";
 import { UtilsService } from "src/app/services/utils.service";
 import { CameraService } from "src/app/services/camera.service";
 import { Router } from "@angular/router";
-import { UserStore } from "src/app/state/user.store";
 
 @Component({
   selector: "app-profile",
   templateUrl: "./profile.page.html",
   styleUrls: ["./profile.page.scss"],
-  /**
-   * @todo @mario Esto provee una instancia única del servicio, que forza a que se cree y se
-   * destruya el servicio y a que se inicialicen nuevamente los observables. Esto no debería de ser
-   * necesario. Lo que debe hacerse es un refactor en el metodo UserService.retrieveAuthenticatedUser()
-   * para que se recalcule cuando se hace nuevamente la autenticación.
-   */
 })
 export class ProfilePage implements OnDestroy {
   photo = new FormControl("");
@@ -37,7 +30,6 @@ export class ProfilePage implements OnDestroy {
   constructor(
     private userService: UserService,
     private cameraService: CameraService,
-    private router: Router,
     private utilsSvc: UtilsService
   ) {
     // Watch events and User.

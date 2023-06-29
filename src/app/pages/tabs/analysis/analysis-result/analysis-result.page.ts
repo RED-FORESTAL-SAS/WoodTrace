@@ -47,11 +47,10 @@ export class AnalysisResultPage implements OnInit, OnDestroy {
           take(1),
           tap({
             next: (wood) => {
-              console.log(wood);
               this.especieReportada.setValue(wood.especieDeclarada);
               this.especie.setValue(wood.especie);
               this.acierto.setValue(wood.acierto);
-              this.photo.setValue(wood.path);
+              this.photo.setValue(wood.url);
               this.fCreado.setValue(wood.fCreado);
             },
           })
@@ -60,8 +59,8 @@ export class AnalysisResultPage implements OnInit, OnDestroy {
     );
   }
 
-  async onRehacer() {
-    await this.reportService.patchActiveWood(this.reportService.emptyWood);
+  onRehacer() {
+    this.reportService.patchActiveWood(this.reportService.emptyWood);
     this.utilsSvc.routerLink("/tabs/analysis/take-photos");
   }
 
