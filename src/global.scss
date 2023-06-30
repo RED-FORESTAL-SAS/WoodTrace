@@ -221,8 +221,18 @@ span.swiper-pagination-bullet.bullet-active {
 }
 
 .tab-selected {
-  background: var(--ion-color-secondary);
-  border-radius: 50px;
+  margin: 1px 2px 1px 2px;
+  background-image: url("./assets/img/Ellipse 26.png");
+  background-repeat: no-repeat, repeat;
+  background-position: center;
+  border-radius: 100%;
+  ion-icon {
+    filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%)
+      hue-rotate(348deg) brightness(105%) contrast(105%);
+    // background-color: var(--ion-color-secondary);
+    border-radius: 100%;
+    padding: 12px;
+  }
 }
 
 .native-input.sc-ion-input-md {

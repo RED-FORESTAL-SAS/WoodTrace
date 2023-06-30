@@ -1,5 +1,52 @@
 # CHANGELOG
 
+## [RED-22] - 2023-06-29 (Diana)
+
+- Ajustar tamaño de los items de especie-modal.
+- Ajustar estilos error-modal.
+- Crear módulos analisis-details, analysis-result-content para contener el resultado y redireccionar botones.
+- Crear componetne contenedor report-analysis-details.
+- Limpiar código
+- Limpiar console.logs
+
+## [RED-22] - 2023-06-28 (Diana)
+
+- Ajustar pantallas de carga/error para el analisis.
+- Ajustar cómo se toman las fotos.
+- Verificar permisos del GPS en runtime y retroalimentar al usuario apropiadamente.
+- UserService: Hacer que el campo user.photo sea un string base64 en el estado local y una url en Firestore.
+- Agregar archivo para cors y enviar correo con las instrucciones.
+- AuthGuard: Fix para que sea reactivo.
+- Login: Usar router para que los redireccionamientos sean asyncronos y los "loading" funcionen mejor.
+- Setear parametro allowEditing: false en camara.service.
+- Agragar campos cuando personatype= persona para el report-details.
+- Hacer patchLicense cuando se redime una licencia para que actualice el estado.
+- Quitar botón tutorial analisis.
+- Ajustar validación de botón analizar en take-photos para que no se habilite hasta que no haya foto y espcie.
+- Ajustar los estilos del tab-selected.
+- Agregar imágenes y ajustar contenido del tutorial help/compoments/analysis-help.
+- Quitar backBotton del analysis-list.
+
+## [RED-22] - 2023-06-27 (Diana)
+
+- Ajustar estilos del loading-modal y error-modal e implementar los componentes en take-photos.
+- Limpieza de código.
+- Resolver bug wood === null cuando se redirige desde analysis-form.
+
+## [RED-22] - 2023-06-26 (Mario)
+
+- LoginPage: Hacer refactor para verificar si el usuario está activo. Quitar dependencias de FirebasService.
+- FirebaseService/UserService: Mover métodos para evitar dependencias directas de los componentes
+  al FirebaseService.
+- Agregar todos al SignUpPage
+- user.model.ts/wt-woods.ts Limpiar imports que causan errores.
+- Agregar todos para mario y diana.
+- Cerrar sesión limpiamente desde ProfilePage.
+- TabsPage: Limpiar código inutil.
+- UserService: Fix retrieveAuthenticatedUser para que incluya la respuesta online/offline.
+- FailureUtils: Ajustar imports.
+- AppModule: Fix para que no haya errores con los imports que usan la versión compat de angular fire.
+
 ## [MARIO/RED-10-AUTH] - 2023-06-26 (Diana)
 
 - Eliminar iconos que no se usan.
@@ -11,6 +58,16 @@
 - Agregar opción de Tutorial análisis en help-desk
 - Ajustar imágenes de los pasos del how-to-use
 - Agregar campos personaType, fullName, doctype y docNumber a analisys-form.
+
+## [RED-22] - 2023-06-23 (Mario)
+
+- Instalar plugin @capacitor/network para detectar conexión de red.
+- Agregar NetworkRepository.
+- Agregar CameraService, para centralizar el uso de la camar apropiadamente.
+- ProfilePage: Ajustar subida y guardado en firebase de foto del perfil.
+- FirebaseUser: Agregar métodos para subir imágenes y marcar los otros métodos como deprecated.
+- UserService: Fixes en los métodos patchUser y otros métodos secundarios.
+- UserState: Agregar campo userPhotoPath para guardar la foto local.
 
 ## [MARIO/RED-10-AUTH] - 2023-06-13 (Diana)
 

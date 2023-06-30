@@ -15,7 +15,11 @@ import { pais } from "src/assets/data/country";
 import { WtUser } from "src/app/models/wt-user";
 import { UserService } from "src/app/services/user.service";
 import { WtReport } from "src/app/models/wt-report";
-import { NoNetworkFailure } from "src/app/utils/failure.utils";
+import {
+  LocationDisabledFailure,
+  LocationNotGrantedFailure,
+  NoNetworkFailure,
+} from "src/app/utils/failure.utils";
 import { personaTypes } from "src/assets/data/persona-types";
 import { docTypes } from "src/assets/data/document-types";
 
@@ -83,9 +87,8 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
           take(1),
           tap({
             next: (report) => {
-              console.log(report);
               /**
-               * @todo revisar el populate que si se esté poblando como debe y
+               * @todo @diana revisar el populate que si se esté poblando como debe y
                * cómo hacemos para no duplicar este código.
                */
               if (report.departamento !== "") {
@@ -164,7 +167,6 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
               this.reportService.patchActiveReport(patchData);
               if (user.firstReport !== false) {
                 const patchData = {
-                  ...user,
                   firstReport: false,
                 };
                 await this.userService.patchUser(patchData, true).catch((e) => {
@@ -172,10 +174,17 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
                     this.utilsSvc.presentToast(
                       "No se pudo guardar la información, por favor verifica tu conexión a internet."
                     );
+                  } else {
+                    this.utilsSvc.presentToast(
+                      "Ocurrió un error al guardar. Por favor intente de nuevo."
+                    );
                   }
                 });
                 this.utilsSvc.routerLink("/tabs/analysis/how-to-use");
               } else {
+                this.reportService.patchActiveWood(
+                  this.reportService.emptyWood
+                );
                 this.utilsSvc.routerLink("/tabs/analysis/take-photos");
               }
             },
@@ -189,16 +198,45 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
    * The function calls the Geolocation plugin's getCurrentPosition() function, which returns a promise
    * that resolves to a Coordinates object
    */
-  async getCurrentPosition() {
+  async getCurrentPosition(): Promise<void> {
     this.utilsSvc.presentLoading();
+    try {
+      let permissionStatus = await Geolocation.checkPermissions().catch((e) => {
+        throw new LocationDisabledFailure(
+          "Por favor habilite el GPS del dispositivo."
+        );
+      });
+      if (permissionStatus.location !== "granted") {
+        permissionStatus = await Geolocation.requestPermissions();
+      }
+      if (permissionStatus.location !== "granted") {
+        throw new LocationNotGrantedFailure(
+          "Por favor autorice el acceso a la ubicación para la aplicación."
+        );
+      }
 
-    const coordinates = await Geolocation.getCurrentPosition();
-    this.utilsSvc.dismissLoading();
+      const coordinates = await Geolocation.getCurrentPosition();
 
-    if (coordinates && coordinates.coords) {
-      this.latitude = coordinates.coords.latitude;
-      this.longitude = coordinates.coords.longitude;
+      if (coordinates && coordinates.coords) {
+        this.latitude = coordinates.coords.latitude;
+        this.longitude = coordinates.coords.longitude;
+      }
+    } catch (e: unknown) {
+      if (
+        e instanceof LocationDisabledFailure ||
+        e instanceof LocationNotGrantedFailure
+      ) {
+        this.utilsSvc.presentToast(
+          `No se pudo obtener la ubicación. ${e.message}`
+        );
+      } else {
+        this.utilsSvc.presentToast(
+          "Ocurrion un error al obtener la ubicación. Por favor intente de nuevo."
+        );
+      }
     }
+
+    this.utilsSvc.dismissLoading();
   }
 
   validator() {

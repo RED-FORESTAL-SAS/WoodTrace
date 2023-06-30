@@ -1,48 +1,65 @@
-<app-header backButton="/tabs/analysis" title="Resultado"></app-header>
+<!-- <app-header title="Resultado"></app-header> -->
 
 <ion-content>
-  <ion-grid fixed>
-    <ion-row>
-      <ion-col align-items-center>
-        <div class="btn-gradient">
-          <ion-button mode="ios" (click)="nuevoAnalisis()">
-            <span>Añadir análisis</span>
-          </ion-button>
+  <div class="wrapper">
+    <div>
+      <div class="user-info row">
+        <ion-grid>
+          <ion-row size="auto">
+            <ion-col style="vertical-align: bottom">
+              <h4>Analizar</h4>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
+      <div class="btn-container">
+        <ion-grid style="padding: 0">
+          <ion-row>
+            <ion-col align-items-center>
+              <div class="btn-gradient">
+                <ion-button mode="ios" (click)="nuevoAnalisis()">
+                  <span>Añadir análisis</span>
+                </ion-button>
 
-          <ion-button mode="ios" (click)="generarReporte()">
-            <span>Generar reporte</span>
-          </ion-button>
-        </div>
-      </ion-col></ion-row
-    >
-    <ion-row>
-      <ion-col>
-        <div class="table-container">
-          <table *ngIf="report$ | async as report">
-            <thead class="header">
-              <th>Especie resultado</th>
-              <th>Acierto</th>
-              <th>Acciones</th>
-            </thead>
-            <tr *ngFor="let wood of report.woods; index as i">
-              <td>{{ wood.especie }}</td>
-              <td>{{ wood.acierto }}</td>
-              <td>
-                <ion-icon
-                  class="option-icon"
-                  src="assets/icon/wt_Property 1=Reports.svg"
-                  (click)="onViewWood(wood)"
-                ></ion-icon>
-                <ion-icon
-                  class="option-icon"
-                  src="assets/icon/wt_delete.svg"
-                  (click)="onDeleteWood(i)"
-                ></ion-icon>
-              </td>
-            </tr>
-          </table>
-        </div>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+                <ion-button mode="ios" (click)="generarReporte()">
+                  <span>Generar reporte</span>
+                </ion-button>
+              </div>
+            </ion-col></ion-row
+          >
+          <ion-row>
+            <ion-col>
+              <div class="table-container">
+                <table *ngIf="report$ | async as report">
+                  <thead class="header">
+                    <th>Especie resultado</th>
+                    <th>Acierto</th>
+                    <th>Acciones</th>
+                  </thead>
+                  <tr *ngFor="let wood of report.woods; index as i">
+                    <td>{{ wood.especie }}</td>
+                    <td>{{ wood.acierto }}</td>
+                    <td>
+                      <ion-icon
+                        class="option-icon"
+                        src="assets/icon/wt_Property 1=Reports.svg"
+                        title="Ver detalle"
+                        (click)="onViewWood(wood)"
+                      ></ion-icon>
+                      <ion-icon
+                        class="option-icon"
+                        src="assets/icon/wt_delete.svg"
+                        title="Borrar análisis"
+                        (click)="onDeleteWood(i)"
+                      ></ion-icon>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
+    </div>
+  </div>
 </ion-content>

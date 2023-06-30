@@ -1,18 +1,33 @@
-<app-header backButton="/tabs/analysis" title="Resultado"></app-header>
+<app-header backButton="/tabs/reports" title="Resultado"></app-header>
 
 <ion-content>
   <ion-grid fixed>
     <ion-row>
       <ion-col align-items-center>
         <ion-list>
-          <ion-item>
+          <ion-item *ngIf="this.personaType.value === 'vehiculo'">
             <ion-label position="stacked">Placa </ion-label>
             <ion-input>{{ this.placa.value}}</ion-input>
           </ion-item>
 
-          <ion-item>
+          <ion-item *ngIf="this.personaType.value === 'vehiculo'">
             <ion-label position="stacked">Guía</ion-label>
             <ion-input>{{ this.guia.value }}</ion-input>
+          </ion-item>
+
+          <ion-item *ngIf="this.personaType.value === 'persona'">
+            <ion-label position="stacked">Nombre</ion-label>
+            <ion-input>{{ this.fullName.value }}</ion-input>
+          </ion-item>
+
+          <ion-item *ngIf="this.personaType.value === 'persona'">
+            <ion-label position="stacked">Tipo Documento</ion-label>
+            <ion-input>{{ this.docType.value }}</ion-input>
+          </ion-item>
+
+          <ion-item *ngIf="this.personaType.value === 'persona'">
+            <ion-label position="stacked">Documento</ion-label>
+            <ion-input>{{ this.docNumber.value }}</ion-input>
           </ion-item>
 
           <ion-item>
@@ -41,6 +56,7 @@
                 <ion-icon
                   class="option-icon"
                   src="assets/icon/wt_Property 1=Reports.svg"
+                  title="Ver detalle"
                   (click)="onViewWood(wood)"
                 ></ion-icon>
               </td>

@@ -26,24 +26,26 @@
           <ion-col class="table-container">
             <table>
               <thead class="header">
-                <th>Placa</th>
+                <th>Identificación</th>
                 <th>Municipio</th>
                 <th>Fecha</th>
                 <th>Acciones</th>
               </thead>
               <tr *ngFor="let report of reports$ | async; index as i">
-                <td>{{ report.placa }}</td>
+                <td>{{ report.placa }}{{report.docNumber}}</td>
                 <td>{{ report.municipio }}</td>
                 <td>{{ report.fCreado | timestamp | date: 'dd-MM-yyyy' }}</td>
                 <td>
                   <ion-icon
                     class="option-icon"
                     src="assets/icon/wt_Property 1=Reports.svg"
+                    title="Ver detalle"
                     (click)="onViewReport(report)"
                   ></ion-icon>
                   <ion-icon
                     class="option-icon"
-                    src="assets/icon/wt_delete.svg"
+                    src="assets/icon/dawnload_report.svg"
+                    title="Descargar reporte"
                     (click)="onDawnloadReport(i)"
                   ></ion-icon>
                 </td>

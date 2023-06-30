@@ -16,6 +16,10 @@ export class ReportDetailsPage implements OnInit {
   placa = new FormControl("", []);
   guia = new FormControl("", []);
   ubicacion = new FormControl({ lat: 0, lng: 0 }, []);
+  personaType = new FormControl("", []);
+  fullName = new FormControl("", []);
+  docType = new FormControl(0, []);
+  docNumber = new FormControl("", []);
   woods: WtWood[] = [];
 
   public activeReport$: Observable<WtReport | null>;
@@ -41,10 +45,13 @@ export class ReportDetailsPage implements OnInit {
           take(1),
           tap({
             next: (report) => {
-              console.log(report);
               this.placa.setValue(report.placa);
               this.guia.setValue(report.guia);
               this.ubicacion.setValue(report.ubicacion);
+              this.personaType.setValue(report.personaType);
+              this.fullName.setValue(report.fullName);
+              this.docType.setValue(report.docType);
+              this.docNumber.setValue(report.docNumber);
               this.woods = report.woods;
             },
           })
@@ -55,6 +62,7 @@ export class ReportDetailsPage implements OnInit {
 
   onViewWood(wood: WtWood) {
     this.reportService.patchActiveWood(wood);
-    this.utilsSvc.routerLink("/tabs/analysis/analysis-result");
+    // this.utilsSvc.routerLink("/tabs/analysis/analysis-result");
+    this.utilsSvc.routerLink("tabs/reports/report-analysis-details");
   }
 }

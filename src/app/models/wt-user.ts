@@ -27,6 +27,10 @@ export interface WtUser {
     model: string;
     uuid: string;
   }>;
+  /**
+   * String with profile picture. In Firestore is stored the download URL. In localstorage is
+   * stored as/converted to a base64 data url.
+   */
   photo: string;
   activo: boolean;
   firstReport: boolean;

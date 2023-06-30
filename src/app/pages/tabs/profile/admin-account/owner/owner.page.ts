@@ -67,7 +67,6 @@ export class OwnerPage implements OnInit, OnDestroy {
           take(1),
           tap({
             next: (user) => {
-              console.log("fechaNacimiento", user.fNacimiento);
               this.email.setValue(user.email);
               this.email.disable();
               this.fullName.setValue(user.fullName);
@@ -125,7 +124,6 @@ export class OwnerPage implements OnInit, OnDestroy {
         )
         .subscribe()
     );
-    // console.log(this.fNacimiento.value);
   }
 
   /**

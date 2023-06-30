@@ -1,6 +1,5 @@
 import { FieldValue } from "../types/field-value.type";
 import { Timestamp } from "../types/timestamp.type";
-import { serverTimestamp } from "../utils/date.utils";
 
 /**
  * Describe una imagen de alta resolución tomada a una muestra de madera, que se almacena localmente
@@ -24,13 +23,16 @@ export interface WtWood {
    */
   localId: string;
   /**
-   * Path local donde está almacenada la imagen. Permite conservar el reporte local para cuando no
-   * haya conexión y borrar el archivo cuando se purgue el reporte de la colección "wt_reportes".
+   * Local path in local file system where image was saved. Image will only be saved if AI service
+   * requires it. It will be deleted after AI service has processed it.
    */
   localPath: string;
   /** Path de Firestorage donde está almacenada la imagen. */
   path: string;
-  /** URL de descarga de Firestorage, para la fotografía. */
+  /**
+   * String with Wood picture. In Firestore is stored the download URL. In localstorage is
+   * stored as/converted to a base64 data url.
+   */
   url: string;
   /**
    * Nombre de la especie declarada por el transportador. Permite verificar que la especie declarada
@@ -88,6 +90,6 @@ export const NEW_WT_WOOD: WtWood = {
   especie: "",
   acierto: null,
   wtUserId: "",
-  fCreado: serverTimestamp(),
-  fModificado: serverTimestamp(),
+  fCreado: null,
+  fModificado: null,
 };

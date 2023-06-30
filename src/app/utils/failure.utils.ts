@@ -1,5 +1,5 @@
-import { FirestoreError } from "firebase/firestore";
-import { FirebaseError } from "firebase/app";
+import { FirebaseError } from "@angular/fire/app";
+import { FirestoreError } from "@angular/fire/firestore";
 import { environment } from "src/environments/environment";
 
 export class FailureUtils {
@@ -804,3 +804,13 @@ export class StorageServerFileWrongSizeFailure extends Failure {
  * el FrontEnd.
  */
 export class ApiFailure extends Failure {}
+
+/**
+ * Describe un Failure ocurrido cuando el sistema tiene los servicios de localización deshabilitados.
+ */
+export class LocationDisabledFailure extends Failure {}
+
+/**
+ * Describe un Failure ocurrido cuando la App no tiene permisos para acceder a la localización del dispositivo.
+ */
+export class LocationNotGrantedFailure extends Failure {}

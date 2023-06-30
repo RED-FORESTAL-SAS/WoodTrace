@@ -10,10 +10,11 @@ import { AppComponent } from "./app.component";
 import { AppRoutingModule } from "./app-routing.module";
 import { HttpClientModule } from "@angular/common/http";
 
-// ========= Firebase ========
-import { AngularFireModule } from "@angular/fire/compat";
-import { AngularFireAuthModule } from "@angular/fire/compat/auth";
-import { AngularFirestoreModule } from "@angular/fire/compat/firestore";
+/**
+ * @todo @mario Este import no debería necesitarse, pero aun hay funcionalidades que usan
+ * imports 'compat' de firestore. Por eso es que requieren el provider. ¡BORRAR!
+ */
+import { FIREBASE_OPTIONS } from "@angular/fire/compat";
 
 import { initializeApp, provideFirebaseApp } from "@angular/fire/app";
 import { provideAuth, getAuth, connectAuthEmulator } from "@angular/fire/auth";
@@ -46,10 +47,6 @@ registerLocaleData(es);
     IonicModule.forRoot({ mode: "md" }),
     AppRoutingModule,
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
-    AngularFireModule.initializeApp(environment.firebaseConfig),
-    AngularFireAuthModule,
-    AngularFirestoreModule,
-
     provideAuth(() => {
       const auth = getAuth();
       if (environment.useEmulators) {
@@ -76,6 +73,11 @@ registerLocaleData(es);
     HttpClientModule,
   ],
   providers: [
+    /**
+     * @todo @mario Este provider no debería necesitarse, pero aun hay funcionalidades que usan
+     * imports 'compat' de firestore. Por eso es que requieren el provider. ¡BORRAR!
+     */
+    { provide: FIREBASE_OPTIONS, useValue: environment.firebaseConfig },
     { provide: LOCALE_ID, useValue: "es-MX" },
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     Device,

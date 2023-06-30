@@ -40,9 +40,6 @@ export class AdminAccountPage implements OnInit, OnDestroy {
     private firebaseSvc: FirebaseService
   ) {
     this.user$ = this.userService.user;
-    this.user$.subscribe((user) => {
-      console.log(user);
-    });
   }
 
   ngOnInit() {

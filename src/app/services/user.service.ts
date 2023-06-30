@@ -3,18 +3,19 @@ import { LocalStorageRepository } from "../infrastructure/local-storage.reposito
 import { CURRENT_USER_LS_KEY } from "../constants/current-user-ls-key.constant";
 import { UserStore } from "../state/user.store";
 import { WtCompany } from "../models/wt-company";
-import { Observable, Subscription } from "rxjs";
+import { Observable, Subscription, of } from "rxjs";
 import {
   catchError,
   distinctUntilChanged,
   map,
   switchMap,
   tap,
+  withLatestFrom,
 } from "rxjs/operators";
 import { WtLicense } from "../models/wt-license";
 import { LicenseFailure, LicenseService } from "./license.service";
 import { CompanyFailure, CompanyService } from "./company.service";
-import { FirebaseService } from "./firebase.service";
+import { FirebaseService, FirebaseUser } from "./firebase.service";
 import { Timestamp } from "../types/timestamp.type";
 import { limit, orderBy, where } from "../types/query-constraint.type";
 import { LICENCES_FB_COLLECTION } from "../constants/licenses-fb-collection";
@@ -27,30 +28,25 @@ import {
   UnauthenticatedFailure,
 } from "../utils/failure.utils";
 import { COMPANYS_FB_COLLECTION } from "../constants/compays-fb-collection";
-import {
-  Auth,
-  authState,
-  signOut,
-  User as FirebaseUser,
-} from "@angular/fire/auth";
 import { USERS_FB_COLLECTION } from "../constants/users-fb-collection";
 import { LocalStorageWtUser, WtUser } from "../models/wt-user";
 import { environment } from "src/environments/environment";
+import { Photo } from "./camera.service";
+import { NetworkRepository } from "../infrastructure/network.repository";
+import { UserCredential } from "@angular/fire/auth";
 
 export class UserFailure extends Failure {}
 
-@Injectable({
-  providedIn: "root",
-})
+@Injectable({ providedIn: "root" })
 export class UserService implements OnDestroy {
   private sbs: Subscription[] = [];
 
   constructor(
-    @Optional() private auth: Auth,
     private companyService: CompanyService,
     private firebase: FirebaseService,
     private localStorage: LocalStorageRepository,
     private licenseService: LicenseService,
+    private network: NetworkRepository,
     private store: UserStore
   ) {
     this.sbs.push(
@@ -85,10 +81,6 @@ export class UserService implements OnDestroy {
         })
     );
 
-    /**
-     * @todo @mario ver si al subir esto de primero, se evita que se pueblen los otros valores nulos.
-     * Deberia ser irrelevante. Tambien podríamos hacer un skip null.
-     */
     // Retrieve authenticated user and watch for changes in authState.
     this.retrieveAuthenticatedUser();
   }
@@ -129,6 +121,41 @@ export class UserService implements OnDestroy {
   }
 
   /**
+   * Returns if device is online or not.
+   */
+  get online(): Observable<boolean> {
+    return this.network.online$;
+  }
+
+  /**
+   * Getters that returns a WtUser from a AuthState/Firebase or null if not autenticated.
+   *
+   * @returns Observable<User | null>
+   * @throws FirestoreFailure
+   */
+  get authState(): Observable<WtUser | null> {
+    return this.firebase.authState.pipe(
+      switchMap((firebaseUser: FirebaseUser | null) => {
+        return firebaseUser !== null
+          ? this.firebase
+              .doc$<WtUser>(`${USERS_FB_COLLECTION}/${firebaseUser.uid}`)
+              .pipe(
+                map((user: WtUser | undefined) => {
+                  // If user doesn't exist in user collection, fail.
+                  if (user === undefined) {
+                    throw new NotFoundFailure(
+                      "El usuario no existe en la base de datos."
+                    );
+                  }
+                  return { ...user, emailVerified: firebaseUser.emailVerified };
+                })
+              )
+          : of(null);
+      })
+    );
+  }
+
+  /**
    * Patches company in state and in localstorage.
    *
    * @param company
@@ -151,63 +178,95 @@ export class UserService implements OnDestroy {
   /**
    * Patches user in state and in localstorage.
    *
-   * @param user
+   * @param user Partial of WtUser or null.
+   * @param patchLocalStorage boolean indicating if localsotrage should be patched. Default true.
+   * @param patchDb boolean indicating if Firestore should be patched. Default false.
+   * @throws {FirestoreFailure} if User document update fails.
+   * @returns
    */
   async patchUser(
-    user: WtUser | null,
+    user: Partial<WtUser> | null,
+    patchLocalStorage: boolean = true,
     patchDb: boolean = false
   ): Promise<void> {
-    this.saveUserToLocalStorage(user);
-    this.store.patch({ user: user });
+    const mergedUser = user ? { ...this.store.state.user, ...user } : null;
+
     if (patchDb && user) {
-      return this.firebase.update(`${USERS_FB_COLLECTION}/${user.id}`, {
-        fullName: user.fullName,
-        docType: user.docType,
-        docNumber: user.docNumber,
-        genero: user.genero,
-        fNacimiento: user.fNacimiento,
-        movil: user.movil,
-        photo: user.photo,
-        activo: user.activo,
-        firstReport: user.firstReport,
+      await this.firebase.update(`${USERS_FB_COLLECTION}/${mergedUser.id}`, {
+        fullName: mergedUser.fullName,
+        docType: mergedUser.docType,
+        docNumber: mergedUser.docNumber,
+        genero: mergedUser.genero,
+        fNacimiento: mergedUser.fNacimiento,
+        movil: mergedUser.movil,
+        /**
+         * @dev Do not update "photo" in Firestore. LocalStorage photo is a base64 string.
+         */
+        activo: mergedUser.activo,
+        firstReport: !!mergedUser.firstReport,
       });
     }
+
+    if (patchLocalStorage) {
+      // Photo is saved in localstorage as a base64 string.
+      const photo = mergedUser ? mergedUser.photo : null;
+      if (photo && photo.startsWith("https://firebasestorage")) {
+        const photoDataUrl = await this.firebase.downloadStringFromStorage(
+          mergedUser.photo
+        );
+        mergedUser.photo = photoDataUrl;
+      }
+      this.saveUserToLocalStorage(mergedUser);
+    }
+    this.store.patch({ user: mergedUser });
+    return;
   }
 
   /**
-   * Retrieves the authenticated user from local storage, their license and company from localstorage and watches
-   * authState changes to load user, license and company, when authstate changes.
+   * Uploads photo to storage and updates user photo in state and database.
+   *
+   * @param photo {Photo} object with dataUrl to upload.
+   * @throws {StorageFailure} if photo upload fails.
+   * @throws {FirestoreFailure} if User document update fails.
+   */
+  async updateUserPhoto(photo: Photo): Promise<void> {
+    const downloadUrl = await this.firebase.uploadStringToStorage(
+      photo,
+      `${USERS_FB_COLLECTION}/${this.store.state.user?.id}/profile`,
+      `${this.store.state.user?.id}_profile_photo`
+    );
+
+    await this.patchUser({ photo: downloadUrl }, true);
+    return;
+  }
+
+  /**
+   * watches authState changes to load user, license and company. If authState is null, tries to
+   * retrieve authenticated user from local storage.
    *
    * @returns Promise<void> Nothing is returned. User, License and Company must be obtained using
    * UserService getters. keep it inmutable!
    */
-  public async retrieveAuthenticatedUser(): Promise<void> {
-    // Try to retrieve user from local storage.
-    const user = this.fetchUserFromLocalStorage();
-
-    // If found user is differente from state, patch it in state.
-    if (user && user.id !== this.store.state.user?.id) {
-      await this.patchUser(user);
-    }
-
+  private async retrieveAuthenticatedUser(): Promise<void> {
     // Watch auth state for changes to update user.
     this.sbs.push(
-      authState(this.auth) // The observer is only triggered on sign-in or sign-out!
+      this.firebase.authState // The observer is only triggered on sign-in or sign-out!
         .pipe(
-          tap({
-            next: (authSt) => {
-              console.log("AuthState changed", authSt);
-            },
-          }),
           catchError((e) => {
             // Transform Firebase Auth errors into app Failures.
             const failure = FailureUtils.errorToFailure(e);
             throw failure;
           }),
           switchMap((firebaseUser: FirebaseUser | null) => {
-            // If authState didn't return a user, fail.
+            // If authState didn't return a user, returns null.
             if (!firebaseUser) {
-              throw new UnauthenticatedFailure("Usuario no autenticado.");
+              return of(null);
+
+              /**
+               * @dev Do not throw Failures here because it will cause the app to fail when user sings out.
+               *
+               * throw new UnauthenticatedFailure("Usuario no autenticado.");
+               */
             }
 
             // Retrieve user from database, to get the latest data.
@@ -220,30 +279,42 @@ export class UserService implements OnDestroy {
                   throw failure;
                 }),
                 distinctUntilChanged((prev, curr) => prev.id === curr.id), // Avoid duplicated emissions.
-                map((user: WtUser | undefined) => {
-                  // If user was not found, fail.
-                  if (!user) {
-                    throw new NotFoundFailure("Usuario no encontrado.");
-                  }
-
-                  // Otherwise, return user with emailVerified flag.
-                  return {
-                    ...user,
-                    emailVerified: firebaseUser.emailVerified,
-                  };
-                })
+                map((user) => ({
+                  ...user,
+                  emailVerified: firebaseUser.emailVerified,
+                }))
               );
           }),
+          withLatestFrom(this.online),
+          map(([user, online]: [WtUser | undefined, boolean]) => {
+            // If user was found patch state and localstorage.
+            if (user) {
+              return [user, true];
+            }
+
+            // Otherwise, if user was not found, try to retrieve it from local storage.
+            const localStorageUser = this.fetchUserFromLocalStorage();
+            // If localstorage user was found, patch state but not localstorage.
+            if (localStorageUser) {
+              return [localStorageUser, false];
+            }
+
+            // If there was no user in localstorage, check if there is internet connection
+            // then throw appropriated Failure.
+            if (!online) {
+              throw new NoNetworkFailure("No hay conexión a internet");
+            } else {
+              throw new NotFoundFailure("Usuario no encontrado.");
+            }
+          }),
           tap({
-            next: async (user: WtUser | null) => {
-              // If found user is differente from state, patch it in state.
-              if (user && user.id !== this.store.state.user?.id) {
-                await this.patchUser(user);
-              }
+            next: async ([user, patchLocalStorage]: [
+              WtUser | undefined,
+              boolean
+            ]) => {
+              await this.patchUser(user, patchLocalStorage);
             },
             error: async (e) => {
-              console.log("error", e);
-
               // If device is offline, do not change state and fail silently.
               if (
                 e instanceof AuthNetworkRequestFailedFailure ||
@@ -271,7 +342,8 @@ export class UserService implements OnDestroy {
                 }
               }
             },
-          })
+          }),
+          catchError((e) => of())
         )
         .subscribe()
     );
@@ -336,13 +408,36 @@ export class UserService implements OnDestroy {
   }
 
   /**
+   * Signs user in with email and password.
+   *
+   * @param email
+   * @param password
+   * @returns
+   */
+  public async emailPasswordLogin(
+    email: string,
+    password: string
+  ): Promise<UserCredential | void> {
+    return this.firebase.emailPasswordLogin(email, password);
+  }
+
+  /**
    * Signs out current user and updates state.
    */
   public async signOut(): Promise<void> {
-    await signOut(this.auth).catch((e) => {});
+    await this.firebase.signOut();
     await this.patchUser(null);
     this.patchLicense(null);
     this.patchCompany(null);
+  }
+
+  /**
+   * Sends email verification to authenticated user.
+   *
+   * @returns
+   */
+  async sendEmailVerification(): Promise<void> {
+    return this.firebase.sendEmailVerification();
   }
 
   /**
@@ -409,8 +504,8 @@ export class UserService implements OnDestroy {
    *
    * @param report
    */
-  private saveUserToLocalStorage(report: WtUser | null): void {
-    const userToBeSaved = report ? this.userToLocalStorage(report) : null;
+  private saveUserToLocalStorage(user: WtUser | null): void {
+    const userToBeSaved = user ? this.userToLocalStorage(user) : null;
     this.localStorage.save<LocalStorageWtUser>(
       CURRENT_USER_LS_KEY,
       userToBeSaved
@@ -444,7 +539,12 @@ export class UserService implements OnDestroy {
       docNumber: user.docNumber,
       emailVerified: user.emailVerified,
       genero: user.genero,
-      fNacimiento: user.fNacimiento,
+      fNacimiento:
+        user.fNacimiento &&
+        user.fNacimiento.nanoseconds &&
+        user.fNacimiento.seconds
+          ? user.fNacimiento
+          : null,
       movil: user.movil,
       devices: user.devices,
       photo: user.photo,
@@ -471,10 +571,15 @@ export class UserService implements OnDestroy {
           docNumber: localStorageUser.docNumber,
           emailVerified: localStorageUser.emailVerified,
           genero: localStorageUser.genero,
-          fNacimiento: new Timestamp(
-            localStorageUser.fNacimiento.seconds,
+          fNacimiento:
+            localStorageUser.fNacimiento &&
+            localStorageUser.fNacimiento.seconds &&
             localStorageUser.fNacimiento.nanoseconds
-          ),
+              ? new Timestamp(
+                  localStorageUser.fNacimiento.seconds,
+                  localStorageUser.fNacimiento.nanoseconds
+                )
+              : null,
           movil: localStorageUser.movil,
           devices: localStorageUser.devices,
           photo: localStorageUser.photo,

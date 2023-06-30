@@ -1,7 +1,6 @@
 import { Timestamp } from "../types/timestamp.type";
 import { FieldValue } from "../types/field-value.type";
 import { LocalStorageWtWood, WtWood } from "./wt-wood";
-import { User } from "./user.model";
 
 /**
  * Un Reporte corresponde a un vehículo que transporta madera y que ha sido detenido por una autoridad

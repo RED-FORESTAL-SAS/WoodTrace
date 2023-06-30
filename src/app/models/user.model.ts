@@ -1,4 +1,3 @@
-import { Timestamp } from "firebase/firestore";
 import { Device } from "./device.model";
 import { License } from "./license.model";
 import { Location } from "./location.model";

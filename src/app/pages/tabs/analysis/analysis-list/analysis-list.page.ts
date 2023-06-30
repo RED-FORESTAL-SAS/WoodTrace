@@ -20,12 +20,6 @@ export class AnalysisListPage implements OnInit {
     private reportService: ReportService
   ) {
     this.report$ = this.reportService.activeReport;
-
-    this.sbs.push(
-      this.report$.subscribe((report) => {
-        console.log(report);
-      })
-    );
   }
 
   ngOnInit() {}
@@ -54,10 +48,10 @@ export class AnalysisListPage implements OnInit {
   }
   onViewWood(wood: WtWood) {
     this.reportService.patchActiveWood(wood);
-    this.utilsSvc.routerLink("/tabs/analysis/analysis-result");
+    this.utilsSvc.routerLink("/tabs/analysis/analysis-details");
   }
 
-  nuevoAnalisis() {
+  async nuevoAnalisis() {
     this.reportService.patchActiveWood(this.reportService.emptyWood);
     this.utilsSvc.routerLink("/tabs/analysis/take-photos");
   }
@@ -70,11 +64,11 @@ export class AnalysisListPage implements OnInit {
       buttons: [
         {
           text: "Generar Reporte",
-          handler: () => {
-            this.reportService.saveActiveReport();
+          handler: async () => {
             /**
-             * @todo dentro del saveActiveReport() se implementará la generación de archivos.
+             * @todo @diana Mostrar un loading.
              */
+            await this.reportService.saveActiveReport();
             this.utilsSvc.presentToast("Reporte generado.");
             this.utilsSvc.routerLink("/tabs/reports");
           },

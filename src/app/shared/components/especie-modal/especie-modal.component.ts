@@ -9,7 +9,6 @@ import { especie } from "src/assets/data/especies";
   styleUrls: ["./especie-modal.component.scss"],
 })
 export class EspecieModalComponent implements OnInit {
-  // especie = new FormControl("", [Validators.required]);
   searchString = new FormControl("", []);
   loading: boolean;
   especies = especie;
