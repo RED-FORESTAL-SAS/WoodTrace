@@ -1,4 +1,4 @@
-export interface Device{
-    uuid: string,
-    model: string
+export interface Device {
+  uuid: string;
+  model: string;
 }

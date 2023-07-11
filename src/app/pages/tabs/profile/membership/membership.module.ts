@@ -1,13 +1,13 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
-import { IonicModule } from '@ionic/angular';
+import { IonicModule } from "@ionic/angular";
 
-import { MembershipPageRoutingModule } from './membership-routing.module';
+import { MembershipPageRoutingModule } from "./membership-routing.module";
 
-import { MembershipPage } from './membership.page';
-import { SharedModule } from 'src/app/shared/shared.module';
+import { MembershipPage } from "./membership.page";
+import { SharedModule } from "src/app/shared/shared.module";
 
 @NgModule({
   imports: [
@@ -16,8 +16,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
     IonicModule,
     MembershipPageRoutingModule,
     SharedModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
-  declarations: [MembershipPage]
+  declarations: [MembershipPage],
 })
 export class MembershipPageModule {}

@@ -1,20 +1,16 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Urls } from '../models/urls.model';
-
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { Urls } from "../models/urls.model";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class ImagesService {
-
-  constructor(private http: HttpClient) { }
-
+  constructor(private http: HttpClient) {}
 
   analyzeImages(data: Urls) {
-    return this.http.post('http://35.203.31.144/v1/predict', data);
+    return this.http.post("http://35.203.31.144/v1/predict", data);
   }
-
 
   /**
    * It takes an image, cuts it up into 144 pieces, and returns an array of 144 base64 encoded images
@@ -28,7 +24,6 @@ export class ImagesService {
     image.src = imageBase64;
 
     function cutImageUp() {
-
       let numColsToCut = 12;
       let numRowsToCut = 12;
       let widthOfOnePiece = image.width / 12;
@@ -36,11 +31,21 @@ export class ImagesService {
 
       for (var x = 0; x < numColsToCut; ++x) {
         for (var y = 0; y < numRowsToCut; ++y) {
-          var canvas = document.createElement('canvas');
+          var canvas = document.createElement("canvas");
           canvas.width = widthOfOnePiece;
           canvas.height = heightOfOnePiece;
-          var context = canvas.getContext('2d');
-          context.drawImage(image, x * widthOfOnePiece, y * heightOfOnePiece, widthOfOnePiece, heightOfOnePiece, 0, 0, canvas.width, canvas.height);
+          var context = canvas.getContext("2d");
+          context.drawImage(
+            image,
+            x * widthOfOnePiece,
+            y * heightOfOnePiece,
+            widthOfOnePiece,
+            heightOfOnePiece,
+            0,
+            0,
+            canvas.width,
+            canvas.height
+          );
           imagePieces.push(canvas.toDataURL());
         }
       }
@@ -48,5 +53,4 @@ export class ImagesService {
 
     return imagePieces;
   }
-
 }

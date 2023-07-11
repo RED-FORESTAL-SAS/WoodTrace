@@ -1,13 +1,13 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { NgModule } from "@angular/core";
+import { Routes, RouterModule } from "@angular/router";
 
-import { PrivacyPoliciesPage } from './privacy-policies.page';
+import { PrivacyPoliciesPage } from "./privacy-policies.page";
 
 const routes: Routes = [
   {
-    path: '',
-    component: PrivacyPoliciesPage
-  }
+    path: "",
+    component: PrivacyPoliciesPage,
+  },
 ];
 
 @NgModule({
