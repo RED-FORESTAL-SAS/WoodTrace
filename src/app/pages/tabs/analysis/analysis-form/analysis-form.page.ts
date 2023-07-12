@@ -87,10 +87,6 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
           take(1),
           tap({
             next: (report) => {
-              /**
-               * @todo @diana revisar el populate que si se esté poblando como debe y
-               * cómo hacemos para no duplicar este código.
-               */
               if (report.departamento !== "") {
                 const dpto = pais.division.find(
                   (depto) => depto.nombre === report.departamento

@@ -62,7 +62,6 @@ export class ReportDetailsPage implements OnInit {
 
   onViewWood(wood: WtWood) {
     this.reportService.patchActiveWood(wood);
-    // this.utilsSvc.routerLink("/tabs/analysis/analysis-result");
     this.utilsSvc.routerLink("tabs/reports/report-analysis-details");
   }
 }

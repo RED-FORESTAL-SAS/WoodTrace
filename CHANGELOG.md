@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [RED-24] - 2023-07-12 (Diana)
+
+- Limpiar código.
+- Resolver conflictos del main.
+
 ## [RED-22] - 2023-06-29 (Diana)
 
 - Ajustar tamaño de los items de especie-modal.

@@ -1,16 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { FormControl } from "@angular/forms";
 
-interface Option {
-  nombre: string;
-  division: string;
-}
-
-interface Division {
-  nombre: string;
-  division: Division[];
-}
-
 @Component({
   selector: "app-input-costum",
   templateUrl: "./input-costum.component.html",

@@ -152,10 +152,6 @@ export class SignUpPage implements OnInit, OnDestroy {
         docNumber: this.docNumber.value,
         emailVerified: false,
         genero: this.genero.value,
-        /**
-         * @todo @mario hay que ajustar la manera en la que se guarda la fecha de nacimiento en el
-         * registro y por qué la herramienta no funciona bien en el apk.
-         */
         fNacimiento: this.fNacimiento.value,
         movil: this.movil.value,
         photo: this.photo.value,
