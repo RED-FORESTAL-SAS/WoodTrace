@@ -1,13 +1,13 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { NgModule } from "@angular/core";
+import { Routes, RouterModule } from "@angular/router";
 
-import { HowToUsePage } from './how-to-use.page';
+import { HowToUsePage } from "./how-to-use.page";
 
 const routes: Routes = [
   {
-    path: '',
-    component: HowToUsePage
-  }
+    path: "",
+    component: HowToUsePage,
+  },
 ];
 
 @NgModule({

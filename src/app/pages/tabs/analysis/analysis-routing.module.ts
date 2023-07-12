@@ -22,7 +22,6 @@ const routes: Routes = [
       import("./how-to-use/how-to-use.module").then(
         (m) => m.HowToUsePageModule
       ),
-    // canActivate: [AnalysisGuard],
   },
   {
     path: "take-photos",
@@ -30,7 +29,6 @@ const routes: Routes = [
       import("./take-photos/take-photos.module").then(
         (m) => m.TakePhotosPageModule
       ),
-    // canActivate: [AnalysisGuard],
   },
   {
     path: "analysis-result",
@@ -38,7 +36,6 @@ const routes: Routes = [
       import("./analysis-result/analysis-result.module").then(
         (m) => m.AnalysisResultPageModule
       ),
-    // canActivate: [AnalysisGuard],
   },
   {
     path: "analysis-result-content",
@@ -46,7 +43,6 @@ const routes: Routes = [
       import("./analysis-result-content/analysis-result-content.module").then(
         (m) => m.AnalysisResultContentPageModule
       ),
-    // canActivate: [AnalysisGuard],
   },
   {
     path: "analysis-list",
@@ -54,7 +50,6 @@ const routes: Routes = [
       import("./analysis-list/analysis-list.module").then(
         (m) => m.AnalysisListPageModule
       ),
-    // canActivate: [AnalysisGuard],
   },
   {
     path: "analysis-details",
@@ -62,7 +57,6 @@ const routes: Routes = [
       import("./analysis-details/analysis-details.module").then(
         (m) => m.AnalysisDetailsPageModule
       ),
-    // canActivate: [AnalysisGuard],
   },
 ];
 

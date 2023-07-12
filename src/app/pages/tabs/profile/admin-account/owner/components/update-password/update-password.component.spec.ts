@@ -1,16 +1,16 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { IonicModule } from '@ionic/angular';
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
+import { IonicModule } from "@ionic/angular";
 
-import { UpdatePasswordComponent } from './update-password.component';
+import { UpdatePasswordComponent } from "./update-password.component";
 
-describe('UpdatePasswordComponent', () => {
+describe("UpdatePasswordComponent", () => {
   let component: UpdatePasswordComponent;
   let fixture: ComponentFixture<UpdatePasswordComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ UpdatePasswordComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [UpdatePasswordComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(UpdatePasswordComponent);
@@ -18,7 +18,7 @@ describe('UpdatePasswordComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

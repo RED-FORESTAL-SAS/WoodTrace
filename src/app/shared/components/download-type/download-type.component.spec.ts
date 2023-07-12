@@ -1,16 +1,16 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { IonicModule } from '@ionic/angular';
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
+import { IonicModule } from "@ionic/angular";
 
-import { DownloadTypeComponent } from './download-type.component';
+import { DownloadTypeComponent } from "./download-type.component";
 
-describe('DownloadTypeComponent', () => {
+describe("DownloadTypeComponent", () => {
   let component: DownloadTypeComponent;
   let fixture: ComponentFixture<DownloadTypeComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ DownloadTypeComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [DownloadTypeComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DownloadTypeComponent);
@@ -18,7 +18,7 @@ describe('DownloadTypeComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

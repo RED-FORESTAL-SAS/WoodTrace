@@ -1,16 +1,16 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { IonicModule } from '@ionic/angular';
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
+import { IonicModule } from "@ionic/angular";
 
-import { PasswordRequiredComponent } from './password-required.component';
+import { PasswordRequiredComponent } from "./password-required.component";
 
-describe('PasswordRequiredComponent', () => {
+describe("PasswordRequiredComponent", () => {
   let component: PasswordRequiredComponent;
   let fixture: ComponentFixture<PasswordRequiredComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ PasswordRequiredComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [PasswordRequiredComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PasswordRequiredComponent);
@@ -18,7 +18,7 @@ describe('PasswordRequiredComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

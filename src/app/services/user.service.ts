@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy, Optional } from "@angular/core";
+import { Injectable, OnDestroy } from "@angular/core";
 import { LocalStorageRepository } from "../infrastructure/local-storage.repository";
 import { CURRENT_USER_LS_KEY } from "../constants/current-user-ls-key.constant";
 import { UserStore } from "../state/user.store";

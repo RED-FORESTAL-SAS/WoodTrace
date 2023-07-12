@@ -20,10 +20,6 @@ export interface WtCompany {
   departamento: string;
   /** Ciudad o municipio de la entidad */
   municipio: string;
-
-  /**
-   * @todo @diana Terminar de definir los campos.
-   */
 }
 
 /**

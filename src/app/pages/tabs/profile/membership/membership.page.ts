@@ -15,15 +15,11 @@ import { WtUser } from "src/app/models/wt-user";
   styleUrls: ["./membership.page.scss"],
 })
 export class MembershipPage implements OnInit {
-  date = Date.now();
   redeemCode = new FormControl("", [
     Validators.required,
     Validators.minLength(10),
   ]);
-  isValidLicense: boolean = null;
   loading: boolean;
-
-  licencia_vitalicia: boolean;
 
   public license$: Observable<WtLicense | null>;
   public wtUser: WtUser = {} as WtUser;
@@ -61,7 +57,7 @@ export class MembershipPage implements OnInit {
             this.utilsSvc.presentToast(
               "No hay una licencia identificada con este código. "
             );
-            // this.isValidLicense = false;
+
             return;
           }
 
@@ -69,17 +65,13 @@ export class MembershipPage implements OnInit {
             this.utilsSvc.presentToast(
               "Ya hay un usuario asociado a este código de licencia. "
             );
-            //   this.isValidLicense = false;
+
             return;
           }
 
-          /**
-           * @todo @mario asumo que la validación de la fecha de vigencia no tiene que hacerse
-           * sabiendo que el cron que cambiará el estatus va a hacerlo.
-           */
           if (license[0].status !== "active") {
             this.utilsSvc.presentToast("Esta licencia se encuentra inactiva. ");
-            //   this.isValidLicense = false;
+
             return;
           }
 

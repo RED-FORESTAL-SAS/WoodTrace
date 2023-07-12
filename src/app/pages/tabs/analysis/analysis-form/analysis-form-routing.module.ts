@@ -1,13 +1,13 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { NgModule } from "@angular/core";
+import { Routes, RouterModule } from "@angular/router";
 
-import { AnalysisFormPage } from './analysis-form.page';
+import { AnalysisFormPage } from "./analysis-form.page";
 
 const routes: Routes = [
   {
-    path: '',
-    component: AnalysisFormPage
-  }
+    path: "",
+    component: AnalysisFormPage,
+  },
 ];
 
 @NgModule({
