@@ -20,7 +20,12 @@
     {{ label }}
   </div>
 
-  <div class="gradient-input">
+  <div
+    [ngClass]="{
+      'gradient-input': !(formControlValue.dirty && formControlValue.errors),
+      'gradient-input-error': formControlValue.dirty && formControlValue.errors
+    }"
+  >
     <!-- ========= Input Regular ========= -->
 
     <ion-item lines="none" *ngIf="!noInputTypes.includes(type)">

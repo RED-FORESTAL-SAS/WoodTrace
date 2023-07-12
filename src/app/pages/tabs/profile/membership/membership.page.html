@@ -1,112 +1,104 @@
-<app-header backButton="/tabs/profile" title="Membresía"></app-header>
+<app-header backButton="/tabs/profile" title="Administrar cuenta"></app-header>
+
 <ion-content>
-  <div class="wrapper" *ngIf="licencia_vitalicia">
-    <div class="ion-text-center">
-      <ion-icon
-        style="font-size: 170px"
-        color="primary"
-        name="shield-checkmark-outline"
-      ></ion-icon>
-      <h1>Licencia Vitalicia</h1>
-    </div>
+  <div *ngIf="license$ | async as license">
+    <ion-grid>
+      <ion-row>
+        <ion-col class="ion-text-center">
+          <h3>Membresía</h3>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="ion-text-center">
+          <img src="../../../../assets/img/licenced-img.svg" />
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-list>
+            <ion-item>
+              <ion-label position="fixed">Estado:</ion-label>
+              <ion-input
+                ><span *ngIf="license.status === 'active'">Activa</span>
+                <span *ngIf="license.status === 'inactive'"
+                  >Inactiva</span
+                ></ion-input
+              >
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="fixed">Desde:</ion-label>
+              <ion-input
+                >{{ license.begins.toDate() | date: 'dd-MM-yyyy' }}</ion-input
+              >
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="fixed">Hasta:</ion-label>
+              <ion-input
+                >{{ license.ends.toDate() | date: 'dd-MM-yyyy' }}</ion-input
+              >
+            </ion-item>
+          </ion-list>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </div>
 
-  <div *ngIf="!licencia_vitalicia" class="wrapper-form">
-    <div>
-      <div class="form">
-        <!-- Activo desde -->
-        <div class="ion-padding-bottom">
-          <ion-item class="ion-no-padding" lines="none">
-            <ion-label>
-              <div>Miembro activo desde:</div>
-              <div *ngIf="user.license" class="ion-padding-top date">
-                {{ user.license.dateInit | date:'dd/MM/yyyy'}}
-              </div>
-              <div *ngIf="!user.license" class="ion-padding-top date">
-                -- --
-              </div>
-            </ion-label>
-          </ion-item>
-          <div class="line-gradient line-w"></div>
-        </div>
+  <div *ngIf="(license$ | async) === null">
+    <div class="form">
+      <ion-grid>
+        <ion-row>
+          <ion-col class="ion-text-center">
+            <h3 style="margin: 0px 50px 20px 50px">
+              Ingresa el código de licencia
+            </h3>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="ion-text-center">
+            <img src="../../../../assets/img/nonlicence-img.svg" />
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col style="padding-top: 20px">
+            <app-input-gradient
+              max="20"
+              label="Código"
+              type="text"
+              [formControlValue]="redeemCode"
+            >
+            </app-input-gradient>
+            <div
+              class="validators"
+              *ngIf="redeemCode.dirty && redeemCode.errors"
+            >
+              <span *ngIf="redeemCode.errors?.['minlength']"
+                >El formato de la licencia es inválido</span
+              >
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
 
-        <!-- Activo hasta -->
-        <div class="ion-padding-bottom">
-          <ion-item class="ion-no-padding" lines="none">
-            <ion-label>
-              <div>Miembro activo hasta:</div>
-              <div *ngIf="user.license" class="ion-padding-top date">
-                {{ user.license.dateEnd | date:'dd/MM/yyyy'}}
-              </div>
-              <div *ngIf="!user.license" class="ion-padding-top date">
-                -- --
-              </div>
-            </ion-label>
-          </ion-item>
-          <div class="line-gradient line-w"></div>
-        </div>
-
-        <!-- Días restantes -->
-        <div class="ion-padding-bottom">
-          <ion-item class="ion-no-padding" lines="none">
-            <ion-label>
-              <div>Días restantes de membresía:</div>
-              <div *ngIf="user.license" class="ion-padding-top date">
-                {{ user.license.remainingDays}}
-              </div>
-              <div *ngIf="!user.license" class="ion-padding-top date">
-                -- --
-              </div>
-            </ion-label>
-          </ion-item>
-          <div class="line-gradient line-w"></div>
-        </div>
-
-        <!-- Licencia/Número de serie  -->
-        <app-input-gradient
-          max="20"
-          label="Licencia/Número de serie"
-          type="text"
-          [formControlValue]="licenseId"
+      <!-- Button Redeem-->
+      <div *ngIf="!loading" class="btn-gradient">
+        <ion-button
+          (click)="getLicense()"
+          [disabled]="redeemCode.invalid"
+          mode="ios"
         >
-        </app-input-gradient>
-        <div class="note">El código de licencia expira una vez redimido.</div>
-        <div class="validators" *ngIf="licenseId.dirty && licenseId.errors">
-          <span *ngIf="licenseId.errors?.['minlength']"
-            >El formato de la licencia es inválido</span
-          >
-        </div>
+          <span>Validar</span>
+        </ion-button>
+      </div>
 
-        <!-- Button Redeem-->
-        <div *ngIf="!loading" class="btn-gradient">
-          <ion-button
-            (click)="getLicense()"
-            [disabled]="licenseId.invalid || user.license"
-            mode="ios"
-          >
-            <span>Redimir</span>
-          </ion-button>
-        </div>
-
-        <!-- Button Loading-->
-        <div *ngIf="loading" class="btn-gradient">
-          <ion-button class="btn-loading" disabled mode="ios">
-            <span>
-              <ion-spinner slot="end" color="dark"></ion-spinner>
-            </span>
-          </ion-button>
-        </div>
-
-        <div class="no-license">
-          ¿No tienes <strong>código de membresía</strong>? Puedes <br />
-          conseguirlo por medio del siguiente botón:
-        </div>
-
-        <div class="btn-gradient">
-          <ion-button (click)="getMembership()" mode="ios">
-            <span>Conseguir Código</span>
-          </ion-button>
-        </div>
+      <!-- Button Loading-->
+      <div *ngIf="loading" class="btn-gradient">
+        <ion-button class="btn-loading" disabled mode="ios">
+          <span>
+            <ion-spinner slot="end" color="dark"></ion-spinner>
+          </span>
+        </ion-button>
       </div>
     </div>
   </div>

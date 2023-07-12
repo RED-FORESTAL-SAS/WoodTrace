@@ -8,6 +8,11 @@ import { HelpPageRoutingModule } from "./help-routing.module";
 
 import { HelpPage } from "./help.page";
 import { SharedModule } from "src/app/shared/shared.module";
+import { HelpDeskComponent } from "./components/help-desk/help-desk.component";
+import { ImplementsComponent } from "./components/implements/implements.component";
+import { AnalysisHelpComponent } from "./components/analysis-help/analysis-help.component";
+import { ReportHelpComponent } from "./components/report-help/report-help.component";
+import { ContactComponent } from "./components/contact/contact.component";
 
 @NgModule({
   imports: [
@@ -17,6 +22,13 @@ import { SharedModule } from "src/app/shared/shared.module";
     HelpPageRoutingModule,
     SharedModule,
   ],
-  declarations: [HelpPage],
+  declarations: [
+    HelpPage,
+    HelpDeskComponent,
+    ImplementsComponent,
+    AnalysisHelpComponent,
+    ReportHelpComponent,
+    ContactComponent,
+  ],
 })
 export class HelpPageModule {}

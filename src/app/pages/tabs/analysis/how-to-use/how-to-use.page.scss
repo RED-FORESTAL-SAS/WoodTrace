@@ -1,5 +1,5 @@
 .swiper {
-  padding-bottom: 30px;
+  padding-bottom: 20px;
 }
 
 p {
@@ -7,7 +7,13 @@ p {
 }
 
 .d-flex {
-  height: 60vh;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-container {
   display: flex;
   align-items: center;
   justify-content: center;

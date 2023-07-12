@@ -1,26 +1,73 @@
-<app-header title="Análisis"></app-header>
-
 <ion-content>
   <div class="wrapper">
     <div>
-      <!-- Nuevo análisis -->
-      <div class="ion-padding-bottom">
-        <ion-card (click)="confirmNewAnalysisOverContinue()">
-          <div>
-            <ion-icon src="assets/icon/icon-analisis.svg"></ion-icon>
-            <h2 class="ion-no-margin">Nuevo Análisis</h2>
-          </div>
-        </ion-card>
+      <div class="user-info row">
+        <ion-grid>
+          <ion-row size="auto">
+            <ion-col style="vertical-align: bottom">
+              <h4>Analizar</h4>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </div>
+      <div class="btn-container">
+        <ion-grid>
+          <ion-row>
+            <ion-col align-items-center>
+              <div class="btn-gradient">
+                <ion-button
+                  mode="ios"
+                  [disabled]="(license$ | async) && (hasActiveReport$|async) ? false : true"
+                  (click)="continueReport()"
+                >
+                  <span>Continuar análisis</span>
+                </ion-button>
+              </div>
+            </ion-col>
+          </ion-row>
 
-      <!-- Continuar análisis -->
-      <div class="ion-padding-bottom">
-        <ion-card (click)="continueAnalysis()">
-          <div>
-            <ion-icon src="assets/icon/icon-reportes.svg"></ion-icon>
-            <h2 class="ion-no-margin">Continuar Análisis</h2>
-          </div>
-        </ion-card>
+          <ion-row *ngIf="license$ | async">
+            <ion-col>
+              <div class="icon-container">
+                <img
+                  width="180px"
+                  height="180px"
+                  src="assets/icon/wt_Property 1=Analyze Second.svg"
+                />
+              </div>
+            </ion-col>
+          </ion-row>
+          <ion-row *ngIf="(license$ | async) === null">
+            <ion-row>
+              <ion-col align-items-center>
+                <h5 style="margin-bottom: 15px">
+                  ¡Ups! No tienes una licencia activa.
+                </h5>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col align-items-center>
+                <img
+                  src="assets/img/nolicenceanalisis-img.svg"
+                  routerLink="../profile/admin-account/membership"
+                />
+              </ion-col>
+            </ion-row>
+          </ion-row>
+          <ion-row style="margin-top: 15px">
+            <ion-col align-items-center>
+              <div class="btn-gradient">
+                <ion-button
+                  mode="ios"
+                  [disabled]="(license$ | async) === null"
+                  (click)="createNewReport()"
+                >
+                  <span>Nuevo análisis</span>
+                </ion-button>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </div>
     </div>
   </div>

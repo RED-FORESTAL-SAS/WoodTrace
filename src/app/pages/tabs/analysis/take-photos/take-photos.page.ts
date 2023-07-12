@@ -1,149 +1,202 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 import { UtilsService } from "src/app/services/utils.service";
-import * as tensor from "@tensorflow/tfjs";
-import { User } from "src/app/models/user.model";
-import { Filesystem, Directory } from "@capacitor/filesystem";
-
-interface Img {
-  side: string;
-  file: any;
-}
+import { FormControl, Validators } from "@angular/forms";
+import { ReportService } from "src/app/services/report.service";
+import { BehaviorSubject, Observable, Subscription } from "rxjs";
+import { map, skipWhile, switchMap, take, tap } from "rxjs/operators";
+import { especie } from "src/assets/data/especies";
+import { EspecieModalComponent } from "src/app/shared/components/especie-modal/especie-modal.component";
+import { ModalController } from "@ionic/angular";
+import { WtWood } from "src/app/models/wt-wood";
+import { LoadingModalComponent } from "src/app/shared/components/loading-modal/loading-modal.component";
+import { ErrorModalComponent } from "src/app/shared/components/error-modal/error-modal.component";
+import { CameraService } from "src/app/services/camera.service";
 
 @Component({
   selector: "app-take-photos",
   templateUrl: "./take-photos.page.html",
   styleUrls: ["./take-photos.page.scss"],
 })
-export class TakePhotosPage implements OnInit {
-  model;
-  photos = [];
-  sides = ["Izquierda", "Derecha", "Adelante", "Atrás"];
+export class TakePhotosPage implements OnInit, OnDestroy {
+  especie = new FormControl("", [Validators.required]);
+  photo = new FormControl("");
+  loadingPhoto: boolean;
 
-  treeId: string;
+  especies = especie;
 
-  constructor(private utilsSvc: UtilsService) {}
+  private sbs: Subscription[] = [];
+
+  /** BehaviourSubject to deal with event "saveWood". */
+  private saveWoodEvent = new BehaviorSubject<number>(null);
+
+  /** Observable with active report or null. */
+  public activeWood$: Observable<WtWood | null>;
+  /** Observable with boolean indicating if there is an active report or not. */
+  public hasActiveWood$: Observable<boolean>;
+
+  /**
+   * Contiene un conteo para obligar a que el análisis falle siempre la primera vez.
+   * Para poder ver las pantallas de error.
+   *
+   * @todo @diana Borrar esto cuando se termine de probar como se ven los errores en la interfaz.
+   */
+  private failOnCeroCounter = 0;
+
+  constructor(
+    private utilsSvc: UtilsService,
+    private reportService: ReportService,
+    private modalController: ModalController,
+    private cameraService: CameraService
+  ) {
+    this.activeWood$ = this.reportService.activeWood;
+    this.hasActiveWood$ = this.reportService.activeWood.pipe(
+      map((wood) => !!wood)
+    );
+    this.saveWoodHandler();
+  }
 
   ngOnInit() {
-    this.setTreeArrays();
+    this.populateForm();
   }
 
-  ionViewWillEnter() {
-    this.treeId = Date.now().toString();
+  ngOnDestroy(): void {
+    this.sbs.forEach((s) => s.unsubscribe());
+    this.saveWoodEvent.complete();
   }
 
-  currentUser(): User {
-    return this.utilsSvc.getCurrentUser();
-  }
-
-  currentAnalysis() {
-    return this.utilsSvc.getFromLocalStorage("analysis");
-  }
-
-  setTreeArrays() {
-    let currentAnalysis = this.currentAnalysis();
-
-    if (!currentAnalysis.pendingTrees) {
-      currentAnalysis.pendingTrees = [];
-    }
-
-    if (!currentAnalysis.trees) {
-      currentAnalysis.trees = [];
-    }
-
-    this.utilsSvc.saveLocalStorage("analysis", currentAnalysis);
-  }
-
-  /**
-   * It takes a string as a parameter, then it gets a photo from the camera, then it converts the photo
-   * to base64, then it pushes the photo to an array
-   * @param {string} sideSelected - string - The side of the image that was selected.
-   */
-  async takePhoto(sideSelected: string) {
-    let data: Img;
-
-    await Camera.getPhoto({
-      quality: 100,
-      allowEditing: false,
-      resultType: CameraResultType.DataUrl,
-      promptLabelHeader: "Imagenes",
-      promptLabelPhoto: "Elegir Foto",
-      promptLabelPicture: "Tomar Foto",
-      source: CameraSource.Prompt,
-    }).then(
-      async (image) => {
-        data = { side: sideSelected, file: image.dataUrl };
-
-        this.sides = this.sides.filter((side) => side !== sideSelected);
-        this.photos.push(data);
-      },
-      (err) => {
-        console.log(err);
-      }
+  populateForm() {
+    this.sbs.push(
+      this.reportService.activeWood
+        .pipe(
+          take(1),
+          tap({
+            next: (wood) => {
+              if (wood) {
+                this.especie.setValue(wood.especieDeclarada);
+                this.photo.setValue(wood.path);
+              }
+            },
+          })
+        )
+        .subscribe()
     );
   }
 
-  // ================= Guardar la imagen =====================
-
-  async saveImage(imgData: Img) {
-    const savedFile = await Filesystem.writeFile({
-      path: `${this.treeId}/${imgData.side}.jpg`,
-      data: imgData.file,
-      directory: Directory.Data,
+  /**
+   * Funciona para cuando se escoge seleccionar una foto del dispositovo
+   */
+  async uploadPhoto() {
+    const photo = await this.cameraService.pickOrTakePhoto({
+      source: CameraSource.Photos,
     });
-  }
+    if (!photo) return;
 
-  async saveTree() {
-    await Filesystem.mkdir({
-      path: this.treeId,
-      directory: Directory.Data,
-    });
-
-    for (let p of this.photos) {
-      this.saveImage(p);
-    }
-
-    let currentAnalysis = this.currentAnalysis();
-
-    currentAnalysis.pendingTrees.push(this.treeId);
-
-    this.utilsSvc.saveLocalStorage("analysis", currentAnalysis);
-    this.photos = [];
-    this.sides = ["Izquierda", "Derecha", "Adelante", "Atrás"];
-    this.utilsSvc.routerLink("/tabs/analysis/analysis-trees/pending");
+    this.loadingPhoto = true;
+    this.photo.setValue(photo.dataUrl);
+    this.loadingPhoto = false;
   }
 
   /**
-   * It removes the photo at the given index from the photos array and adds the side of the photo to the
-   * sides array
-   * @param {number} index - the index of the photo to be removed
-   * @param {string} side - string - this is the side of the photo that was removed.
+   * Funciona para cuando se toma una foto con la camara del dispositivo
    */
-  removePhoto(index: number, side: string) {
-    this.photos.splice(index, 1);
-    this.sides.push(side);
+  async takePhoto() {
+    const photo = await this.cameraService.pickOrTakePhoto({
+      source: CameraSource.Camera,
+    });
+    if (!photo) return;
+
+    this.loadingPhoto = true;
+    this.photo.setValue(photo.dataUrl);
+    this.loadingPhoto = false;
   }
 
-  //====================== Modelo Offline ===========================
-  async loadModel() {
-    this.model = await tensor.loadGraphModel(
-      "assets/modeljsmobilenet/model.json"
+  public saveWood(): void {
+    this.saveWoodEvent.next(Date.now());
+  }
+
+  private saveWoodHandler(): void {
+    this.sbs.push(
+      this.saveWoodEvent
+        .asObservable()
+        .pipe(
+          skipWhile((v) => v === null),
+          switchMap((_) => this.reportService.activeWood.pipe(take(1))),
+          tap({
+            next: async (activeWood) => {
+              // Check if active wood is null.
+              const wood = activeWood
+                ? activeWood
+                : this.reportService.emptyWood;
+
+              const patchData = {
+                ...wood,
+                especieDeclarada: this.especie.value,
+                /**
+                 * @dev url is a base64 string for localstorage/state and a download url for firebase.
+                 */
+                url: this.photo.value,
+              };
+              this.reportService.patchActiveWood(patchData);
+
+              const modalLoading = await this.modalController.create({
+                component: LoadingModalComponent,
+                cssClass: "modal-especie",
+                backdropDismiss: false,
+              });
+              modalLoading.present();
+
+              try {
+                /**
+                 * @todo @diana Eliminar el "if" y el "else" y dejar solo la llamada al método analyzeWood, así:
+                 *
+                 * await this.reportService.analyzeWood();
+                 */
+                if (this.failOnCeroCounter !== 0) {
+                  await this.reportService.analyzeWood();
+                } else {
+                  this.failOnCeroCounter += 1;
+                  await this.reportService.analayzedWoodWithFailure();
+                }
+                /**
+                 * @todo @diana Eliminar hasta aquí.
+                 */
+
+                modalLoading.dismiss();
+                this.utilsSvc.routerLink(
+                  "/tabs/analysis/analysis-result-content"
+                );
+                this.resetForm();
+              } catch (e) {
+                const modalError = await this.modalController.create({
+                  component: ErrorModalComponent,
+                  cssClass: "modal-especie",
+                });
+                modalError.present();
+                modalLoading.dismiss();
+              }
+            },
+          })
+        )
+        .subscribe()
     );
   }
 
-  async onImageUploaded(image: any) {
-    let passImg = new Image();
-    passImg.src = "data:image/png;base64," + image.base64String;
-    passImg.width = 100;
-    passImg.height = 100;
-
-    let tensorImg = tensor.browser.fromPixels(passImg, 3);
-    tensorImg = tensorImg.cast("float32").div(255).expandDims();
-
-    let result = await this.model.executeAsync(tensorImg);
-
-    for (let r of result) {
-      console.log(r.dataSync());
+  async openEspecie() {
+    const selected = await this.utilsSvc.presentModal({
+      component: EspecieModalComponent,
+      cssClass: "modal-especie",
+    });
+    if (selected) {
+      this.especie.setValue(selected.especie.nombreCienticifo);
     }
+  }
+
+  /**
+   * Reset form fields.
+   */
+  private resetForm(): void {
+    this.especie.reset();
+    this.photo.reset();
   }
 }

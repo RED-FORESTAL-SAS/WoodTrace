@@ -41,11 +41,41 @@
 }
 
 .alert-wrapper {
-  width: 90% !important;
+  width: 95% !important;
 }
 
 .alert-button-inner .sc-ion-alert-md {
   white-space: normal !important;
+}
+
+.alert-button.sc-ion-alert-md {
+  text-align: center;
+  // padding-top: 20px;
+  // padding-bottom: 20px;
+  span {
+    text-transform: capitalize;
+    height: 40px;
+    font-weight: 400;
+    background: var(--ion-color-primary);
+    border-radius: 25px;
+    color: #282f37;
+    padding: 15px;
+  }
+}
+.alert-button-group.sc-ion-alert-md {
+  justify-content: center;
+}
+
+.alert-message.sc-ion-alert-md {
+  text-align: center;
+}
+
+.alert-head.sc-ion-alert-md {
+  text-align: center;
+}
+
+.alert-radio-inner.sc-ion-alert-md {
+  background-color: var(--ion-color-secondary);
 }
 
 ion-content {
@@ -61,35 +91,45 @@ ion-segment-button {
 }
 
 .modal-fink-app {
-  --height: 410px;
-  --border-radius: 15px;
+  --height: 510px;
+  --border-radius: 25px;
+  padding: 15px;
+}
+
+.modal-especie {
+  --height: 85%;
+  --border-radius: 10px;
   padding: 15px;
 }
 
 .alert-fink-app {
-  --height: 360px;
-  --border-radius: 15px;
+  --height: 264px;
+  --border-radius: 100px;
+  --border: 2px solid #004f40;
   padding: 15px;
 }
 
-.bullet-active {
-  background: linear-gradient(
-    var(--ion-color-secondary),
-    var(--ion-color-primary)
-  );
-  opacity: 100%;
-  width: 10px;
-  height: 10px;
+/* change the size of the bullet and active color */
+
+.swiper-pagination-bullet {
+  width: 20px;
+  height: 20px;
+  background: #004f40;
+  opacity: 1;
+  --swiper-pagination-bullet-horizontal-gap: 20px;
 }
 
-.text-gradient {
-  background: linear-gradient(
-    var(--ion-color-secondary),
-    var(--ion-color-primary)
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+span.swiper-pagination-bullet.bullet-active {
+  background: #fff !important;
+  border: 1px solid #004f40;
+  opacity: 1;
 }
+
+// .text-gradient {
+//     background: linear-gradient(var(--ion-color-secondary), var(--ion-color-primary));
+//     -webkit-background-clip: text;
+//     -webkit-text-fill-color: transparent;
+// }
 
 .validators {
   padding: 0px 0px 10px 0px;
@@ -98,11 +138,7 @@ ion-segment-button {
 }
 
 .line-gradient {
-  background: linear-gradient(
-    to right,
-    var(--ion-color-secondary),
-    var(--ion-color-primary)
-  );
+  background: var(--ion-color-secondary);
   width: 100vw;
   height: 1px;
 }
@@ -123,21 +159,15 @@ ion-segment-button {
 .btn-gradient {
   text-align: center;
   padding-top: 20px;
+  padding-bottom: 20px;
 
   ion-button {
     text-transform: capitalize;
+    height: 40px;
     font-weight: 400;
-    --background: linear-gradient(
-      to right,
-      var(--ion-color-secondary),
-      var(--ion-color-primary)
-    );
-    --background-activated: linear-gradient(
-      to left,
-      var(--ion-color-secondary),
-      var(--ion-color-primary)
-    );
-    --border-radius: 15px;
+    --background: var(--ion-color-primary);
+    --background-activated: var(--ion-color-primary);
+    --border-radius: 25px;
 
     span {
       padding: 15px;
@@ -188,4 +218,23 @@ ion-segment-button {
 
 .avatar-group .avatar:hover:not(:last-of-type) {
   transform: translate(-5px);
+}
+
+.tab-selected {
+  margin: 1px 2px 1px 2px;
+  background-image: url("./assets/img/Ellipse 26.png");
+  background-repeat: no-repeat, repeat;
+  background-position: center;
+  border-radius: 100%;
+  ion-icon {
+    filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%)
+      hue-rotate(348deg) brightness(105%) contrast(105%);
+    // background-color: var(--ion-color-secondary);
+    border-radius: 100%;
+    padding: 12px;
+  }
+}
+
+.native-input.sc-ion-input-md {
+  color: var(--ion-color-medium);
 }

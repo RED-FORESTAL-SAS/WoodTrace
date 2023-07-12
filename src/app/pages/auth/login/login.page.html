@@ -7,7 +7,7 @@
           <app-logo></app-logo>
         </div>
 
-        <h4>Inicio de Sesión</h4>
+        <!-- <h4>Inicio de Sesión</h4> -->
       </div>
 
       <div class="form">
@@ -51,12 +51,18 @@
 
         <div class="footer">
           <div class="ion-padding-bottom">
-            <ion-text routerLink="/sign-up" color="primary"
-              ><strong>Registrarse</strong></ion-text
+            <ion-text
+              routerLink="/sign-up"
+              color="tertiary"
+              (click)="unwatchAuthState()"
+              >Registrarse</ion-text
             >
           </div>
           <div class="ion-padding-top">
-            <ion-text routerLink="/reset-password" color="dark"
+            <ion-text
+              routerLink="/reset-password"
+              color="dark"
+              (click)="unwatchAuthState()"
               >Olvidé mi contraseña</ion-text
             >
           </div>

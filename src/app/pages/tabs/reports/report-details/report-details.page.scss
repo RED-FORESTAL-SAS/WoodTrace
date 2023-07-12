@@ -1,0 +1,49 @@
+.option-icon {
+  font-size: 15px;
+  color: #000;
+}
+
+.table-container {
+  padding: 20px 5px 5px 5px;
+}
+
+ion-icon {
+  color: var(--ion-color-primary);
+}
+
+ion-button {
+  width: 150px;
+  height: 35px;
+  font-size: 13px;
+}
+
+table {
+  width: 100%;
+  th {
+    padding: 10px 0px;
+    font-size: 14px;
+    font-weight: normal;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+
+    td {
+      padding: 3px 0px;
+      font-size: 13px;
+      text-align: center;
+    }
+  }
+  tr {
+    td {
+      padding: 3px 0px;
+      font-size: 13px;
+      text-align: center;
+    }
+  }
+}
+
+.header {
+  background-color: var(--ion-color-secondary);
+  color: white;
+}

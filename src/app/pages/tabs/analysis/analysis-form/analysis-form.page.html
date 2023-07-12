@@ -1,68 +1,160 @@
-<app-header backButton="/tabs/analysis" title="Análisis"></app-header>
+<app-header backButton="/tabs/analysis" title="Nuevo análisis"></app-header>
 <ion-content>
   <div class="wrapper">
-    <div *ngIf="operators.length && properties.length" class="form">
-      <!-- Especie -->
-      <app-input-gradient
-        [selectOptions]="speciesList"
-        label="Especie"
+    <div class="form">
+      <!-- Departamento  -->
+
+      <app-input-costum
+        [selectOptions]="this.departamentos"
+        [viewField]="'nombre'"
+        [valueField]="'nombre'"
+        label="Departamento"
         type="select"
-        [formControlValue]="species"
-      >
-      </app-input-gradient>
-      <div class="validators" *ngIf="species.touched && species.errors">
-        <span *ngIf="species.errors?.['required']"
-          >Selecciona la especie a analizar</span
+        [formControlValue]="departamento"
+      ></app-input-costum>
+      <div class="validators" *ngIf="departamento.dirty && departamento.errors">
+        <span *ngIf="departamento.errors?.['required']"
+          >Selecciona el departamento donde está ubicada la empresa</span
         >
       </div>
 
-      <!-- Operador -->
-      <app-input-gradient
-        [selectOptions]="operators"
-        label="Operador"
+      <!-- Municipio  -->
+      <app-input-costum
+        [selectOptions]="this.municipios"
+        [viewField]="'nombre'"
+        [valueField]="'nombre'"
+        label="Municipio"
         type="select"
-        [formControlValue]="operator"
-      >
-      </app-input-gradient>
-      <div class="validators" *ngIf="operator.touched && operator.errors">
-        <span *ngIf="operator.errors?.['required']"
-          >Selecciona el operador asignado a este análisis</span
+        [formControlValue]="municipio"
+        (disabled)="!departamento.value"
+      ></app-input-costum>
+      <div class="validators" *ngIf="municipio.dirty && municipio.errors">
+        <span *ngIf="municipio.errors?.['required']"
+          >Selecciona el municipio donde está ubicada la empresa</span
         >
       </div>
 
-      <!-- Cantidad de árboles en producción -->
       <app-input-gradient
-        max="5"
-        label="Cantidad de árboles en producción"
-        type="number"
-        [formControlValue]="treeQuantity"
-      >
-      </app-input-gradient>
-      <div class="validators" *ngIf="treeQuantity.dirty && treeQuantity.errors">
-        <span *ngIf="treeQuantity.errors?.['required']"
-          >Ingresa la cantidad de árboles en producción</span
-        >
-        <span *ngIf="treeQuantity.errors?.['min']"
-          >Debe haber al menos un árbol en producción</span
+        [selectOptions]="personaTypes"
+        label="Tipo de persona"
+        type="select"
+        [formControlValue]="personaType"
+      ></app-input-gradient>
+      <div class="validators" *ngIf="personaType.touched && personaType.errors">
+        <span *ngIf="personaType.errors?.['required']"
+          >Selecciona un genero</span
         >
       </div>
 
-      <!-- Precio por kilogramos -->
       <app-input-gradient
-        label="Precio por kilogramo"
-        type="currency"
-        [formControlValue]="priceKg"
+        *ngIf="personaType.value === 'vehiculo'"
+        label="Número de guía"
+        type="string"
+        [formControlValue]="guia"
       >
       </app-input-gradient>
-      <div class="validators" *ngIf="priceKg.dirty && priceKg.errors">
-        <span *ngIf="priceKg.errors?.['required']"
-          >Ingresa el precio por kilogramo</span
+      <div class="validators" *ngIf="guia.dirty && guia.errors">
+        <span *ngIf="guia.errors?.['required']">Ingresa el No. de guía.</span>
+      </div>
+
+      <app-input-gradient
+        *ngIf="personaType.value === 'vehiculo'"
+        label="Placa"
+        type="string"
+        [formControlValue]="placa"
+      >
+      </app-input-gradient>
+      <div class="validators" *ngIf="placa.dirty && placa.errors">
+        <span *ngIf="placa.errors?.['required']"
+          >Ingresa la placa del vehiculo.</span
         >
       </div>
+
+      <app-input-gradient
+        *ngIf="personaType.value === 'persona'"
+        max="50"
+        label="Nombre Completo"
+        type="text"
+        [formControlValue]="fullName"
+      >
+      </app-input-gradient>
+      <div class="validators" *ngIf="fullName.dirty && fullName.errors">
+        <span *ngIf="fullName.errors?.['required']"
+          >Ingresa tu nombre completo</span
+        >
+        <span *ngIf="fullName.errors?.['minlength']"
+          >El nombre debe contener mínimo 4 caracteres</span
+        >
+      </div>
+
+      <!-- Tipo de documento  -->
+      <app-input-gradient
+        *ngIf="personaType.value === 'persona'"
+        [selectOptions]="docTypes"
+        label="Tipo de documento"
+        type="select"
+        [formControlValue]="docType"
+      ></app-input-gradient>
+      <div class="validators" *ngIf="docType.touched && docType.errors">
+        <span *ngIf="docType.errors?.['required']"
+          >Selecciona el tipo de documento de identidad</span
+        >
+      </div>
+
+      <!-- Número de documento  -->
+      <app-input-gradient
+        *ngIf="personaType.value === 'persona'"
+        max="15"
+        min="6"
+        label="No. de documento"
+        type="tel"
+        [formControlValue]="docNumber"
+      >
+      </app-input-gradient>
+      <div class="validators" *ngIf="docNumber.dirty && docNumber.errors">
+        <span *ngIf="docNumber.errors?.['required']"
+          >Ingresa el número del documento de identidad</span
+        >
+        <span *ngIf="docNumber.errors?.['minlength']"
+          >El número del documento debe contener mínimo 6 caracteres</span
+        >
+      </div>
+
+      <ion-grid>
+        <ion-row class="btn">
+          <ion-col align-items-center class="bg-icon-btn" size="2">
+            <ion-icon
+              style="font-size: 25px"
+              src="../../../../assets/icon/location_analysis.svg"
+              (click)="getCurrentPosition()"
+            ></ion-icon>
+          </ion-col>
+
+          <ion-col
+            *ngIf="!(longitude && latitude)"
+            align-items-start
+            class="label-btn"
+            (click)="getCurrentPosition()"
+          >
+            Ubicación
+          </ion-col>
+          <ion-col
+            *ngIf="longitude && latitude"
+            align-items-start
+            class="label-btn"
+          >
+            {{ latitude }}, {{ longitude }}
+          </ion-col>
+        </ion-row>
+      </ion-grid>
 
       <!-- Button -->
       <div *ngIf="!loading" class="btn-gradient">
-        <ion-button (click)="submit()" [disabled]="!validator()" mode="ios">
+        <ion-button
+          (click)="updateReport()"
+          [disabled]="!validator()"
+          mode="ios"
+        >
           <span>Comenzar</span>
         </ion-button>
       </div>
@@ -75,25 +167,6 @@
           </span>
         </ion-button>
       </div>
-    </div>
-  </div>
-  <!-- Si no existen Operadores o Lotes -->
-  <div
-    *ngIf="!operators.length || !properties.length"
-    class="ion-padding-horizontal"
-    style="padding-top: 20vh"
-  >
-    <app-empty-array
-      iconSrc="assets/icon/icon-perfil.svg"
-      text="Debes tener registrados operadores y lotes para hacer un análisis. Ve a la sección de administrar cuenta en tu perfil para agregarlos"
-    >
-    </app-empty-array>
-
-    <!-- Ir al perfil -->
-    <div class="btn-gradient">
-      <ion-button routerLink="/tabs/profile" mode="ios">
-        <span>Perfil</span>
-      </ion-button>
     </div>
   </div>
 </ion-content>

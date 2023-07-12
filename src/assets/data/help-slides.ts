@@ -1,26 +1,42 @@
 export const helpSlides = [
   {
-    title: "¡Te damos la bienvenida!",
-    subtitle: "¡Llevemos el manejo de tus cultivos al siguiente nivel!",
-    indication: "Lo primero que debes hacer es: ",
-    icon: "assets/icon/imagen-registrate.svg",
+    title: "¡Comencemos!",
+    subtitle: "¡Nos encargáremos de analizar la madera por ti!",
+    indication: "",
+    img: "assets/icon/Fredregistrate.svg",
     message:
-      "Una vez hagas parte de nuestra comunidad podrás adqurir la membresía para el análisis de tus árboles.",
+      "Ten en cuenta que para realizar los análisis de madera se requiere tener una membresía activa",
   },
   {
-    title: "Analiza tus árboles",
-    subtitle: "¡Realiza un seguimiento eficiente de tus cultivos!",
-    indication: "Realiza un análisis automatizado de tus árboles.",
-    icon: "assets/icon/imagen-analiza.svg",
+    title: "Fotografía de madera",
+    subtitle: "Utiliza una lupa con un aumento mínimo de x60",
+    indication: "",
+    img: "assets/icon/Fotomadera.svg",
     message:
-      "¡Podrás conocer el número de frutos totales y sus diferentes estados de madurez!",
+      "Recuerda que el análisis de la madera depende del uso de esta lupa",
   },
   {
-    title: "Reportes a la mano",
-    subtitle: "¡Gestiona tu producción de manera inteligente!",
-    indication: "Genera proyecciones de producción y ventas en tu cultivo.",
-    icon: "assets/icon/imagen-reporteseguro.svg",
+    title: "Análisis",
+    subtitle:
+      "Con una sola foto nuestra inteligencia artifical se encargará del análisis",
+    indication: "",
+    img: "assets/icon/Analisis.svg",
+    message: "Podrás identificar y ratificar las maderas siendo transportadas",
+  },
+  {
+    title: "Reportes",
+    subtitle: "Crear y guarda los reportes de manera rápida y segura",
+    indication: "",
+    img: "assets/icon/Reportes.svg",
+    message: "Puedes descargar los reportes en cualquier momento.",
+  },
+  {
+    title: "Contáctanos",
+    subtitle: "¡Estamos listos para servirte!",
+    indication:
+      "Puedes hablar con nosotros por medio de nuestro correo electrónico, teléfono y página web.",
+    img: "../../../../assets/icon/Fredservicio.svg",
     message:
-      "Descarga de forma segura los reportes y toma decisiones informadas para el futuro de tu cultivo.",
+      "Puedes encontrar nuestros datos de contacto dentro del botón de “ayuda” en el menú de tu perfil.",
   },
 ];

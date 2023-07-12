@@ -1,0 +1,58 @@
+<app-header title="Selecciona una especie" closeModal="true"></app-header>
+
+<ion-content>
+  <div class="gradient-border">
+    <div class="wrapper">
+      <!-- <app-header closeModal="true"></app-header> -->
+      <div class="ion-padding ion-text-center">
+        <app-input-gradient
+          max="20"
+          label="Buscar"
+          type="text"
+          [formControlValue]="searchString"
+        >
+          <ion-icon
+            slot="end"
+            (click)="buscarEspecie()"
+            [name]="'search'"
+          ></ion-icon>
+        </app-input-gradient>
+      </div>
+
+      <ion-row>
+        <ion-col class="table-container">
+          <table>
+            <thead class="header">
+              <th>#</th>
+              <th>Especie</th>
+              <th></th>
+            </thead>
+            <tr
+              *ngFor="let especie of especies; index as i"
+              (click)="selectEspecie(especie)"
+            >
+              <td style="text-align: center">{{ i + 1 }}</td>
+              <td title="{{ especie.nombreCienticifo }}">
+                {{ especie.nombreCienticifo | slice : 0 : 40 }}
+              </td>
+              <td style="text-align: center">
+                <ion-icon
+                  src="../../../../assets/icon/select_especie_icon.svg"
+                ></ion-icon>
+              </td>
+            </tr>
+          </table>
+        </ion-col>
+      </ion-row>
+
+      <!-- Button Loading-->
+      <div *ngIf="loading" class="btn-gradient">
+        <ion-button class="btn-loading" disabled mode="ios">
+          <span>
+            <ion-spinner slot="end" color="dark"></ion-spinner>
+          </span>
+        </ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>

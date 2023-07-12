@@ -1,0 +1,32 @@
+<ion-row>
+  <ion-col align-items-center>
+    <div class="ion-text-center d-flex">
+      <img style="width: 250px; height: 250px" [src]="this.photo.value" />
+    </div>
+  </ion-col>
+</ion-row>
+<ion-row style="padding: 30px 20px 0px 20px">
+  <ion-list>
+    <ion-item>
+      <ion-label position="stacked">Especie reportada </ion-label>
+      <ion-input>{{ this.especieReportada.value}}</ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Especie Resultado</ion-label>
+      <ion-input>{{ this.especie.value }}</ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Acierto</ion-label>
+      <ion-input><strong>{{ this.acierto.value }}</strong></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Fecha/Hora</ion-label>
+      <ion-input
+        >{{ this.fCreado.value.toDate() | date: 'dd-MM-yyyy hh:mm' }}</ion-input
+      >
+    </ion-item>
+  </ion-list>
+</ion-row>

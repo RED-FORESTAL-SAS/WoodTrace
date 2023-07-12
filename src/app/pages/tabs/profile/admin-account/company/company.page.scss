@@ -16,3 +16,8 @@
 .btn-loading {
   width: 130px;
 }
+
+ion-item {
+  --border-width: 0 0 2px 0;
+  --border-color: var(--ion-color-secondary);
+}

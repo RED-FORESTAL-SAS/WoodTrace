@@ -2,18 +2,19 @@ import { Injectable } from "@angular/core";
 import {
   ActivatedRouteSnapshot,
   CanActivate,
+  Router,
   RouterStateSnapshot,
   UrlTree,
 } from "@angular/router";
 import { Observable } from "rxjs";
-import { User } from "../models/user.model";
-import { UtilsService } from "../services/utils.service";
+import { UserService } from "../services/user.service";
+import { map, take } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root",
 })
 export class AuthGuard implements CanActivate {
-  constructor(private utilsService: UtilsService) {}
+  constructor(private userService: UserService, private router: Router) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,
@@ -23,20 +24,21 @@ export class AuthGuard implements CanActivate {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    let user: User = this.utilsService.getCurrentUser();
+    return this.userService.authState.pipe(
+      take(1),
+      map((user) => {
+        if (!user || !user.activo) {
+          this.router.navigate(["/login"]);
+          return false;
+        }
 
-    if (user && user.emailVerified) {
-      return true;
-    }
+        if (!user.emailVerified) {
+          this.router.navigate(["/email-verification"]);
+          return false;
+        }
 
-    if (user && !user.emailVerified) {
-      this.utilsService.routerLink("/email-verification");
-      return false;
-    }
-
-    if (!user) {
-      this.utilsService.routerLink("/login");
-      return false;
-    }
+        return true;
+      })
+    );
   }
 }

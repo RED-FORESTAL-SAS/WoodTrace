@@ -9,6 +9,11 @@ const routes: Routes = [
     component: TabsPage,
     children: [
       {
+        path: "",
+        pathMatch: "full",
+        redirectTo: "analysis",
+      },
+      {
         path: "profile",
         loadChildren: () =>
           import("./profile/profile.module").then((m) => m.ProfilePageModule),

@@ -1,19 +1,5 @@
-.wrapper-form {
-  height: 90vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.wrapper {
-  height: 70vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .form {
-  width: 85vw;
+  padding: 20px 20px 0px 20px;
 
   .line-w {
     width: 100%;
@@ -21,23 +7,8 @@
 }
 
 ion-item {
-  font-size: 13px;
-}
-
-.date {
-  color: gray;
-  text-align: center;
-}
-
-.note {
-  font-size: 11px;
-  position: relative;
-  bottom: 10px;
-}
-
-.no-license {
-  padding-top: 20px;
-  text-align: center;
+  --border-width: 0 0 2px 0;
+  --border-color: var(--ion-color-primary);
 }
 
 .btn-loading {

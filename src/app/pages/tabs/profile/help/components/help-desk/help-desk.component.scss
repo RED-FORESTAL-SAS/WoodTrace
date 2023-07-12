@@ -1,0 +1,30 @@
+.btn-container {
+  padding: 30px 20px 30px 20px;
+  width: 100%;
+}
+
+.btn {
+  width: 100%;
+  height: 40px;
+  background-color: var(--ion-color-primary);
+  border-radius: 25px;
+  margin-bottom: 15px;
+}
+
+.bg-icon-btn {
+  width: 15%;
+  height: 40px;
+  background-color: var(--ion-color-secondary);
+  border-radius: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.icon-btn {
+  font-size: 23px;
+}
+
+.label-btn {
+  padding: 9px 15px;
+}

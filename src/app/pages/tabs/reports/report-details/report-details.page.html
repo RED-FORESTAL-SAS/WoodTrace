@@ -1,0 +1,69 @@
+<app-header backButton="/tabs/reports" title="Resultado"></app-header>
+
+<ion-content>
+  <ion-grid fixed>
+    <ion-row>
+      <ion-col align-items-center>
+        <ion-list>
+          <ion-item *ngIf="this.personaType.value === 'vehiculo'">
+            <ion-label position="stacked">Placa </ion-label>
+            <ion-input>{{ this.placa.value}}</ion-input>
+          </ion-item>
+
+          <ion-item *ngIf="this.personaType.value === 'vehiculo'">
+            <ion-label position="stacked">Guía</ion-label>
+            <ion-input>{{ this.guia.value }}</ion-input>
+          </ion-item>
+
+          <ion-item *ngIf="this.personaType.value === 'persona'">
+            <ion-label position="stacked">Nombre</ion-label>
+            <ion-input>{{ this.fullName.value }}</ion-input>
+          </ion-item>
+
+          <ion-item *ngIf="this.personaType.value === 'persona'">
+            <ion-label position="stacked">Tipo Documento</ion-label>
+            <ion-input>{{ this.docType.value }}</ion-input>
+          </ion-item>
+
+          <ion-item *ngIf="this.personaType.value === 'persona'">
+            <ion-label position="stacked">Documento</ion-label>
+            <ion-input>{{ this.docNumber.value }}</ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">Ubicación</ion-label>
+            <ion-input
+              >{{ this.ubicacion.value.lat }}, {{ this.ubicacion.value.lng
+              }}</ion-input
+            >
+          </ion-item>
+        </ion-list>
+      </ion-col></ion-row
+    >
+    <ion-row>
+      <ion-col>
+        <div class="table-container">
+          <table>
+            <thead class="header">
+              <th>Especie resultado</th>
+              <th>Acierto</th>
+              <th>Acciones</th>
+            </thead>
+            <tr *ngFor="let wood of this.woods; index as i">
+              <td>{{ wood.especie }}</td>
+              <td>{{ wood.acierto }}</td>
+              <td>
+                <ion-icon
+                  class="option-icon"
+                  src="assets/icon/wt_Property 1=Reports.svg"
+                  title="Ver detalle"
+                  (click)="onViewWood(wood)"
+                ></ion-icon>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

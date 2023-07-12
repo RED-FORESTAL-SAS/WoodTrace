@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { User } from "src/app/models/user.model";
+import { WtUser } from "src/app/models/wt-user";
 import { FirebaseService } from "src/app/services/firebase.service";
 import { UtilsService } from "src/app/services/utils.service";
 
@@ -9,7 +9,7 @@ import { UtilsService } from "src/app/services/utils.service";
   styleUrls: ["./email-verification.page.scss"],
 })
 export class EmailVerificationPage implements OnInit {
-  user = {} as User;
+  user = {} as WtUser;
 
   constructor(
     private utilsSvc: UtilsService,

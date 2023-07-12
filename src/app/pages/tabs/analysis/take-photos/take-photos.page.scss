@@ -1,66 +1,41 @@
-* {
-  padding: 0;
-  margin: 0;
+.rounded-button {
+  margin-top: 20px;
+  --border-radius: 100px;
+  --padding-end: 3px;
+  --padding-start: 3px;
+  height: 65px;
+  width: 65px;
 }
 
-p {
-  padding: 25px 25px 5px 25px;
-  font-size: 15px;
+.icon-big {
+  font-size: 40px;
+  display: block;
+  color: blue;
 }
 
-.side-label {
-  padding-bottom: 10px;
-  font-size: 14px;
+.btn-container {
+  padding: 30px 20px;
+  width: 100%;
 }
 
-.remove-photo {
-  position: absolute;
-  font-size: 27px;
-  left: 81%;
-  top: 3%;
+.btn {
+  width: 100%;
+  height: 40px;
+  background-color: var(--ion-color-primary);
+  border-radius: 25px;
+  margin-bottom: 15px;
 }
 
-ion-card {
-  height: 24vh;
-  border-radius: 10px;
-  border: 1px dashed gray;
+.bg-icon-btn {
+  width: 15%;
+  height: 40px;
+  background-color: var(--ion-color-secondary);
+  border-radius: 25px;
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: none;
-  ion-icon {
-    font-size: 40px;
-  }
 }
 
-ion-grid {
-  width: 100%;
-  padding: 20px 15px 20px 15px;
-}
-
-ion-col {
-  padding: 5px;
-}
-
-.square {
-  width: 100%;
-  height: 24vh;
-  background: transparent;
-  overflow: hidden;
-  position: relative;
-  display: inline-block;
-  border-radius: 10px;
-}
-
-.square img {
-  width: 100%;
-  height: auto;
-}
-
-@supports (object-fit: cover) {
-  .square img {
-    height: 100%;
-    object-fit: cover;
-    object-position: center center;
-  }
+.label-btn {
+  padding: 9px 15px;
 }

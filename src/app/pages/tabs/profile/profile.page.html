@@ -1,82 +1,91 @@
 <ion-content>
   <div class="wrapper">
     <div>
-      <div class="user-info">
-        <ion-icon
-          *ngIf="!currentUser().photo"
-          class="default-photo"
-          name="person-circle-outline"
-        ></ion-icon>
-
-        <ion-avatar class="photo" *ngIf="currentUser().photo">
-          <img [src]="currentUser().photo" />
-        </ion-avatar>
-
-        <h5 class="ion-no-margin name">{{currentUser().fullName}}</h5>
-        <div class="active">
-          <ion-text
-            *ngIf="currentUser().license && currentUser().license.remainingDays"
-            color="primary"
-            >Miembro Activo</ion-text
-          >
-          <ion-text *ngIf="!currentUser().license" color="medium"
-            >Miembro Inactivo</ion-text
-          >
-        </div>
+      <div class="user-info row">
+        <ion-grid *ngIf="user$ | async as user">
+          <ion-row size="auto">
+            <ion-col style="vertical-align: bottom">
+              <ion-icon
+                *ngIf="!user.photo"
+                class="default-photo"
+                name="person-circle-outline"
+              ></ion-icon>
+              <ion-spinner
+                *ngIf="loadingPhoto"
+                class="photo-spinner"
+                color="secondary"
+              ></ion-spinner>
+              <ion-avatar class="photo" *ngIf="user.photo">
+                <img [src]="user.photo" />
+              </ion-avatar>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col align-items-center>
+              <span class="change-photo" (click)="onUploadPhotoClick()"
+                ><strong>Tomar/Seleccionar</strong></span
+              >
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col align-items-center>
+              <h5 class="ion-no-margin name">{{ user.fullName}}</h5>
+              <div class="active">
+                <ion-text>{{ user.email }}</ion-text>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </div>
-
       <div class="btn-container">
-        <!-- Administrar cuenta -->
-        <app-input-gradient
-          (click)="passwordRequired()"
-          icon="create-outline"
-          label="Administrar Cuenta"
-          type="button"
-        >
-        </app-input-gradient>
+        <ion-grid>
+          <ion-row class="btn" routerLink="admin-account">
+            <ion-col align-items-center class="bg-icon-btn" size="2">
+              <ion-icon
+                class="icon-btn"
+                src="../../../../assets/icon/wt_Icon list=Edit.svg"
+              ></ion-icon>
+            </ion-col>
 
-        <!-- Membresia -->
-        <app-input-gradient
-          routerLink="membership"
-          icon="star-outline"
-          label="Membresia"
-          type="button"
-        >
-        </app-input-gradient>
+            <ion-col align-items-start class="label-btn">
+              Administrar cuenta
+            </ion-col>
+          </ion-row>
+          <ion-row class="btn" routerLink="company">
+            <ion-col align-items-center class="bg-icon-btn" size="2">
+              <ion-icon
+                class="icon-btn"
+                src="../../../../assets/icon/wt_Icon list=Company.svg"
+              ></ion-icon>
+            </ion-col>
 
-        <!-- Ayuda -->
-        <app-input-gradient
-          routerLink="help"
-          icon="help-circle-outline"
-          label="Ayuda"
-          type="button"
-        >
-        </app-input-gradient>
+            <ion-col align-items-start class="label-btn">
+              Empresa asociada
+            </ion-col>
+          </ion-row>
+          <ion-row class="btn" routerLink="help">
+            <ion-col align-items-center class="bg-icon-btn" size="2">
+              <ion-icon
+                class="icon-btn"
+                src="../../../../assets/icon/wt_Icon list=Help.svg"
+              ></ion-icon>
+            </ion-col>
 
-        <!-- Términos y condiciones -->
-        <app-input-gradient
-          routerLink="terms-and-conditions"
-          icon="document-text-outline"
-          label="Términos y Condiciones"
-          type="button"
-        ></app-input-gradient>
+            <ion-col align-items-start class="label-btn"> Ayuda </ion-col>
+          </ion-row>
+          <ion-row class="btn" (click)="signOut()">
+            <ion-col align-items-center class="bg-icon-btn" size="2">
+              <ion-icon
+                class="icon-btn"
+                src="../../../../assets/icon/wt_Icon list=Log out.svg"
+              ></ion-icon>
+            </ion-col>
 
-        <!-- Políticas de privacidad -->
-        <app-input-gradient
-          routerLink="privacy-policies"
-          icon="shield-checkmark-outline"
-          label="Políticas de privacidad"
-          type="button"
-        ></app-input-gradient>
-
-        <!-- Cerrar sesión -->
-        <app-input-gradient
-          (click)="logOut()"
-          icon="log-out-outline"
-          label="Cerrar Sesión"
-          type="button"
-        >
-        </app-input-gradient>
+            <ion-col align-items-start class="label-btn">
+              Cerrar sesión
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </div>
     </div>
   </div>

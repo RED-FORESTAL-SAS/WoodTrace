@@ -1,98 +1,129 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormControl, Validators } from "@angular/forms";
-import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
-import { ModalController } from "@ionic/angular";
-import { User } from "src/app/models/user.model";
 import { FirebaseService } from "src/app/services/firebase.service";
 import { UtilsService } from "src/app/services/utils.service";
-import { PasswordRequiredComponent } from "src/app/shared/components/password-required/password-required.component";
 import { docTypes } from "src/assets/data/document-types";
-import { UpdatePasswordComponent } from "./components/update-password/update-password.component";
+import { generoTypes } from "src/assets/data/genero-types";
+import { WtUser } from "src/app/models/wt-user";
+import { UserService } from "src/app/services/user.service";
+import { Observable, Subscription } from "rxjs";
+import { take, tap } from "rxjs/operators";
 
 @Component({
   selector: "app-owner",
   templateUrl: "./owner.page.html",
   styleUrls: ["./owner.page.scss"],
 })
-export class OwnerPage implements OnInit {
+export class OwnerPage implements OnInit, OnDestroy {
   fullName = new FormControl("", [
     Validators.required,
     Validators.minLength(4),
   ]);
   email = new FormControl("", [Validators.required, Validators.email]);
-  docType = new FormControl("", [Validators.required]);
+  docType = new FormControl(0, [Validators.required]);
   docNumber = new FormControl("", [
     Validators.required,
     Validators.minLength(6),
   ]);
   photo = new FormControl("");
+  movil = new FormControl("", [Validators.required]);
+  fNacimiento = new FormControl(null, [Validators.required]);
+  genero = new FormControl("", [Validators.required]);
 
   docTypes = [];
-
-  user = {} as User;
+  generoTypes = [];
 
   loading: boolean;
   loadingPhoto: boolean;
 
+  private sbs: Subscription[] = [];
+
+  /** Observable with active license or null. */
+  public user$: Observable<WtUser | null>;
+
   constructor(
     private firebaseSvc: FirebaseService,
     private utilsSvc: UtilsService,
-    private modalController: ModalController
-  ) {}
+
+    private userService: UserService
+  ) {
+    this.user$ = this.userService.user;
+  }
 
   ngOnInit() {
     this.docTypes = docTypes;
+    this.generoTypes = generoTypes;
+    this.populateForm();
   }
 
-  ionViewWillEnter() {
-    this.user = this.utilsSvc.getCurrentUser();
-    this.getUser();
+  ngOnDestroy(): void {
+    this.sbs.forEach((s) => s.unsubscribe());
   }
 
-  /**
-   * We're setting the values of the form controls to the values of the user object
-   */
-  getUser() {
-    this.email.setValue(this.user.email);
-    this.email.disable();
-    this.fullName.setValue(this.user.fullName);
-    this.docType.setValue(this.user.docType);
-    this.docNumber.setValue(this.user.docNumber);
-    this.photo.setValue(this.user.photo);
+  populateForm() {
+    this.sbs.push(
+      this.userService.user
+        .pipe(
+          take(1),
+          tap({
+            next: (user) => {
+              this.email.setValue(user.email);
+              this.email.disable();
+              this.fullName.setValue(user.fullName);
+              this.docType.setValue(user.docType);
+              this.docNumber.setValue(user.docNumber);
+              this.photo.setValue(user.photo);
+              this.movil.setValue(user.movil);
+              this.fNacimiento.setValue(user.fNacimiento.toDate());
+              this.genero.setValue(user.genero);
+            },
+          })
+        )
+        .subscribe()
+    );
   }
 
   /**
    * It updates the user information in the database.
    */
   updateUser() {
-    this.user.fullName = this.fullName.value;
-    this.user.docType = this.docType.value;
-    this.user.docNumber = this.docNumber.value;
+    this.sbs.push(
+      this.userService.user
+        .pipe(
+          take(1),
+          tap({
+            next: async (user) => {
+              const patchData = {
+                ...user,
+                fullName: this.fullName.value,
+                docType: this.docType.value,
+                docNumber: this.docNumber.value,
+                movil: this.movil.value,
+                fNacimiento: this.fNacimiento.value,
+                genero: this.genero.value,
+              };
+              this.userService.patchUser(patchData);
 
-    this.utilsSvc.saveLocalStorage("user", this.user);
+              this.loading = true;
+              this.firebaseSvc.UpdateCollection("wt_users", patchData).then(
+                (res) => {
+                  this.utilsSvc.presentToast(" Usuario actualizada con éxito");
+                  this.loading = false;
+                },
+                (err) => {
+                  console.log(err);
 
-    this.loading = true;
-    this.firebaseSvc.UpdateCollection("users", this.user).then(
-      (res) => {
-        this.utilsSvc.presentToast("Actualizado con éxito");
-        this.loading = false;
-      },
-      (err) => {
-        this.utilsSvc.presentToast(
-          "No tienes conexión actualmente los datos se subiran una vez se restablesca la conexión"
-        );
-        this.loading = false;
-      }
+                  this.utilsSvc.presentToast(
+                    "No tienes conexión actualmente los datos se subiran una vez se restablesca la conexión"
+                  );
+                  this.loading = false;
+                }
+              );
+            },
+          })
+        )
+        .subscribe()
     );
-  }
-
-  async updatePassword() {
-    const modal = await this.modalController.create({
-      component: UpdatePasswordComponent,
-      cssClass: "modal-fink-app",
-    });
-
-    await modal.present();
   }
 
   /**
@@ -110,6 +141,15 @@ export class OwnerPage implements OnInit {
       return false;
     }
     if (this.docNumber.invalid) {
+      return false;
+    }
+    if (this.movil.invalid) {
+      return false;
+    }
+    // if (this.fNacimiento.invalid) {
+    //   return false;
+    // }
+    if (this.genero.invalid) {
       return false;
     }
 

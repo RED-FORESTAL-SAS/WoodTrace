@@ -1,17 +1,9 @@
-.wrapper {
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 70vh;
+.logo {
+  margin-top: 20px;
 }
 
 ion-item ion-label {
   font-size: 18px;
-}
-
-.swiper {
-  padding-bottom: 30px;
 }
 
 .btn-container {
@@ -20,22 +12,31 @@ ion-item ion-label {
   align-items: center;
 }
 
-.icon-slide {
-  font-size: 170px;
+.img-slide {
+  width: 300px;
+  height: 300px;
 }
 
 h1 {
-  font-weight: bold;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 36px;
 }
 
 h4 {
-  font-weight: 450;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 30px;
+  margin: 5px 20px;
 }
 
 h6 {
   font-weight: 400;
-  padding: 20px 20px 10px 20px;
-  margin: 0;
+  font-style: normal;
+  font-size: 16px;
+  line-height: 24px;
+  margin: 5px 20px 15px 20px;
 }
 
 .btn-gradient {

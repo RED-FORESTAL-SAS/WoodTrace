@@ -1,27 +1,29 @@
 .wrapper {
-  height: 80vh;
   display: flex;
   justify-content: center;
-  align-items: center;
 }
 
-ion-card {
-  color: var(--ion-text-dark-tint);
+.user-info {
+  position: absolute;
+  top: 0px;
+  height: 100px;
   width: 85vw;
-  height: 150px;
-  background: linear-gradient(
-    to right,
-    var(--ion-color-secondary),
-    var(--ion-color-primary)
-  );
-  box-shadow: none;
-  border-radius: 20px;
+  background: var(--ion-color-primary);
+  border-radius: 0px 0px 100px 100px;
+  text-align: center;
+  padding-top: 30px;
+  margin-bottom: 50px;
+}
+
+.btn-container {
+  position: relative;
+  top: 150px;
+  width: 85vw;
+  justify-content: center;
+}
+
+.icon-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  text-align: center;
-
-  ion-icon {
-    font-size: 80px;
-  }
 }

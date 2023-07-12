@@ -1,6 +1,6 @@
 <app-header
   backButton="/tabs/profile/admin-account"
-  title="Propietario"
+  title="Administrar cuenta"
 ></app-header>
 <ion-content>
   <div class="form">
@@ -32,6 +32,36 @@
     <div class="validators" *ngIf="email.dirty && email.errors">
       <span *ngIf="email.errors?.['required']">Ingresa tu email</span>
       <span *ngIf="email.errors?.['email']">Ingresa un email válido</span>
+    </div>
+
+    <!-- Móvil  -->
+    <app-input-gradient label="Celular" type="text" [formControlValue]="movil">
+    </app-input-gradient>
+    <div class="validators" *ngIf="movil.dirty && movil.errors">
+      <span *ngIf="movil.errors?.['required']">Ingresa tu móvil</span>
+    </div>
+
+    <app-input-gradient
+      [selectOptions]="generoTypes"
+      label="Genero"
+      type="select"
+      [formControlValue]="genero"
+    ></app-input-gradient>
+    <div class="validators" *ngIf="genero.touched && genero.errors">
+      <span *ngIf="genero.errors?.['required']">Selecciona un genero</span>
+    </div>
+
+    <!-- Fecha de nacimiento  -->
+    <app-input-gradient
+      type="date"
+      label="Fecha de nacimiento"
+      [formControlValue]="fNacimiento"
+    >
+    </app-input-gradient>
+    <div class="validators" *ngIf="fNacimiento.dirty && fNacimiento.errors">
+      <span *ngIf="fNacimiento.errors?.['required']"
+        >Ingresa tu fecha de nacimiento</span
+      >
     </div>
 
     <!-- Tipo de documento  -->
@@ -77,10 +107,6 @@
       <ion-button class="btn-loading" disabled mode="ios">
         <span><ion-spinner slot="end" color="dark"></ion-spinner></span>
       </ion-button>
-    </div>
-
-    <div class="change-password" (click)="updatePassword()">
-      Cambiar Contraseña
     </div>
   </div>
 </ion-content>

@@ -1,26 +1,37 @@
 <app-header
   (click)="logOut()"
   backButton="/login"
-  title="Verificar Email"
+  title="Registro"
 ></app-header>
 
 <ion-content>
-  <div class="wrapper ion-text-center">
-    <div>
-      <h4 class="ion-text-center ion-padding">
-        Te hemos enviado un correo a <strong>{{user.email}} </strong> con un
-        enlace para poder verificarlo
-      </h4>
-      <h6>
-        El correo podría haber llegado en la bandeja de Spam o No deseados
-      </h6>
-      <!-- Cerrar sesión -->
+  <ion-grid class="wrapper">
+    <ion-row style="margin: 20px">
+      <ion-col align-items-center>
+        <h3>Se ha enviado un correo de confirmación</h3>
+      </ion-col>
+    </ion-row>
 
-      <div class="btn-gradient">
-        <ion-button (click)="logOut()" mode="ios">
-          <span>Volver</span>
-        </ion-button>
-      </div>
-    </div>
-  </div>
+    <ion-row>
+      <ion-col>
+        <img src="../../../../assets/img/wt_Mail1.svg" />
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col align-items-center>
+        <h6 style="margin: 20px">
+          Por favor revisa en la bandeja de spam en caso de no recibir el correo
+        </h6>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col align-items-center>
+        <div class="btn-gradient">
+          <ion-button (click)="logOut()" mode="ios">
+            <span>Aceptar</span>
+          </ion-button>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

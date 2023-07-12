@@ -9,7 +9,6 @@ import { HowToUsePageRoutingModule } from "./how-to-use-routing.module";
 import { HowToUsePage } from "./how-to-use.page";
 import { SharedModule } from "src/app/shared/shared.module";
 import { SwiperModule } from "swiper/angular";
-import { StepperComponent } from "./stepper/stepper.component";
 
 @NgModule({
   imports: [
@@ -20,6 +19,6 @@ import { StepperComponent } from "./stepper/stepper.component";
     SharedModule,
     SwiperModule,
   ],
-  declarations: [HowToUsePage, StepperComponent],
+  declarations: [HowToUsePage],
 })
 export class HowToUsePageModule {}

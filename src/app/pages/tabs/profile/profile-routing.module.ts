@@ -9,37 +9,23 @@ const routes: Routes = [
     component: ProfilePage,
   },
   {
-    path: "membership",
+    path: "admin-account",
     loadChildren: () =>
-      import("./membership/membership.module").then(
-        (m) => m.MembershipPageModule
+      import("./admin-account/admin-account.module").then(
+        (m) => m.AdminAccountPageModule
+      ),
+  },
+  {
+    path: "company",
+    loadChildren: () =>
+      import("./admin-account/company/company.module").then(
+        (m) => m.CompanyPageModule
       ),
   },
   {
     path: "help",
     loadChildren: () =>
       import("./help/help.module").then((m) => m.HelpPageModule),
-  },
-  {
-    path: "terms-and-conditions",
-    loadChildren: () =>
-      import("./terms-and-conditions/terms-and-conditions.module").then(
-        (m) => m.TermsAndConditionsPageModule
-      ),
-  },
-  {
-    path: "privacy-policies",
-    loadChildren: () =>
-      import("./privacy-policies/privacy-policies.module").then(
-        (m) => m.PrivacyPoliciesPageModule
-      ),
-  },
-  {
-    path: "admin-account",
-    loadChildren: () =>
-      import("./admin-account/admin-account.module").then(
-        (m) => m.AdminAccountPageModule
-      ),
   },
 ];
 

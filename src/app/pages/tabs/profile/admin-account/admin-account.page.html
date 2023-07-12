@@ -1,53 +1,85 @@
 <app-header backButton="/tabs/profile" title="Administrar cuenta"></app-header>
+
 <ion-content>
-  <div class="wrapper">
-    <div>
-      <div class="btn-container">
-        <!-- Propietario -->
-        <app-input-gradient
-          routerLink="owner"
-          icon="create-outline"
-          label="Propietario"
-          type="button"
-        >
-        </app-input-gradient>
+  <div class="form">
+    <ion-list *ngIf="user$ | async as user">
+      <ion-item>
+        <ion-label position="stacked">Nombre</ion-label>
+        <ion-input [disabled]="true">{{ user.fullName }}</ion-input>
+      </ion-item>
 
-        <!-- Company -->
-        <app-input-gradient
-          routerLink="company"
-          icon="create-outline"
-          label="Empresa"
-          type="button"
-        >
-        </app-input-gradient>
+      <ion-item>
+        <ion-label position="stacked">Email</ion-label>
+        <ion-input [disabled]="true">{{ user.email }}</ion-input>
+      </ion-item>
 
-        <!-- Operators -->
-        <app-input-gradient
-          routerLink="operators"
-          icon="create-outline"
-          label="Operadores"
-          type="button"
-        >
-        </app-input-gradient>
+      <ion-item>
+        <ion-label position="stacked"> Celular</ion-label>
+        <ion-input [disabled]="true">{{ user.movil }}</ion-input>
+      </ion-item>
 
-        <!-- Properties -->
-        <app-input-gradient
-          routerLink="properties"
-          icon="create-outline"
-          label="Lotes"
-          type="button"
+      <ion-item>
+        <ion-label position="stacked">Fecha de nacimiento</ion-label>
+        <ion-input [disabled]="true"
+          >{{ user.fNacimiento | timestamp | date: 'dd-MM-yyyy' }}</ion-input
         >
-        </app-input-gradient>
+      </ion-item>
 
-        <!-- Devices -->
-        <app-input-gradient
-          routerLink="devices"
-          icon="create-outline"
-          label="Dispositivos Vinculados"
-          type="button"
-        >
-        </app-input-gradient>
-      </div>
-    </div>
+      <ion-item>
+        <ion-label position="stacked">Tipo de documento</ion-label>
+        <ion-input>{{ this.docType }}</ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Documento</ion-label>
+        <ion-input [disabled]="true">{{ user.docNumber }}</ion-input>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <div class="btn-container">
+    <ion-grid>
+      <ion-row class="btn" routerLink="membership">
+        <ion-col align-items-center class="bg-icon-btn" size="2">
+          <ion-icon
+            style="font-size: 24px"
+            src="../../../../assets/icon/wt_Icon list=license.svg"
+          ></ion-icon>
+        </ion-col>
+
+        <ion-col align-items-start class="label-btn"> Licencia </ion-col>
+      </ion-row>
+      <ion-row class="btn" routerLink="owner">
+        <ion-col align-items-center class="bg-icon-btn" size="2">
+          <ion-icon
+            style="font-size: 30px"
+            src="../../../../assets/icon/wt_Icon list=Edit.svg"
+          ></ion-icon>
+        </ion-col>
+
+        <ion-col align-items-start class="label-btn"> Editar perfil </ion-col>
+      </ion-row>
+      <ion-row class="btn">
+        <ion-col align-items-center class="bg-icon-btn" size="2">
+          <ion-icon
+            style="font-size: 25px"
+            src="../../../../assets/icon/wt_Icon list=password.svg"
+          ></ion-icon>
+        </ion-col>
+
+        <ion-col align-items-start class="label-btn" (click)="updatePassword()">
+          Cambiar contraseña
+        </ion-col>
+      </ion-row>
+      <ion-row class="btn" (click)="eliminarCuenta()">
+        <ion-col align-items-center class="bg-icon-btn" size="2">
+          <ion-icon
+            style="font-size: 20px"
+            src="../../../../assets/icon/wt_Icon list=delete.svg"
+          ></ion-icon>
+        </ion-col>
+
+        <ion-col align-items-start class="label-btn"> Eliminar cuenta </ion-col>
+      </ion-row>
+    </ion-grid>
   </div>
 </ion-content>

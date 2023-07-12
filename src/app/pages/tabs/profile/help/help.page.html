@@ -1,3 +1,55 @@
-<ion-content class="ion-padding">
-  <app-help-slider></app-help-slider>
+<app-header backButton="/tabs/profile" title="Ayuda"></app-header>
+<ion-content>
+  <div class="btn-container">
+    <ion-grid>
+      <ion-row class="btn" routerLink="help-desk">
+        <ion-col align-items-center class="bg-icon-btn" size="2">
+          <ion-icon
+            style="font-size: 30px"
+            src="../../../../assets/icon/wt_Icon list=Help.svg"
+          ></ion-icon>
+        </ion-col>
+
+        <ion-col align-items-start class="label-btn">
+          Cómo funciona WoodTracer
+        </ion-col>
+      </ion-row>
+      <ion-row class="btn" routerLink="contact-info">
+        <ion-col align-items-center class="bg-icon-btn" size="2">
+          <ion-icon
+            style="font-size: 32px"
+            src="../../../../assets/icon/wt_Icon list=Contacts.svg"
+          ></ion-icon>
+        </ion-col>
+
+        <ion-col align-items-start class="label-btn">
+          Información de contácto
+        </ion-col>
+      </ion-row>
+      <ion-row class="btn" routerLink="terms-and-conditions">
+        <ion-col align-items-center class="bg-icon-btn" size="2">
+          <ion-icon
+            style="font-size: 30px"
+            src="../../../../assets/icon/wt_Icon list=Legal.svg"
+          ></ion-icon>
+        </ion-col>
+
+        <ion-col align-items-start class="label-btn">
+          Términos y condiciones
+        </ion-col>
+      </ion-row>
+      <ion-row class="btn" routerLink="privacy-policies">
+        <ion-col align-items-center class="bg-icon-btn" size="2">
+          <ion-icon
+            style="font-size: 23px"
+            src="../../../../assets/icon/help_4.svg"
+          ></ion-icon>
+        </ion-col>
+
+        <ion-col align-items-start class="label-btn">
+          Políticas de privacidad
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
 </ion-content>

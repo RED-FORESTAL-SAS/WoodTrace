@@ -15,6 +15,9 @@ export interface User {
   fullName?: string;
   docType?: string;
   docNumber?: string;
+  genero?: string;
+  fNacimiento?: string;
+  movil?: string;
   license?: License;
 
   // ======Company data======

@@ -6,7 +6,7 @@
 }
 
 .p-logo {
-  padding-bottom: 80px;
+  padding-bottom: 40px;
 }
 
 .header {
@@ -14,8 +14,7 @@
 }
 
 .form {
-  padding-top: 20px;
-  width: 320px;
+  padding: 20px;
 }
 
 .btn-loading {
@@ -28,5 +27,12 @@
 
   ion-text {
     padding-top: 20px;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 19px;
   }
+}
+
+.invalid {
+  background: var(--ion-color-danger);
 }

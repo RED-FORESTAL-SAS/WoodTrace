@@ -9,31 +9,16 @@ const routes: Routes = [
     component: AdminAccountPage,
   },
   {
-    path: "owner",
+    path: "membership",
     loadChildren: () =>
-      import("./owner/owner.module").then((m) => m.OwnerPageModule),
-  },
-  {
-    path: "company",
-    loadChildren: () =>
-      import("./company/company.module").then((m) => m.CompanyPageModule),
-  },
-  {
-    path: "operators",
-    loadChildren: () =>
-      import("./operators/operators.module").then((m) => m.OperatorsPageModule),
-  },
-  {
-    path: "properties",
-    loadChildren: () =>
-      import("./properties/properties.module").then(
-        (m) => m.PropertiesPageModule
+      import("../membership/membership.module").then(
+        (m) => m.MembershipPageModule
       ),
   },
   {
-    path: "devices",
+    path: "owner",
     loadChildren: () =>
-      import("./devices/devices.module").then((m) => m.DevicesPageModule),
+      import("./owner/owner.module").then((m) => m.OwnerPageModule),
   },
 ];
 
