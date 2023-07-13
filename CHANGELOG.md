@@ -2,6 +2,11 @@
 
 # [RED-23] -2023-07-13 (Mario)
 
+- AnalysisFormPage: Fix para que se actualice el campo 'firstReport' en el WtUser, al crear el primer report.
+- capacitor.config.ts: Fix backgroundColor.
+
+# [RED-23] -2023-07-13 (Mario) (build 5)
+
 - Subir build 5 a GooglePlayConsole.
 - Splash: Hacer que se muestre hasta que la plataforma esté cargada.
 - HelpSlider: Ajustar las rutas de las imágenes, para estar seguros que se muestran desde los assets.

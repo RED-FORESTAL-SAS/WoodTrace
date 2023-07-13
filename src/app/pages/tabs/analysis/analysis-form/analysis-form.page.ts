@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { FormControl, Validators } from "@angular/forms";
 import { UtilsService } from "src/app/services/utils.service";
 import { Geolocation } from "@capacitor/geolocation";
@@ -28,7 +28,7 @@ import { docTypes } from "src/assets/data/document-types";
   templateUrl: "./analysis-form.page.html",
   styleUrls: ["./analysis-form.page.scss"],
 })
-export class AnalysisFormPage implements OnInit, OnDestroy {
+export class AnalysisFormPage {
   departamento = new FormControl("", [Validators.required]);
   municipio = new FormControl("", [Validators.required]);
   guia = new FormControl("", []);
@@ -64,22 +64,32 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
     private userService: UserService
   ) {
     this.user$ = this.userService.user;
-    // Wire up event handlers.
-    this.updateReportHandler();
-  }
 
-  ngOnInit() {
+    // Load form data.
     this.docTypes = docTypes;
     this.personaTypes = personaTypes;
     this.departamentos = pais.division.map((division) => division);
+  }
+
+  /**
+   * Build subscriptions/event handlers for component, every time Page is 'Entered'.
+   */
+  ionViewWillEnter(): void {
+    this.updateReportHandler();
     this.populateForm();
     this.onChanges();
   }
 
-  ngOnDestroy(): void {
+  /**
+   * Destroy subscriptions/event handlers for component, every time Page is 'Left'.
+   */
+  ionViewWillLeave(): void {
     this.sbs.forEach((s) => s.unsubscribe());
   }
 
+  /**
+   * Populate form with active report data.
+   */
   populateForm() {
     this.sbs.push(
       this.reportService.activeReport
@@ -87,10 +97,6 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
           take(1),
           tap({
             next: (report) => {
-              /**
-               * @todo @diana revisar el populate que si se esté poblando como debe y
-               * cómo hacemos para no duplicar este código.
-               */
               if (report.departamento !== "") {
                 const dpto = pais.division.find(
                   (depto) => depto.nombre === report.departamento
@@ -114,6 +120,9 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
     );
   }
 
+  /**
+   * Watch form fields changes.
+   */
   onChanges() {
     this.sbs.push(
       this.departamento.valueChanges.subscribe((v) => {
@@ -129,10 +138,16 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
     );
   }
 
+  /**
+   * Update report trigger function.
+   */
   public updateReport(): void {
     this.updateReportEvent.next(Date.now());
   }
 
+  /**
+   * Handler for updateReport event.
+   */
   private updateReportHandler(): void {
     this.sbs.push(
       this.updateReportEvent
@@ -169,17 +184,19 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
                 const patchData = {
                   firstReport: false,
                 };
-                await this.userService.patchUser(patchData, true).catch((e) => {
-                  if (e instanceof NoNetworkFailure) {
-                    this.utilsSvc.presentToast(
-                      "No se pudo guardar la información, por favor verifica tu conexión a internet."
-                    );
-                  } else {
-                    this.utilsSvc.presentToast(
-                      "Ocurrió un error al guardar. Por favor intente de nuevo."
-                    );
-                  }
-                });
+                await this.userService
+                  .patchUser(patchData, true, true)
+                  .catch((e) => {
+                    if (e instanceof NoNetworkFailure) {
+                      this.utilsSvc.presentToast(
+                        "No se pudo guardar la información, por favor verifica tu conexión a internet."
+                      );
+                    } else {
+                      this.utilsSvc.presentToast(
+                        "Ocurrió un error al guardar. Por favor intente de nuevo."
+                      );
+                    }
+                  });
                 this.utilsSvc.routerLink("/tabs/analysis/how-to-use");
               } else {
                 this.reportService.patchActiveWood(
