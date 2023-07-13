@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from "@angular/core";
+import { Component } from "@angular/core";
 import { UtilsService } from "src/app/services/utils.service";
 import { ReportService } from "src/app/services/report.service";
 import { UserService } from "src/app/services/user.service";
@@ -13,7 +13,7 @@ import { WtReport } from "src/app/models/wt-report";
   templateUrl: "./analysis.page.html",
   styleUrls: ["./analysis.page.scss"],
 })
-export class AnalysisPage implements OnDestroy {
+export class AnalysisPage {
   /** Observable with active license or null. */
   public license$: Observable<WtLicense | null>;
 
@@ -48,13 +48,20 @@ export class AnalysisPage implements OnDestroy {
     this.hasActiveReport$ = this.reportService.activeReport.pipe(
       map((report) => !!report)
     );
+  }
 
-    // Wire up event handlers.
+  /**
+   * Build subscriptions/event handlers for component, every time Page is 'Entered'.
+   */
+  ionViewWillEnter(): void {
     this.createNewReportHandler();
     this.continueReportHandler();
   }
 
-  ngOnDestroy(): void {
+  /**
+   * Destroy subscriptions/event handlers for component, every time Page is 'Left'.
+   */
+  ionViewWillLeave(): void {
     this.sbs.forEach((s) => s.unsubscribe());
     this.createNewReportEvent.complete();
     this.continueReportEvent.complete();

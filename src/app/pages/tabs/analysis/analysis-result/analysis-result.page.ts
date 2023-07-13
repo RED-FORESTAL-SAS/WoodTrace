@@ -10,7 +10,7 @@ import { ReportService } from "src/app/services/report.service";
   templateUrl: "./analysis-result.page.html",
   styleUrls: ["./analysis-result.page.scss"],
 })
-export class AnalysisResultPage implements OnInit, OnDestroy {
+export class AnalysisResultPage {
   especie = new FormControl("", []);
   especieReportada = new FormControl("", []);
   photo = new FormControl("");
@@ -24,18 +24,28 @@ export class AnalysisResultPage implements OnInit, OnDestroy {
 
   analysis: any;
   tree: number;
+
   constructor(private reportService: ReportService) {
     this.activeWood$ = this.reportService.activeWood;
   }
 
-  ngOnInit() {
+  /**
+   * Build subscriptions/event handlers for component, every time Page is 'Entered'.
+   */
+  ionViewWillEnter(): void {
     this.populateForm();
   }
 
-  ngOnDestroy(): void {
+  /**
+   * Destroy subscriptions/event handlers for component, every time Page is 'Left'.
+   */
+  ionViewWillLeave(): void {
     this.sbs.forEach((s) => s.unsubscribe());
   }
 
+  /**
+   * Populate form with ActiveWood data.
+   */
   populateForm() {
     this.sbs.push(
       this.reportService.activeWood

@@ -85,6 +85,7 @@ export class AnalysisFormPage {
    */
   ionViewWillLeave(): void {
     this.sbs.forEach((s) => s.unsubscribe());
+    this.updateReportEvent.complete();
   }
 
   /**
