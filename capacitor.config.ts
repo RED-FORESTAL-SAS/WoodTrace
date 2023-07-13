@@ -1,14 +1,14 @@
-import { CapacitorConfig } from '@capacitor/cli';
+import { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
-  appId: 'com.redforestal.finkapp',
-  appName: 'FinkApp',
-  webDir: 'www',
+  appId: "com.redforestal.finkapp",
+  appName: "FinkApp",
+  webDir: "www",
   bundledWebRuntime: false,
   plugins: {
     SplashScreen: {
       launchShowDuration: 3000,
-      launchAutoHide: true,
+      launchAutoHide: false,
       backgroundColor: "#ffffffff",
       androidSplashResourceName: "splash",
       androidScaleType: "CENTER_CROP",
@@ -21,7 +21,7 @@ const config: CapacitorConfig = {
       layoutName: "launch_screen",
       useDialog: false,
     },
-  }
+  },
 };
 
 export default config;

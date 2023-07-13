@@ -1,10 +1,13 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { FormControl, Validators } from "@angular/forms";
+import { Router } from "@angular/router";
 import { BehaviorSubject, Subscription } from "rxjs";
-import { filter, switchMap, take, tap } from "rxjs/operators";
+import { filter, switchMap, tap } from "rxjs/operators";
 import { WtUser } from "src/app/models/wt-user";
 import { FirebaseService } from "src/app/services/firebase.service";
+import { UserService } from "src/app/services/user.service";
 import { UtilsService } from "src/app/services/utils.service";
+import { Timestamp } from "src/app/types/timestamp.type";
 import {
   AuthAccountExistsWithDifferentCredentialFailure,
   AuthCredentialAlreadyInUseFailure,
@@ -24,7 +27,7 @@ import { generoTypes } from "src/assets/data/genero-types";
   templateUrl: "./sign-up.page.html",
   styleUrls: ["./sign-up.page.scss"],
 })
-export class SignUpPage implements OnInit, OnDestroy {
+export class SignUpPage {
   fullName = new FormControl("", [
     Validators.required,
     Validators.minLength(4),
@@ -52,81 +55,47 @@ export class SignUpPage implements OnInit, OnDestroy {
   /** Flag to indicate than registration process finished. */
   private registered = new BehaviorSubject<boolean>(false);
 
-  /** Suscriptions handler. */
-  private sbs: Subscription[] = [];
+  /** Subscription to AuthState */
+  private authStateSbs: Subscription | null = null;
 
   constructor(
     private firebaseSvc: FirebaseService,
-    private utilsSvc: UtilsService
+    private utilsSvc: UtilsService,
+    private userService: UserService,
+    private router: Router
   ) {
-    /* This is a listener that listens for the enter key to be pressed. If the enter key is pressed, and
-    the validator() function returns true, the createUser() function is called. */
+    // Bind enter key to 'createUser' method.
     window.addEventListener("keyup", (e) => {
       if (e.key == "Enter" && this.validator()) {
         this.createUser();
       }
     });
-  }
 
-  ngOnInit(): void {
+    // Init form fields.
     this.docTypes = docTypes;
     this.generoTypes = generoTypes;
+  }
 
-    // Watch Firebase AuthState. When registration finishes, redirect user to 'email verification'
-    // (if required) or to an internal app screen.
-    this.sbs.push(
-      this.registered
-        .asObservable()
-        .pipe(
-          filter((registered) => registered === true),
-          switchMap(() => this.firebaseSvc.authStateLegacy),
-          filter((user) => user !== null),
-          tap({
-            next: async (user) => {
-              // Save registered user to local Storage.
-              this.utilsSvc.saveLocalStorage("user", user);
+  /**
+   * Subscribe to AuthState.
+   *
+   * @dev Ionic loads components one time and never distroys theme.
+   * Subscription to AuthState should be here, since it must be initialized every time the app
+   * enters the login page.
+   */
+  ionViewWillEnter(): void {
+    this.watchAuthState();
+  }
 
-              // If not verified yet, redirect to email verification, instead redirect to app.
-              if (user.emailVerified === false) {
-                await this.firebaseSvc
-                  .sendEmailVerificationLegacy()
-                  .catch((e) => {});
-                this.firebaseSvc.signOut();
-                this.utilsSvc.routerLink("/email-verification");
-                this.resetForm();
-              } else {
-                this.utilsSvc.routerLink("/tabs/profile");
-                this.resetForm();
-              }
-            },
-            error: (e) => {
-              const failure = FailureUtils.errorToFailure(e);
-              FailureUtils.log(failure, "SignUp.ngOnInit");
-              if (failure instanceof NoNetworkFailure) {
-                this.utilsSvc.presentToast(
-                  "Parece que tienes problemas con la conexión a internet. Por favor intente de nuevo."
-                );
-              } else if (failure instanceof NotFoundFailure) {
-                this.utilsSvc.presentToast(
-                  "No encontramos el usuario en la app. Por favor regístrate para continuar."
-                );
-                this.firebaseSvc.signOut();
-              } else if (failure instanceof PermissionDeniedFailure) {
-                this.utilsSvc.presentToast(
-                  "Usuario sin privilegios para ejecutar esta acción."
-                );
-                this.firebaseSvc.signOut();
-              } else {
-                this.utilsSvc.presentToast(
-                  "Ocurrió un Error desconocido. Por favor intente de nuevo."
-                );
-              }
-              this.registered.next(false);
-            },
-          })
-        )
-        .subscribe()
-    );
+  /**
+   * Unsubscribe from AuthState.
+   *
+   * @dev Ionic loads components one time and never distroys theme.
+   * Unsubscribe from AuthState should be here, since it must be destroyed every time user leaves
+   * the login page. Otherwise, it will interfere with other pages logic.
+   */
+  ionViewWillLeave(): void {
+    this.unwatchAuthState();
   }
 
   /**
@@ -142,6 +111,14 @@ export class SignUpPage implements OnInit, OnDestroy {
   async createUser() {
     this.utilsSvc.presentLoading();
 
+    const fNacimientoString = this.fNacimiento.value.toString();
+    const fNacimientoArray = fNacimientoString.split("-");
+    const fNacimiento = new Date(
+      fNacimientoArray[0],
+      fNacimientoArray[1] - 1,
+      fNacimientoArray[2]
+    );
+
     try {
       let user: WtUser = {
         id: "",
@@ -152,11 +129,7 @@ export class SignUpPage implements OnInit, OnDestroy {
         docNumber: this.docNumber.value,
         emailVerified: false,
         genero: this.genero.value,
-        /**
-         * @todo @mario hay que ajustar la manera en la que se guarda la fecha de nacimiento en el
-         * registro y por qué la herramienta no funciona bien en el apk.
-         */
-        fNacimiento: this.fNacimiento.value,
+        fNacimiento: Timestamp.fromDate(fNacimiento),
         movil: this.movil.value,
         photo: this.photo.value,
         devices: [this.utilsSvc.getFromLocalStorage("currentDevice")],
@@ -166,7 +139,7 @@ export class SignUpPage implements OnInit, OnDestroy {
 
       // Register user against Firebase Authentication.
       const userCredential = await this.firebaseSvc
-        .createUser(user)
+        .createUserWithEmailAndPassword(user.email, user.password)
         .catch(async (e) => {
           const failure = FailureUtils.errorToFailure(e);
           FailureUtils.log(failure, "SignUpPage.createUser", user);
@@ -175,19 +148,21 @@ export class SignUpPage implements OnInit, OnDestroy {
             failure instanceof AuthCredentialAlreadyInUseFailure ||
             failure instanceof AuthEmailAlreadyInUseFailure
           ) {
-            return this.firebaseSvc.Login(user).catch((e) => {
-              const loginFailure = FailureUtils.errorToFailure(e);
-              if (loginFailure instanceof AuthWrongPasswordFailure) {
-                // Password must be the same!
-                throw new Error(
-                  "Ya estás registrado en Red Forestal pero tu contraseña no es válida. Corrígela para continuar."
-                );
-              } else {
-                throw new Error(
-                  "Ocurrión un error desconocido. Por favor intente de nuevo."
-                );
-              }
-            });
+            return this.userService
+              .emailPasswordLogin(user.email, user.password)
+              .catch((e) => {
+                const loginFailure = FailureUtils.errorToFailure(e);
+                if (loginFailure instanceof AuthWrongPasswordFailure) {
+                  // Password must be the same!
+                  throw new Error(
+                    "Ya estabas registrado en Red Forestal. Por favor inicia sesión para continuar."
+                  );
+                } else {
+                  throw new Error(
+                    "Ocurrión un error desconocido. Por favor intente de nuevo."
+                  );
+                }
+              });
 
             // If account already exists with different credentials.
           } else if (
@@ -210,31 +185,18 @@ export class SignUpPage implements OnInit, OnDestroy {
           }
         });
 
-      // Validate if user already exists to prevent registration form to serve as an 'update' form.
-      const userExists = await this.firebaseSvc
-        .getDataById("wt_users", userCredential.user.uid)
-        .valueChanges()
-        .pipe(take(1))
-        .toPromise()
-        .catch((e) => null);
-
-      if (!userExists) {
-        // Create user on 'wt_users' collection and local storage.
-        console.log(user, userCredential.user.uid);
-        delete user.password;
-        await this.firebaseSvc
-          .addToCollectionById("wt_users", {
-            ...user,
-            id: userCredential.user.uid,
-          })
-          // If user creation fails, logout and ask user to retry.
-          .catch(async (e) => {
-            this.firebaseSvc.signOut().catch((e) => {});
-            throw new Error(
-              "Ocurrión un error durante el proceso de registro. Por favor intente de nuevo."
-            );
-          });
-      }
+      // Create user in database if it doesn´t exist.
+      await this.userService
+        .createUser({
+          ...user,
+          id: userCredential.user.uid,
+        })
+        .catch(async (e) => {
+          this.userService.signOut().catch((e) => {});
+          throw new Error(
+            "Ocurrión un error durante el proceso de registro. Por favor intente de nuevo."
+          );
+        });
 
       // Mark flag 'registered' to trigger AuthState subscription.
       this.registered.next(true);
@@ -242,6 +204,58 @@ export class SignUpPage implements OnInit, OnDestroy {
       this.utilsSvc.presentToast(e);
     }
     this.utilsSvc.dismissLoading();
+  }
+
+  /**
+   * Watches if user is registered to get AuthState. Then redirects user to 'email verification' or
+   * 'profile' screen, depending on email verification status.
+   */
+  watchAuthState(): void {
+    this.authStateSbs = this.registered
+      .asObservable()
+      .pipe(
+        filter((registered) => registered === true),
+        switchMap(() => this.userService.authState),
+        filter((user) => user !== null),
+        tap({
+          next: async (user) => {
+            // If not verified yet, redirect to email verification, instead redirect to app.
+            if (user.emailVerified === false) {
+              await this.userService.sendEmailVerification().catch((e) => {});
+              this.router.navigate(["/email-verification"]);
+              this.resetForm();
+            } else {
+              this.router.navigate(["/tabs/profile"]);
+              this.resetForm();
+            }
+          },
+          error: (e) => {
+            const failure = FailureUtils.errorToFailure(e);
+            FailureUtils.log(failure, "SignUp.ngOnInit");
+            if (failure instanceof NoNetworkFailure) {
+              this.utilsSvc.presentToast(
+                "Parece que tienes problemas con la conexión a internet. Por favor intente de nuevo."
+              );
+            } else if (failure instanceof NotFoundFailure) {
+              this.utilsSvc.presentToast(
+                "No encontramos el usuario en la app. Por favor regístrate para continuar."
+              );
+              this.userService.signOut();
+            } else if (failure instanceof PermissionDeniedFailure) {
+              this.utilsSvc.presentToast(
+                "Usuario sin privilegios para ejecutar esta acción."
+              );
+              this.userService.signOut();
+            } else {
+              this.utilsSvc.presentToast(
+                "Ocurrió un Error desconocido. Por favor intente de nuevo."
+              );
+            }
+            this.registered.next(false);
+          },
+        })
+      )
+      .subscribe();
   }
 
   /**
@@ -293,9 +307,12 @@ export class SignUpPage implements OnInit, OnDestroy {
   /**
    * Unsubscribe.
    */
-  ngOnDestroy(): void {
+  unwatchAuthState(): void {
+    if (this.authStateSbs !== null) {
+      this.authStateSbs.unsubscribe();
+      this.authStateSbs = null;
+    }
     this.registered.next(false);
     this.registered.complete();
-    this.sbs.forEach((s) => s.unsubscribe());
   }
 }

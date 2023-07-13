@@ -1,3 +1,7 @@
+/**
+ * @todo @diana Borrar esto. No se usa.
+ */
+
 export const helpSlides = [
   {
     title: "¡Comencemos!",

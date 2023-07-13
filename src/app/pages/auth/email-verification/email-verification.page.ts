@@ -1,28 +1,20 @@
-import { Component, OnInit } from "@angular/core";
-import { WtUser } from "src/app/models/wt-user";
-import { FirebaseService } from "src/app/services/firebase.service";
-import { UtilsService } from "src/app/services/utils.service";
+import { Component } from "@angular/core";
+import { Router } from "@angular/router";
+import { UserService } from "src/app/services/user.service";
 
 @Component({
   selector: "app-email-verification",
   templateUrl: "./email-verification.page.html",
   styleUrls: ["./email-verification.page.scss"],
 })
-export class EmailVerificationPage implements OnInit {
-  user = {} as WtUser;
+export class EmailVerificationPage {
+  constructor(private router: Router, private userService: UserService) {}
 
-  constructor(
-    private utilsSvc: UtilsService,
-    private firebaseSvc: FirebaseService
-  ) {}
-
-  ngOnInit() {}
-
-  ionViewWillEnter() {
-    this.user = this.utilsSvc.getCurrentUser();
-  }
-
-  logOut() {
-    this.firebaseSvc.logout();
+  /**
+   * Redirect to login page.
+   */
+  public async goToLogin(): Promise<void> {
+    await this.userService.signOut();
+    this.router.navigate(["/login"]);
   }
 }

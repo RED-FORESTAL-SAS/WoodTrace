@@ -1,38 +1,44 @@
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { Observable } from 'rxjs';
-import { User } from '../models/user.model';
-import { UtilsService } from '../services/utils.service';
+import { Injectable } from "@angular/core";
+import {
+  ActivatedRouteSnapshot,
+  CanActivate,
+  Router,
+  RouterStateSnapshot,
+  UrlTree,
+} from "@angular/router";
+import { Observable } from "rxjs";
+import { map, take } from "rxjs/operators";
+import { UserService } from "../services/user.service";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class NoVerifyEmailGuard implements CanActivate {
-
-  constructor(private utilsService: UtilsService){}
-
+  constructor(private userService: UserService, private router: Router) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    state: RouterStateSnapshot
+  ):
+    | Observable<boolean | UrlTree>
+    | Promise<boolean | UrlTree>
+    | boolean
+    | UrlTree {
+    return this.userService.authState.pipe(
+      take(1),
+      map((user) => {
+        if (!user) {
+          this.router.navigate(["/login"]);
+          return false;
+        }
 
+        if (user.emailVerified) {
+          this.router.navigate(["/tabs/profile"]);
+          return false;
+        }
 
-   let user: User = this.utilsService.getCurrentUser(); 
-
- 
-   if(user && !user.emailVerified){
-    return true;
-   }
-
-   if(user && user.emailVerified){
-    this.utilsService.routerLink('/tabs/profile');
-    return false;
-   }
-   
-   if(!user){
-    this.utilsService.routerLink('/login');
-    return false;
-   }
-   
+        return true;
+      })
+    );
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy, Optional } from "@angular/core";
+import { Injectable, OnDestroy } from "@angular/core";
 import { LocalStorageRepository } from "../infrastructure/local-storage.repository";
 import { CURRENT_USER_LS_KEY } from "../constants/current-user-ls-key.constant";
 import { UserStore } from "../state/user.store";
@@ -7,7 +7,9 @@ import { Observable, Subscription, of } from "rxjs";
 import {
   catchError,
   distinctUntilChanged,
+  filter,
   map,
+  skip,
   switchMap,
   tap,
   withLatestFrom,
@@ -52,31 +54,30 @@ export class UserService implements OnDestroy {
     this.sbs.push(
       // Watch for changes in License and retrieve/clean Company.
       this.license
-        .pipe(distinctUntilChanged((prev, curr) => prev?.id === curr?.id))
+        .pipe(
+          filter((license) => !!license), // Avoid null emissionS.
+          distinctUntilChanged((prev, curr) => prev?.id === curr?.id)
+        )
         .subscribe((license: WtLicense) => {
-          if (license) {
-            this.retrieveUserCompany().catch((e) => {
-              /**
-               * @todo @mario Mostrar los errores como debe ser.
-               */
-            });
-          } else {
-            this.patchCompany(null);
-          }
+          this.retrieveUserCompany().catch((e) => {
+            this.patchError(e);
+          });
         }),
 
       // Watch for changes in User and retrieve/clean License.
       this.user
-        .pipe(distinctUntilChanged((prev, curr) => prev?.id === curr?.id))
+        .pipe(
+          skip(1), // Avoid first null emission.
+          distinctUntilChanged((prev, curr) => prev?.id === curr?.id)
+        )
         .subscribe((user: WtUser | null) => {
           if (user) {
             this.retrieveActiveLicense().catch((e) => {
-              /**
-               * @todo @mario Mostrar los errores como debe ser.
-               */
+              this.patchError(e);
             });
           } else {
             this.patchLicense(null);
+            this.patchCompany(null);
           }
         })
     );
@@ -86,7 +87,6 @@ export class UserService implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log("Running UserService OnDestroy");
     this.sbs.forEach((s) => s.unsubscribe());
   }
 
@@ -109,6 +109,13 @@ export class UserService implements OnDestroy {
    */
   get user(): Observable<WtUser | null> {
     return this.store.state$.pipe(map((state) => state.user));
+  }
+
+  /**
+   * Getter for error from state.
+   */
+  get error(): Observable<Failure | null> {
+    return this.store.state$.pipe(map((state) => state.error));
   }
 
   /**
@@ -223,6 +230,15 @@ export class UserService implements OnDestroy {
   }
 
   /**
+   * Patches error in state.
+   *
+   * @param error
+   */
+  patchError(error: Failure | null): void {
+    this.store.patch({ error: error });
+  }
+
+  /**
    * Uploads photo to storage and updates user photo in state and database.
    *
    * @param photo {Photo} object with dataUrl to upload.
@@ -250,7 +266,9 @@ export class UserService implements OnDestroy {
   private async retrieveAuthenticatedUser(): Promise<void> {
     // Watch auth state for changes to update user.
     this.sbs.push(
-      this.firebase.authState // The observer is only triggered on sign-in or sign-out!
+      // Authstate observer is only triggered on sign-in, sign-out, or first load. Will be available
+      // even when device is offline for an already authenticated user.
+      this.firebase.authState
         .pipe(
           catchError((e) => {
             // Transform Firebase Auth errors into app Failures.
@@ -258,18 +276,17 @@ export class UserService implements OnDestroy {
             throw failure;
           }),
           switchMap((firebaseUser: FirebaseUser | null) => {
-            // If authState didn't return a user, returns null.
+            // If authState returns null means that there is no session open. If session is open,
+            // FirebaseUser is returned even when device is offline.
             if (!firebaseUser) {
               return of(null);
-
               /**
                * @dev Do not throw Failures here because it will cause the app to fail when user sings out.
-               *
-               * throw new UnauthenticatedFailure("Usuario no autenticado.");
                */
             }
 
-            // Retrieve user from database, to get the latest data.
+            // Retrieve user from database, to get the latest data. Returns 'undefined' if document
+            // doesn't exist or if there is a network error.
             return this.firebase
               .doc$<WtUser>(`${USERS_FB_COLLECTION}/${firebaseUser.uid}`)
               .pipe(
@@ -279,59 +296,61 @@ export class UserService implements OnDestroy {
                   throw failure;
                 }),
                 distinctUntilChanged((prev, curr) => prev.id === curr.id), // Avoid duplicated emissions.
-                map((user) => ({
-                  ...user,
-                  emailVerified: firebaseUser.emailVerified,
-                }))
+                map((user) => {
+                  // If returned user is undefined, check if user in localstoage is same as user returned
+                  // by authentication and return it. Otherwise clean localStorage user and return undefined.
+                  if (!user) {
+                    const localstorageUser = this.fetchUserFromLocalStorage();
+                    if (
+                      localstorageUser &&
+                      localstorageUser.id === firebaseUser.uid
+                    ) {
+                      return localstorageUser;
+                    }
+
+                    if (localstorageUser) {
+                      this.saveUserToLocalStorage(null);
+                    }
+                    return user;
+                  }
+
+                  // If user is a valid WtUser, return it with updated 'emailVerified' property.
+                  return {
+                    ...user,
+                    emailVerified: firebaseUser.emailVerified,
+                  };
+                })
               );
           }),
           withLatestFrom(this.online),
-          map(([user, online]: [WtUser | undefined, boolean]) => {
-            // If user was found patch state and localstorage.
-            if (user) {
-              return [user, true];
-            }
-
-            // Otherwise, if user was not found, try to retrieve it from local storage.
-            const localStorageUser = this.fetchUserFromLocalStorage();
-            // If localstorage user was found, patch state but not localstorage.
-            if (localStorageUser) {
-              return [localStorageUser, false];
-            }
-
-            // If there was no user in localstorage, check if there is internet connection
-            // then throw appropriated Failure.
-            if (!online) {
+          map(([user, online]: [null | WtUser | undefined, boolean]) => {
+            // If user is undefined, could be a network error, so check if device is online.
+            if (user === undefined && !online) {
               throw new NoNetworkFailure("No hay conexión a internet");
-            } else {
-              throw new NotFoundFailure("Usuario no encontrado.");
             }
+
+            // If user is null, there is no session open.
+            // If user is undefined, user exists in Firebase Auth but not in Firestore.
+            // If user is a valid User, its ok.
+            // Either case user must be patched to state.
+            return user ? user : null;
           }),
           tap({
-            next: async ([user, patchLocalStorage]: [
-              WtUser | undefined,
-              boolean
-            ]) => {
-              await this.patchUser(user, patchLocalStorage);
+            next: async (user: WtUser | null) => {
+              await this.patchUser(user);
             },
             error: async (e) => {
-              // If device is offline, do not change state and fail silently.
               if (
-                e instanceof AuthNetworkRequestFailedFailure ||
-                e instanceof NoNetworkFailure
-              ) {
-                return;
-
-                // If user is unauthenticated or not found, clean user.
-              } else if (
                 e instanceof UnauthenticatedFailure ||
                 e instanceof NotFoundFailure
               ) {
+                this.patchError(e);
                 await this.patchUser(null);
                 return;
 
                 // Otherwise, just console log error if in development mode.
               } else {
+                this.patchError(e);
                 if (!environment.production) {
                   console.groupCollapsed(`🏹 [UserService error]`);
                   console.log(
@@ -368,7 +387,7 @@ export class UserService implements OnDestroy {
       const now = new Date().getTime();
       const ends = (license.ends as Timestamp).toDate().getTime();
 
-      // If active, path it in state and exit.
+      // If active, patch it in state and exit.
       if (ends <= now) {
         if (license.id !== this.store.state.license?.id) {
           this.patchLicense(license);
@@ -401,9 +420,19 @@ export class UserService implements OnDestroy {
         // If not found or error, clean license from state.
         if (this.store.state.license !== null) this.patchLicense(null);
 
-        // Throw Failures.
+        // Set Failure in UserState.
         const failure = FailureUtils.errorToFailure(e);
-        throw failure;
+        this.patchError(failure);
+
+        if (!environment.production) {
+          console.groupCollapsed(`🏹 [UserService error]`);
+          console.log(
+            "Ocurrió un error al intentar obtener la licencia activa del usuario autenticado."
+          );
+          console.log("error", e);
+          console.log("failure", failure);
+          console.groupEnd();
+        }
       });
   }
 
@@ -417,8 +446,25 @@ export class UserService implements OnDestroy {
   public async emailPasswordLogin(
     email: string,
     password: string
-  ): Promise<UserCredential | void> {
+  ): Promise<UserCredential> {
     return this.firebase.emailPasswordLogin(email, password);
+  }
+
+  /**
+   * Checks if user already exists in database. If it doesn't, creates it from recieved WtUser object.
+   *
+   * @param user
+   * @returns
+   */
+  public async createUser(user: WtUser): Promise<void> {
+    const docPath = `${USERS_FB_COLLECTION}/${user.id}`;
+    const userExists = await this.firebase
+      .fetchDoc(docPath)
+      .then((doc) => !!doc)
+      .catch((e) => null);
+    if (!userExists) {
+      return this.firebase.set(docPath, user);
+    }
   }
 
   /**
@@ -495,7 +541,17 @@ export class UserService implements OnDestroy {
 
         // Throw Failures.
         const failure = FailureUtils.errorToFailure(e);
-        throw failure;
+        this.patchError(failure);
+
+        if (!environment.production) {
+          console.groupCollapsed(`🏹 [UserService error]`);
+          console.log(
+            "Ocurrió un error al intentar obtener la compañía asociada al usuario autenticado."
+          );
+          console.log("error", e);
+          console.log("failure", failure);
+          console.groupEnd();
+        }
       });
   }
 

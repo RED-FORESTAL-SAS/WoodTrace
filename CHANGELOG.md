@@ -1,5 +1,15 @@
 # CHANGELOG
 
+# [RED-23] -2023-07-13 (Mario)
+
+- Subir build 5 a GooglePlayConsole.
+- Splash: Hacer que se muestre hasta que la plataforma esté cargada.
+- HelpSlider: Ajustar las rutas de las imágenes, para estar seguros que se muestran desde los assets.
+- Login: Fix comportamientos extraños.
+- SingIn: Fix comportamientos extraños.
+- EmailVerification: Fix comportamientos extraños.
+- UserState/Service: Mejorar el manejo del state durante la autenticación.
+
 ## [RED-22] - 2023-06-29 (Diana)
 
 - Ajustar tamaño de los items de especie-modal.

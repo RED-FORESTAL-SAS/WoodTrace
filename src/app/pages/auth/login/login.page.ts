@@ -1,10 +1,8 @@
-import { Component, OnDestroy } from "@angular/core";
+import { Component } from "@angular/core";
 import { FormControl, Validators } from "@angular/forms";
-import { User } from "src/app/models/user.model";
-import { FirebaseService } from "src/app/services/firebase.service";
 import { UtilsService } from "src/app/services/utils.service";
-import { BehaviorSubject, combineLatest, Subscription } from "rxjs";
-import { filter, tap } from "rxjs/operators";
+import { BehaviorSubject, Observable, Subscription } from "rxjs";
+import { tap } from "rxjs/operators";
 import {
   AuthInvalidEmailFailure,
   AuthNetworkRequestFailedFailure,
@@ -27,14 +25,13 @@ import { Router } from "@angular/router";
   templateUrl: "./login.page.html",
   styleUrls: ["./login.page.scss"],
 })
-export class LoginPage implements OnDestroy {
+export class LoginPage {
   email = new FormControl("", [Validators.required, Validators.email]);
   password = new FormControl("", [Validators.required]);
 
-  loading: boolean;
-
   /** Flag to indicate that user is currently login In. */
-  private loginIn = new BehaviorSubject<boolean>(false);
+  private loginIn = new BehaviorSubject<boolean>(true);
+  public loginIn$: Observable<boolean>;
 
   /** Subscription to AuthState */
   private authStateSbs: Subscription | null = null;
@@ -44,17 +41,37 @@ export class LoginPage implements OnDestroy {
     private userService: UserService,
     private router: Router
   ) {
-    /**
-     * @dev Listens for the enter key to be pressed. If the enter key is pressed, login() function
-     * is called
-     */
+    this.loginIn$ = this.loginIn.asObservable();
+
+    // Bind enter key to 'login' method.
     window.addEventListener("keyup", (e) => {
       if (e.key == "Enter" && this.validator()) {
         this.login();
       }
     });
+  }
 
+  /**
+   * Subscribe to AuthState.
+   *
+   * @dev Ionic loads components one time and never distroys theme.
+   * Subscription to AuthState should be here, since it must be initialized every time the app
+   * enters the login page.
+   */
+  ionViewWillEnter(): void {
+    this.loginIn.next(true);
     this.watchAuthState();
+  }
+
+  /**
+   * Unsubscribe from AuthState.
+   *
+   * @dev Ionic loads components one time and never distroys theme.
+   * Unsubscribe from AuthState should be here, since it must be destroyed every time user leaves
+   * the login page. Otherwise, it will interfere with other pages logic.
+   */
+  ionViewWillLeave(): void {
+    this.unwatchAuthState();
   }
 
   /**
@@ -62,8 +79,6 @@ export class LoginPage implements OnDestroy {
    */
   login(): void {
     this.loginIn.next(true);
-    this.loading = true;
-
     this.userService
       .emailPasswordLogin(this.email.value, this.password.value)
       .catch((e) => {
@@ -71,7 +86,6 @@ export class LoginPage implements OnDestroy {
         FailureUtils.log(failure, "LoginPage.ngOnInit");
 
         this.loginIn.next(false);
-        this.loading = false;
 
         if (
           failure instanceof AuthNetworkRequestFailedFailure ||
@@ -111,76 +125,75 @@ export class LoginPage implements OnDestroy {
    * (if required) or to an internal app screen.
    */
   watchAuthState(): void {
-    this.authStateSbs = combineLatest([
-      this.userService.authState,
-      this.loginIn.asObservable(),
-    ])
+    this.authStateSbs = this.userService.authState
       .pipe(
-        // Only hear authState during active/valid user login action.
-        filter(([user, loginIn]: [WtUser, boolean]) => {
-          return user !== null && loginIn === true;
-        }),
         tap({
-          next: async ([user, loginIn]: [WtUser, boolean]) => {
-            // Si el usuario no está activo, no permitirle entrar.
+          next: async (user: WtUser) => {
+            // If user is null, do nothing.
+            if (user === null) {
+              if (this.loginIn.value) this.loginIn.next(false);
+              return;
+            }
+
+            // If user is not active, kick him out.
             if (!user.activo) {
               this.utilsSvc.presentToast(
                 "Usuario sin privilegios para ejecutar esta acción."
               );
               await this.userService.signOut();
-              this.loading = false;
-              this.loginIn.next(false);
+              if (this.loginIn.value) this.loginIn.next(false);
               return;
             }
 
-            this.userService.patchUser(user);
-
-            if (!user.emailVerified) {
-              this.unwatchAuthState();
-              await this.userService.sendEmailVerification();
-              await this.router.navigate(["/email-verification"]);
-            } else {
-              this.unwatchAuthState();
+            // If user has verified his email, let him in.
+            if (!!user.emailVerified) {
               await this.router.navigate(["/tabs/profile"]);
+              if (this.loginIn.value) this.loginIn.next(false);
             }
 
-            this.loading = false;
-            this.loginIn.next(false);
+            /**
+             * @todo @mario User should be redirected to email verification page. He should not be
+             * trying to login again, since there is already a session open.
+             *
+             * If he showld be allowed, put code inside this if statement: if (loginIn) {...}
+             */
+
+            // If user is performing a login and has not verified his email, send him a verification
+            // email and redirect to email-verification page. If he returns to login he wont be
+            // redirected again.
+            await this.userService.sendEmailVerification();
+            await this.router.navigate(["/email-verification"]);
+            if (this.loginIn.value) this.loginIn.next(false);
           },
           error: async (e) => {
-            if (this.loginIn.value) {
-              const failure = FailureUtils.errorToFailure(e);
-              FailureUtils.log(failure, "LoginPage.ngOnInit");
-              if (failure instanceof NoNetworkFailure) {
-                this.utilsSvc.presentToast(
-                  "Parece que tienes problemas con la conexión a internet. Por favor intente de nuevo."
-                );
+            const failure = FailureUtils.errorToFailure(e);
+            FailureUtils.log(failure, "LoginPage.ngOnInit");
+            if (failure instanceof NoNetworkFailure) {
+              this.utilsSvc.presentToast(
+                "Parece que tienes problemas con la conexión a internet. Por favor intenta de nuevo."
+              );
 
-                // If user exists in Firebase Auth, but not in user collection (already registered
-                // in Red Forestal).
-              } else if (failure instanceof NotFoundFailure) {
-                this.utilsSvc.presentToast(
-                  "Por favor regístrate para acceder."
-                );
-                await this.userService.signOut();
-                this.resetForm();
-              } else if (failure instanceof PermissionDeniedFailure) {
-                this.utilsSvc.presentToast(
-                  "Usuario sin privilegios para ejecutar esta acción."
-                );
-                await this.userService.signOut();
-                this.resetForm();
-              } else {
-                this.utilsSvc.presentToast(
-                  "Ocurrió un Error desconocido. Por favor intente de nuevo."
-                );
-                await this.userService.signOut();
-                this.resetForm();
-              }
-
-              this.loading = false;
-              this.loginIn.next(false);
+              // If user exists in Firebase Auth, but not in user collection (already registered
+              // in Red Forestal).
+            } else if (failure instanceof NotFoundFailure) {
+              this.utilsSvc.presentToast("Por favor regístrate para acceder.");
+              await this.userService.signOut();
+              this.resetForm();
+            } else if (failure instanceof PermissionDeniedFailure) {
+              this.utilsSvc.presentToast(
+                "Usuario sin privilegios para ejecutar esta acción."
+              );
+              await this.userService.signOut();
+              this.resetForm();
+            } else {
+              this.utilsSvc.presentToast(
+                "Ocurrió un Error desconocido. Por favor intente de nuevo."
+              );
+              await this.userService.signOut();
+              this.resetForm();
             }
+
+            this.loginIn.next(false);
           },
         })
       )
@@ -189,20 +202,18 @@ export class LoginPage implements OnDestroy {
 
   /**
    * Stops watching Firebase AuthState.
-   *
-   * This is required, since this component never gets destroy when SingUpPage is open. This
-   * replaces ngOnInit and ngOnDestroy component behaviour.
    */
-  unwatchAuthState() {
+  unwatchAuthState(): void {
     if (this.authStateSbs !== null) {
       this.authStateSbs.unsubscribe();
       this.authStateSbs = null;
     }
     this.loginIn.next(false);
+    this.loginIn.complete();
   }
 
   /**
-   * The resetForm() function resets the email and password form controls
+   * Resets the email and password form controls
    */
   resetForm(): void {
     this.email.reset();
@@ -215,20 +226,10 @@ export class LoginPage implements OnDestroy {
    * @returns boolean.
    */
   validator(): boolean {
-    if (this.email.invalid) {
-      return false;
-    }
-    if (this.password.invalid) {
+    if (this.email.invalid || this.password.invalid) {
       return false;
     }
 
     return true;
-  }
-
-  /**
-   * Unsubscribe.
-   */
-  ngOnDestroy(): void {
-    this.unwatchAuthState();
   }
 }

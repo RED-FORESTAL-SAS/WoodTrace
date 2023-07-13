@@ -36,14 +36,14 @@
         </div>
 
         <!-- Button -->
-        <div *ngIf="!loading" class="btn-gradient">
+        <div *ngIf="(loginIn$ | async) === false" class="btn-gradient">
           <ion-button (click)="login()" [disabled]="!validator()" mode="ios">
             <span>Iniciar Sesión</span>
           </ion-button>
         </div>
 
         <!-- Button Loading-->
-        <div *ngIf="loading" class="btn-gradient">
+        <div *ngIf="(loginIn$ | async) === true" class="btn-gradient">
           <ion-button class="btn-loading" disabled mode="ios">
             <span><ion-spinner slot="end" color="dark"></ion-spinner></span>
           </ion-button>

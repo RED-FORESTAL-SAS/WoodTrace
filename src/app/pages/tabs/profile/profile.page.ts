@@ -7,7 +7,6 @@ import { WtUser } from "src/app/models/wt-user";
 import { UserService } from "src/app/services/user.service";
 import { UtilsService } from "src/app/services/utils.service";
 import { CameraService } from "src/app/services/camera.service";
-import { Router } from "@angular/router";
 
 @Component({
   selector: "app-profile",

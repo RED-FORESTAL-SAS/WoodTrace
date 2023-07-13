@@ -40,6 +40,7 @@ import {
   getDocs,
   limit,
   query,
+  setDoc,
   updateDoc,
 } from "@angular/fire/firestore";
 import {
@@ -55,6 +56,7 @@ import { Photo } from "./camera.service";
 import {
   Auth,
   authState,
+  createUserWithEmailAndPassword,
   sendEmailVerification,
   signInWithEmailAndPassword,
   signOut,
@@ -141,7 +143,6 @@ export class FirebaseService {
    * autentica al usuario en firebase auth
    * @deprecated Este método tiene dependiencas desactualizadas.
    */
-
   createUser(user: WtUser) {
     return this.authLegacy.createUserWithEmailAndPassword(
       user.email,
@@ -332,8 +333,22 @@ export class FirebaseService {
   public async emailPasswordLogin(
     email: string,
     password: string
-  ): Promise<UserCredential | void> {
+  ): Promise<UserCredential> {
     return signInWithEmailAndPassword(this.auth, email, password);
+  }
+
+  /**
+   * Creates a user with email and password in Firebase Auth.
+   *
+   * @param email
+   * @param password
+   * @returns
+   */
+  createUserWithEmailAndPassword(
+    email: string,
+    password: string
+  ): Promise<UserCredential> {
+    return createUserWithEmailAndPassword(this.auth, email, password);
   }
 
   /**
@@ -469,7 +484,8 @@ export class FirebaseService {
   }
 
   /**
-   * Craer un documento en Firestore dado el path y los datos que vayan a crearse.
+   * Craer un documento en Firestore dado el path de la colección y los datos que vayan a crearse.
+   * Usa el método add.
    *
    * @param colPath path de la colección.
    * @param data  Datos del documento sea completo o Partial.
@@ -480,6 +496,17 @@ export class FirebaseService {
     data: T | Partial<T>
   ): Promise<DocumentReference<DocumentData>> {
     return addDoc<DocumentData>(collection(this.firestore, colPath), data);
+  }
+
+  /**
+   * Crear un documento en Firestore dado su path y los datos que vayan a crearse. Usa el método set.
+   *
+   * @param docPath
+   * @param data
+   * @returns
+   */
+  public async set<T>(docPath: string, data: T): Promise<void> {
+    return setDoc<DocumentData>(doc(this.firestore, docPath), data);
   }
 
   /**

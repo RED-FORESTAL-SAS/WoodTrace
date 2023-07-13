@@ -1,5 +1,5 @@
 <app-header
-  (click)="logOut()"
+  (click)="goToLogin()"
   backButton="/login"
   title="Registro"
 ></app-header>
@@ -27,7 +27,7 @@
     <ion-row>
       <ion-col align-items-center>
         <div class="btn-gradient">
-          <ion-button (click)="logOut()" mode="ios">
+          <ion-button (click)="goToLogin()" mode="ios">
             <span>Aceptar</span>
           </ion-button>
         </div>

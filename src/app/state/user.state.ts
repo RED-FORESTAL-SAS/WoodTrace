@@ -1,6 +1,7 @@
 import { WtCompany } from "../models/wt-company";
 import { WtLicense } from "../models/wt-license";
 import { WtUser } from "../models/wt-user";
+import { Failure } from "../utils/failure.utils";
 
 /**
  * Describes the state of the current authenticated User, the Company where user belongs and the
@@ -21,4 +22,9 @@ export interface UserState {
    * Current authenticated user.
    */
   user: WtUser | null;
+
+  /**
+   * User state error.
+   */
+  error: Failure | null;
 }
