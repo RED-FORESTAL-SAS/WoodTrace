@@ -1,7 +1,8 @@
 # CHANGELOG
 
-# [RED-23] -2023-07-13 (Mario)
+# [RED-23] -2023-07-13 (Mario) (build 6)
 
+- LoginPage: Fix missing return.
 - AnalysisPage/AnalysisResultPage/TakePhotosPage: Manejar subscripciones con el ciclo de vida de ionic.
 - AnalysisFormPage: Fix para que se actualice el campo 'firstReport' en el WtUser, al crear el primer report.
 - capacitor.config.ts: Fix backgroundColor.

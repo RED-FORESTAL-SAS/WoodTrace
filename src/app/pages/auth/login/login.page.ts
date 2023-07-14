@@ -149,6 +149,7 @@ export class LoginPage {
             if (!!user.emailVerified) {
               await this.router.navigate(["/tabs/profile"]);
               if (this.loginIn.value) this.loginIn.next(false);
+              return;
             }
 
             /**
