@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [MARIO/RED-10-AUTH] - 2023-07-14 (Diana)
+
+- Ajuste de ícono de la app.
+
 ## [RED-24] - 2023-07-12 (Diana)
 
 - Limpiar código.
