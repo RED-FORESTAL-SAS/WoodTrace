@@ -61,7 +61,7 @@ export class AiService {
     /**
      * @todo @mario Eliminar Timeout. Esto solo sirve para simular que el análisis toma tiempo.
      */
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     /**
      * @todo @mario Aquí se debe consumir la API de la AI, con la imagen que está en wood.localPath.

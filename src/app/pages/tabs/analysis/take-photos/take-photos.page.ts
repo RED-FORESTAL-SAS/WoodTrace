@@ -41,7 +41,7 @@ export class TakePhotosPage {
    *
    * @todo @diana Borrar esto cuando se termine de probar como se ven los errores en la interfaz.
    */
-  private failOnCeroCounter = 0;
+  private failOnCeroCounter = 1;
 
   constructor(
     private utilsSvc: UtilsService,

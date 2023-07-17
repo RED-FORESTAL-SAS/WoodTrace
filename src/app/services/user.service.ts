@@ -218,9 +218,9 @@ export class UserService implements OnDestroy {
       // Photo is saved in localstorage as a base64 string.
       const photo = mergedUser ? mergedUser.photo : null;
       if (photo && photo.startsWith("https://firebasestorage")) {
-        const photoDataUrl = await this.firebase.downloadStringFromStorage(
-          mergedUser.photo
-        );
+        const photoDataUrl = await this.firebase
+          .downloadStringFromStorage(mergedUser.photo)
+          .catch((e) => "");
         mergedUser.photo = photoDataUrl;
       }
       this.saveUserToLocalStorage(mergedUser);
@@ -521,7 +521,7 @@ export class UserService implements OnDestroy {
       .fetchDoc<WtCompany>(
         `${COMPANYS_FB_COLLECTION}/${this.store.state.license.wtCompanyId}`
       )
-      .then((company) => {
+      .then(async (company) => {
         if (!company) {
           throw new CompanyFailure(
             "No se encontró una Compañía para el Usuario autenticado."
@@ -532,7 +532,14 @@ export class UserService implements OnDestroy {
         if (
           company.numerodocumento !== this.store.state.company?.numerodocumento
         ) {
-          this.patchCompany(company);
+          // Try to download company logo.
+          const photo = await this.firebase
+            .downloadStringFromStorage(
+              `fotoPerfilUser/${this.store.state.license.wtCompanyId}`
+            )
+            .catch((e) => "");
+
+          this.patchCompany({ ...company, photo });
         }
       })
       .catch((e) => {

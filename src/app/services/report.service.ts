@@ -11,11 +11,13 @@ import { LocalStorageRepository } from "../infrastructure/local-storage.reposito
 import { UserService } from "./user.service";
 import { ReportStore } from "../state/report.store";
 import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { map, take } from "rxjs/operators";
 import { NEW_WT_WOOD, WtWood } from "../models/wt-wood";
 import { Failure } from "../utils/failure.utils";
 import { REPORTS_LS_KEY } from "../constants/reports-ls-key.constant";
 import { AiFailure, AiService } from "./ai.service";
+import { PdfService } from "./pdf.service";
+import { PersonaType } from "src/assets/data/persona-types";
 
 /**
  * Failure for Report Domain.
@@ -31,7 +33,8 @@ export class ReportService {
     private store: ReportStore,
     private userService: UserService,
     private woodService: WoodService,
-    private aiService: AiService
+    private aiService: AiService,
+    private pdfService: PdfService
   ) {
     // Initialize active report with value from localStorage, if any, or null.
     // Inicialize reports with value from localStorage, if any, or empty array.
@@ -206,12 +209,23 @@ export class ReportService {
    * Then sets active Report to null.
    */
   public async saveActiveReport(): Promise<void> {
-    if (!this.store.state.activeReport) {
+    const activeReport = await this.activeReport.pipe(take(1)).toPromise();
+    const user = await this.userService.user.pipe(take(1)).toPromise();
+    const company = await this.userService.company.pipe(take(1)).toPromise();
+
+    if (!activeReport) {
       throw new ReportFailure("No hay reporte activo.");
     }
 
     /**
      * @todo @mario Implementar generación de archivos.
+     */
+
+    this.pdfService.buildDoc(activeReport, user, company);
+    return;
+
+    /**
+     * @todo @mario A partir de aquí es el guardado.
      */
 
     // Add new report to beginning of reports array.
@@ -330,7 +344,7 @@ export class ReportService {
           id: localStorageWtReport.id,
           localId: localStorageWtReport.localId,
           placa: localStorageWtReport.placa,
-          personaType: localStorageWtReport.personaType,
+          personaType: localStorageWtReport.personaType as PersonaType,
           fullName: localStorageWtReport.fullName,
           docType: localStorageWtReport.docType,
           docNumber: localStorageWtReport.docNumber,

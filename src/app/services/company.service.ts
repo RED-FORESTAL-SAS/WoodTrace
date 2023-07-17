@@ -51,6 +51,7 @@ export class CompanyService {
       pais: company.pais,
       departamento: company.departamento,
       municipio: company.municipio,
+      photo: company.photo,
     };
   }
 
@@ -72,6 +73,7 @@ export class CompanyService {
           pais: locaStorageWtCompany.pais,
           departamento: locaStorageWtCompany.departamento,
           municipio: locaStorageWtCompany.municipio,
+          photo: locaStorageWtCompany.photo,
         }
       : null;
   }

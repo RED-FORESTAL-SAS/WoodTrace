@@ -57,6 +57,12 @@ export class AnalysisListPage implements OnInit {
   }
 
   generarReporte() {
+    this.reportService.saveActiveReport();
+    return;
+
+    /**
+     * @todo @mario Implementar la generación apropiadamente aquí.
+     */
     this.utilsSvc.presentAlertConfirm({
       header: "Generar Reporte",
       message:

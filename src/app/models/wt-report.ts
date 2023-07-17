@@ -1,6 +1,7 @@
 import { Timestamp } from "../types/timestamp.type";
 import { FieldValue } from "../types/field-value.type";
 import { LocalStorageWtWood, WtWood } from "./wt-wood";
+import { PersonaType } from "src/assets/data/persona-types";
 
 /**
  * Un Reporte corresponde a un vehículo que transporta madera y que ha sido detenido por una autoridad
@@ -50,7 +51,7 @@ export interface WtReport {
    */
   localId: string;
   /** tipo de persona a la que se le hace análisis. Si es una persona o es un vehiculo*/
-  personaType: string;
+  personaType: PersonaType;
   /** Si personaType==='persona' nombre completo */
   fullName: string;
   /** Si personaType==='persona' tipo documento */
@@ -141,7 +142,7 @@ export interface LocalStorageWtReport {
 export const NEW_WT_REPORT: WtReport = {
   id: "0",
   localId: "",
-  personaType: "",
+  personaType: "vehiculo",
   fullName: "",
   docType: 0,
   docNumber: "",

@@ -4,13 +4,14 @@ import { Observable, Subscription } from "rxjs";
 import { take, tap } from "rxjs/operators";
 import { WtWood } from "src/app/models/wt-wood";
 import { ReportService } from "src/app/services/report.service";
+import { Timestamp } from "src/app/types/timestamp.type";
 
 @Component({
   selector: "app-analysis-result",
   templateUrl: "./analysis-result.page.html",
   styleUrls: ["./analysis-result.page.scss"],
 })
-export class AnalysisResultPage {
+export class AnalysisResultPage implements OnInit, OnDestroy {
   especie = new FormControl("", []);
   especieReportada = new FormControl("", []);
   photo = new FormControl("");
@@ -30,16 +31,18 @@ export class AnalysisResultPage {
   }
 
   /**
-   * Build subscriptions/event handlers for component, every time Page is 'Entered'.
+   * Since AnalysisResultPage is not a page but a reused Componente, ionViewWillEnter hook wont be
+   * called. ngOnDestroy must be used instead.
    */
-  ionViewWillEnter(): void {
+  ngOnInit(): void {
     this.populateForm();
   }
 
   /**
-   * Destroy subscriptions/event handlers for component, every time Page is 'Left'.
+   * Since AnalysisResultPage is not a page but a reused Componente, ionViewWillLeave hook wont be
+   * called. ngOnDestroy must be used instead.
    */
-  ionViewWillLeave(): void {
+  ngOnDestroy(): void {
     this.sbs.forEach((s) => s.unsubscribe());
   }
 
@@ -57,7 +60,7 @@ export class AnalysisResultPage {
               this.especie.setValue(wood.especie);
               this.acierto.setValue(wood.acierto);
               this.photo.setValue(wood.url);
-              this.fCreado.setValue(wood.fCreado);
+              this.fCreado.setValue((wood.fCreado as Timestamp).toDate());
             },
           })
         )

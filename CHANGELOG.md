@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# [RED-23] -2023-07-17 (Mario)
+
+- Implementar generación de PDF.
+- Implementar carga de la imagen para Company.
+
 # [RED-23] -2023-07-13 (Mario) (build 6)
 
 - LoginPage: Fix missing return.

@@ -20,7 +20,7 @@ import {
   LocationNotGrantedFailure,
   NoNetworkFailure,
 } from "src/app/utils/failure.utils";
-import { personaTypes } from "src/assets/data/persona-types";
+import { PersonaType, personaTypes } from "src/assets/data/persona-types";
 import { docTypes } from "src/assets/data/document-types";
 
 @Component({
@@ -168,7 +168,7 @@ export class AnalysisFormPage {
                 ...report,
                 departamento: this.departamento.value,
                 municipio: this.municipio.value,
-                personaType: this.personaType.value,
+                personaType: this.personaType.value as PersonaType,
                 fullName: this.fullName.value,
                 docType: this.docType.value,
                 docNumber: this.docNumber.value,
