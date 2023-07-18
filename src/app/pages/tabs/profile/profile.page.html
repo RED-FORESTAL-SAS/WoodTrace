@@ -6,7 +6,7 @@
           <ion-row size="auto">
             <ion-col style="vertical-align: bottom">
               <ion-icon
-                *ngIf="!user.photo"
+                *ngIf="!user.photo && !loadingPhoto"
                 class="default-photo"
                 name="person-circle-outline"
               ></ion-icon>
@@ -15,7 +15,7 @@
                 class="photo-spinner"
                 color="secondary"
               ></ion-spinner>
-              <ion-avatar class="photo" *ngIf="user.photo">
+              <ion-avatar class="photo" *ngIf="user.photo && !loadingPhoto">
                 <img [src]="user.photo" />
               </ion-avatar>
             </ion-col>

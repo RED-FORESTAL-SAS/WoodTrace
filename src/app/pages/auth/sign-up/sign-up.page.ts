@@ -238,7 +238,7 @@ export class SignUpPage {
               );
             } else if (failure instanceof NotFoundFailure) {
               this.utilsSvc.presentToast(
-                "No encontramos el usuario en la app. Por favor regístrate para continuar."
+                "No encontramos el usuario en la app. Por favor registrate para continuar."
               );
               this.userService.signOut();
             } else if (failure instanceof PermissionDeniedFailure) {

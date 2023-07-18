@@ -48,11 +48,11 @@
         <span *ngIf="password.errors?.['pattern']">
           La contraseña debe contener:
           <ul>
-            <li>Mínimo 8 caracteres</li>
+            <li>La contraseña debe tener entre 8 y 16 caracteres</li>
             <li>Al menos un número</li>
             <li>Al menos una letra mayúscula</li>
             <li>Al menos una letra minúscula</li>
-            <li>Al menos un caracter especial ($@!%*?&.+)</li>
+            <li>Puede tener otros símbolos ($@!%*?&.+)</li>
           </ul>
         </span>
       </div>

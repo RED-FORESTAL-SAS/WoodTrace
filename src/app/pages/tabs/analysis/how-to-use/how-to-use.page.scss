@@ -1,9 +1,9 @@
 .swiper {
-  padding-bottom: 20px;
+  padding-bottom: 5%;
 }
 
 p {
-  padding: 10px 20px 10px 20px;
+  padding: 1% 4% 4% 4%;
 }
 
 .d-flex {
@@ -17,4 +17,9 @@ p {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.img_slide {
+  width: 75%;
+  height: 75%;
 }

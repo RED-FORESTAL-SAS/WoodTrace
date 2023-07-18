@@ -22,6 +22,7 @@ export class InputGradientComponent implements OnInit {
 
   hide: boolean = true;
   isPassword: boolean;
+  isDate: boolean;
   noInputTypes = ["select", "button", "currency"];
   mask = { prefix: "COP    ", thousands: ".", decimal: ",", align: "left" };
   constructor() {}
@@ -29,6 +30,10 @@ export class InputGradientComponent implements OnInit {
   ngOnInit() {
     if (this.type == "password") {
       this.isPassword = true;
+    }
+
+    if (this.type == "dateTime") {
+      this.isDate = true;
     }
   }
 

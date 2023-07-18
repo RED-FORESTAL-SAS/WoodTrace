@@ -8,6 +8,7 @@ import { WtUser } from "src/app/models/wt-user";
 import { UserService } from "src/app/services/user.service";
 import { Observable, Subscription } from "rxjs";
 import { take, tap } from "rxjs/operators";
+import { Timestamp } from "firebase/firestore";
 
 @Component({
   selector: "app-owner",
@@ -67,6 +68,19 @@ export class OwnerPage implements OnInit, OnDestroy {
           take(1),
           tap({
             next: (user) => {
+              const fn = user.fNacimiento.toDate();
+
+              const fnStr = `${fn.getFullYear()}-${(
+                fn.getMonth() + 1
+              ).toLocaleString("en-US", {
+                minimumIntegerDigits: 2,
+                useGrouping: false,
+              })}-${fn.getDate().toLocaleString("en-US", {
+                minimumIntegerDigits: 2,
+                useGrouping: false,
+              })}`;
+              console.log(fnStr);
+              console.log(fn);
               this.email.setValue(user.email);
               this.email.disable();
               this.fullName.setValue(user.fullName);
@@ -74,7 +88,7 @@ export class OwnerPage implements OnInit, OnDestroy {
               this.docNumber.setValue(user.docNumber);
               this.photo.setValue(user.photo);
               this.movil.setValue(user.movil);
-              this.fNacimiento.setValue(user.fNacimiento.toDate());
+              this.fNacimiento.setValue(fnStr);
               this.genero.setValue(user.genero);
             },
           })
@@ -93,13 +107,20 @@ export class OwnerPage implements OnInit, OnDestroy {
           take(1),
           tap({
             next: async (user) => {
+              const fNacimientoString = this.fNacimiento.value.toString();
+              const fNacimientoArray = fNacimientoString.split("-");
+              const fNacimiento = new Date(
+                fNacimientoArray[0],
+                fNacimientoArray[1] - 1,
+                fNacimientoArray[2]
+              );
               const patchData = {
                 ...user,
                 fullName: this.fullName.value,
                 docType: this.docType.value,
                 docNumber: this.docNumber.value,
                 movil: this.movil.value,
-                fNacimiento: this.fNacimiento.value,
+                fNacimiento: Timestamp.fromDate(fNacimiento),
                 genero: this.genero.value,
               };
               this.userService.patchUser(patchData);
@@ -146,9 +167,9 @@ export class OwnerPage implements OnInit, OnDestroy {
     if (this.movil.invalid) {
       return false;
     }
-    // if (this.fNacimiento.invalid) {
-    //   return false;
-    // }
+    if (this.fNacimiento.invalid) {
+      return false;
+    }
     if (this.genero.invalid) {
       return false;
     }
