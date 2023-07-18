@@ -38,6 +38,10 @@ export class ReportDetailsPage implements OnInit {
     this.populateForm();
   }
 
+  ionViewWillLeave() {
+    this.reportService.patchActiveReport(null);
+  }
+
   populateForm() {
     this.sbs.push(
       this.reportService.activeReport

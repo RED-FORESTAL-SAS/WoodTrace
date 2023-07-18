@@ -2,6 +2,7 @@
 
 # [RED-23] -2023-07-18 (Diana)
 
+- ReportDetailsPage: Al abandonar el componente, marcar el active report como null.
 - ReportService: Preparar para sincronización remota.
 - ReportsPage: Descargar reporte (pendiente por abrir).
 - Fix carga de License y Company en el state.
