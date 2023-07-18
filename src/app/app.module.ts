@@ -33,6 +33,8 @@ import { environment } from "src/environments/environment";
 // ======= Plugins =======
 import { Device } from "@awesome-cordova-plugins/device/ngx";
 import { CurrencyPipe, registerLocaleData } from "@angular/common";
+import { IonicStorageModule } from "@ionic/storage-angular";
+import { IonicLocalStorageRepository } from "./infrastructure/ionic-local-storage.repository";
 
 registerLocaleData(es);
 
@@ -71,6 +73,7 @@ registerLocaleData(es);
       return storage;
     }),
     HttpClientModule,
+    IonicStorageModule.forRoot(),
   ],
   providers: [
     /**

@@ -18,6 +18,7 @@ import { REPORTS_LS_KEY } from "../constants/reports-ls-key.constant";
 import { AiFailure, AiService } from "./ai.service";
 import { PdfService } from "./pdf.service";
 import { PersonaType } from "src/assets/data/persona-types";
+import { IonicLocalStorageRepository } from "../infrastructure/ionic-local-storage.repository";
 
 /**
  * Failure for Report Domain.
@@ -29,18 +30,29 @@ export class ReportFailure extends Failure {}
 })
 export class ReportService {
   constructor(
-    private localStorage: LocalStorageRepository,
+    private localStorage: IonicLocalStorageRepository,
     private store: ReportStore,
     private userService: UserService,
     private woodService: WoodService,
     private aiService: AiService,
     private pdfService: PdfService
   ) {
+    this.init();
+  }
+
+  private async init(): Promise<void> {
+    await this.localStorage.init();
+    const activeReport = await this.fetchActiveReportFromLocalStorage();
+    const reports = await this.fetchReportsFromLocalStorage();
     // Initialize active report with value from localStorage, if any, or null.
     // Inicialize reports with value from localStorage, if any, or empty array.
     this.store.patch({
-      activeReport: this.fetchActiveReportFromLocalStorage(),
-      reports: this.fetchReportsFromLocalStorage(),
+      activeReport: activeReport,
+      reports: reports,
+      /**
+       * @todo @mario Determinar que pasa con el campo 'isFirstReport' en el ReportState y
+       * eliminarlo si es el caso.
+       */
       // isFirstReport: this.fetchIsFirstReportFromLocalStorage(),
     });
   }
@@ -217,36 +229,38 @@ export class ReportService {
       throw new ReportFailure("No hay reporte activo.");
     }
 
-    /**
-     * @todo @mario Implementar generación de archivos.
-     */
+    const reports = [...this.store.state.reports];
 
-    this.pdfService.buildDoc(activeReport, user, company);
-    return;
+    // Generate pdf report and add new report to beginning of reports array in LocalStorage.
+    const pdfReportDataUrl = await this.pdfService.buildReportPdf(
+      activeReport,
+      user,
+      company,
+      true
+    );
 
-    /**
-     * @todo @mario A partir de aquí es el guardado.
-     */
+    reports.unshift({
+      ...this.store.state.activeReport,
+      urlPdf: pdfReportDataUrl,
+    });
 
-    // Add new report to beginning of reports array.
-    const reports = this.store.state.reports;
-    reports.unshift(this.store.state.activeReport);
     this.store.patch({
       reports: reports,
     });
 
-    // Save reports to localStorage.
     this.saveReportsToLocalStorage(reports);
 
+    // Clean active report.
     this.patchActiveReport(null);
   }
 
   /**
    * Retrieves created Reports from localStorage.
    */
-  private fetchReportsFromLocalStorage(): WtReport[] {
-    const localStorageReports =
-      this.localStorage.fetch<LocalStorageWtReport[]>(REPORTS_LS_KEY);
+  private async fetchReportsFromLocalStorage(): Promise<WtReport[]> {
+    const localStorageReports = await this.localStorage.fetch<
+      LocalStorageWtReport[]
+    >(REPORTS_LS_KEY);
     return localStorageReports
       ? localStorageReports.map((report) => this.reportFromLocalStorage(report))
       : [];
@@ -285,9 +299,9 @@ export class ReportService {
    *
    * @returns
    */
-  private fetchActiveReportFromLocalStorage(): WtReport | null {
+  private async fetchActiveReportFromLocalStorage(): Promise<WtReport | null> {
     const localStorageReport =
-      this.localStorage.fetch<LocalStorageWtReport>(ACTIVE_REPORT_LS_KEY);
+      await this.localStorage.fetch<LocalStorageWtReport>(ACTIVE_REPORT_LS_KEY);
     return this.reportFromLocalStorage(localStorageReport);
   }
 

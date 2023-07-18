@@ -4,13 +4,14 @@ import { ReportService } from "src/app/services/report.service";
 import { WtReport } from "src/app/models/wt-report";
 import { Observable, Subscription } from "rxjs";
 import { WtWood } from "src/app/models/wt-wood";
+import { take, tap } from "rxjs/operators";
 
 @Component({
   selector: "app-analysis-list",
   templateUrl: "./analysis-list.page.html",
   styleUrls: ["./analysis-list.page.scss"],
 })
-export class AnalysisListPage implements OnInit {
+export class AnalysisListPage {
   public report$: Observable<WtReport | null>;
 
   private sbs: Subscription[] = [];
@@ -22,7 +23,30 @@ export class AnalysisListPage implements OnInit {
     this.report$ = this.reportService.activeReport;
   }
 
-  ngOnInit() {}
+  /**
+   * Every time the user enters the page, watch if there is an active report, to redirect user to
+   * start a new report.
+   */
+  onWillEnter() {
+    this.sbs.push(
+      this.reportService.activeReport
+        .pipe(
+          take(1),
+          tap({
+            next: (activeReport) => {
+              if (!activeReport) {
+                this.utilsSvc.routerLink("/tabs/analysis");
+              }
+            },
+          })
+        )
+        .subscribe()
+    );
+  }
+
+  onWillLeave() {
+    this.sbs.forEach((s) => s.unsubscribe());
+  }
 
   onDeleteWood(index: number) {
     this.utilsSvc.presentAlertConfirm({
@@ -46,6 +70,7 @@ export class AnalysisListPage implements OnInit {
       ],
     });
   }
+
   onViewWood(wood: WtWood) {
     this.reportService.patchActiveWood(wood);
     this.utilsSvc.routerLink("/tabs/analysis/analysis-details");
@@ -57,12 +82,6 @@ export class AnalysisListPage implements OnInit {
   }
 
   generarReporte() {
-    this.reportService.saveActiveReport();
-    return;
-
-    /**
-     * @todo @mario Implementar la generación apropiadamente aquí.
-     */
     this.utilsSvc.presentAlertConfirm({
       header: "Generar Reporte",
       message:
