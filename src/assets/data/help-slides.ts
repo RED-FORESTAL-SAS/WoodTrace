@@ -1,11 +1,7 @@
-/**
- * @todo @diana Borrar esto. No se usa.
- */
-
 export const helpSlides = [
   {
     title: "¡Comencemos!",
-    subtitle: "¡Nos encargáremos de analizar la madera por ti!",
+    subtitle: "¡Nos encargaremos de analizar la madera por ti!",
     indication: "",
     img: "assets/icon/Fredregistrate.svg",
     message:
@@ -29,7 +25,7 @@ export const helpSlides = [
   },
   {
     title: "Reportes",
-    subtitle: "Crear y guarda los reportes de manera rápida y segura",
+    subtitle: "Crea y guarda los reportes de manera rápida y segura",
     indication: "",
     img: "assets/icon/Reportes.svg",
     message: "Puedes descargar los reportes en cualquier momento.",

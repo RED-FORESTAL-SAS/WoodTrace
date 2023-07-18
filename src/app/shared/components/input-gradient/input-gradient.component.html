@@ -44,6 +44,11 @@
         [name]="hide ? 'eye-outline' : 'eye-off-outline'"
       >
       </ion-icon>
+      <ion-icon
+        *ngIf="isDate"
+        slot="end"
+        name="calendar-number-outline"
+      ></ion-icon>
     </ion-item>
 
     <!-- ========= Input Currency ========= -->

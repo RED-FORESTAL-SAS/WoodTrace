@@ -177,7 +177,7 @@ export class LoginPage {
               // If user exists in Firebase Auth, but not in user collection (already registered
               // in Red Forestal).
             } else if (failure instanceof NotFoundFailure) {
-              this.utilsSvc.presentToast("Por favor regístrate para acceder.");
+              this.utilsSvc.presentToast("Por favor registrate para acceder.");
               await this.userService.signOut();
               this.resetForm();
             } else if (failure instanceof PermissionDeniedFailure) {

@@ -1,5 +1,13 @@
 # CHANGELOG
 
+# [RED-23] -2023-07-18 (Diana)
+
+- Cambio de icono al blanco.
+- Ajustes de ortografía.
+- Estilos de los turoriales para que se ajusten a los dispositivos más cortos.
+- Ajuste de la vista y almacenamiento de la fecha.
+- Enlace a Wappme en info de contacto.
+
 # [RED-23] -2023-07-13 (Mario) (build 6)
 
 - LoginPage: Fix missing return.
