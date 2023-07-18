@@ -21,3 +21,9 @@ ion-item {
   --border-width: 0 0 2px 0;
   --border-color: var(--ion-color-secondary);
 }
+
+.center {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+}

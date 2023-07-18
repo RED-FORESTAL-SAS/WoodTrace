@@ -7,6 +7,7 @@
 - Estilos de los turoriales para que se ajusten a los dispositivos más cortos.
 - Ajuste de la vista y almacenamiento de la fecha.
 - Enlace a Wappme en info de contacto.
+- company: Agregar grid que se muestre cuando no haya una licencia vinculada.
 
 # [RED-23] -2023-07-18 (Mario)
 
