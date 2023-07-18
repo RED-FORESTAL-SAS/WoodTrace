@@ -10,6 +10,7 @@
 - Ajuste de la vista y almacenamiento de la fecha.
 - Enlace a Wappme en info de contacto.
 - company: Agregar grid que se muestre cuando no haya una licencia vinculada.
+- company.service: Ajustar el nombre del campo numeroDocumento.
 
 # [RED-23] -2023-07-18 (Mario)
 
