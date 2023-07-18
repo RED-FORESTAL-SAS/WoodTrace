@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { CameraSource } from "@capacitor/camera";
 import { UtilsService } from "src/app/services/utils.service";
 import { FormControl, Validators } from "@angular/forms";
@@ -18,7 +18,7 @@ import { CameraService } from "src/app/services/camera.service";
   templateUrl: "./take-photos.page.html",
   styleUrls: ["./take-photos.page.scss"],
 })
-export class TakePhotosPage {
+export class TakePhotosPage implements OnInit, OnDestroy {
   especie = new FormControl("", [Validators.required]);
   photo = new FormControl("");
   loadingPhoto: boolean;
@@ -58,7 +58,7 @@ export class TakePhotosPage {
   /**
    * Build subscriptions/event handlers for component, every time Page is 'Entered'.
    */
-  ionViewWillEnter(): void {
+  ngOnInit(): void {
     this.saveWoodHandler();
     this.populateForm();
   }
@@ -66,7 +66,7 @@ export class TakePhotosPage {
   /**
    * Destroy subscriptions/event handlers for component, every time Page is 'Left'.
    */
-  ionViewWillLeave(): void {
+  ngOnDestroy(): void {
     this.sbs.forEach((s) => s.unsubscribe());
     this.saveWoodEvent.complete();
   }

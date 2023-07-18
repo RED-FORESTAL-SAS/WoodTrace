@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormControl, Validators } from "@angular/forms";
 import { UtilsService } from "src/app/services/utils.service";
 import { Geolocation } from "@capacitor/geolocation";
@@ -28,7 +28,7 @@ import { docTypes } from "src/assets/data/document-types";
   templateUrl: "./analysis-form.page.html",
   styleUrls: ["./analysis-form.page.scss"],
 })
-export class AnalysisFormPage {
+export class AnalysisFormPage implements OnInit, OnDestroy {
   departamento = new FormControl("", [Validators.required]);
   municipio = new FormControl("", [Validators.required]);
   guia = new FormControl("", []);
@@ -74,7 +74,7 @@ export class AnalysisFormPage {
   /**
    * Build subscriptions/event handlers for component, every time Page is 'Entered'.
    */
-  ionViewWillEnter(): void {
+  ngOnInit(): void {
     this.updateReportHandler();
     this.populateForm();
     this.onChanges();
@@ -83,7 +83,7 @@ export class AnalysisFormPage {
   /**
    * Destroy subscriptions/event handlers for component, every time Page is 'Left'.
    */
-  ionViewWillLeave(): void {
+  ngOnDestroy(): void {
     this.sbs.forEach((s) => s.unsubscribe());
     this.updateReportEvent.complete();
   }

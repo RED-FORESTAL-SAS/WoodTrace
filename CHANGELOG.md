@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# [RED-23] -2023-07-18 (Mario)
+
+- Hacer fixes del manejo del ciclo de vida ionViewWillEnter/ngOnInit, ionViewWillLeave/ngOnDestroy.
+
 # [RED-23] -2023-07-17 (Mario)
 
 - Implementar generación de PDF.
