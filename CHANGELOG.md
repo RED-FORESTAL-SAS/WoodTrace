@@ -1,6 +1,6 @@
 # CHANGELOG
 
-# [RED-23] -2023-07-18 (Diana)
+# [RED-23] -2023-07-18 (Diana) (build 7)
 
 - ReportDetailsPage: Al abandonar el componente, marcar el active report como null.
 - ReportService: Preparar para sincronización remota.
