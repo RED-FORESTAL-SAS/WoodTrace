@@ -379,49 +379,29 @@ export class UserService implements OnDestroy {
    * contra la licencia real, para evitar abusos. Se deja para el futuro.
    */
   public async retrieveActiveLicense(): Promise<void> {
-    // Try to retrieve license from local storage.
-    const license = this.licenseService.fetchFromLocalStorage();
+    let licenses: WtLicense[] = [];
 
-    // If license is found in LocalStorage.
-    if (license) {
-      const now = new Date().getTime();
-      const ends = (license.ends as Timestamp).toDate().getTime();
+    try {
+      licenses = await this.firebase.fetchCollection<WtLicense>(
+        LICENCES_FB_COLLECTION,
+        [
+          where("wtUserId", "==", this.currentUser.id),
+          where("ends", ">=", new Date()),
+          orderBy("ends", "desc"),
+          limit(1),
+        ]
+      );
 
-      // If active, patch it in state and exit.
-      if (ends <= now) {
-        if (license.id !== this.store.state.license?.id) {
-          this.patchLicense(license);
-        }
+      // If license was found, patch it in state.
+      if (licenses.length > 0) {
+        this.patchLicense(licenses[0]);
         return;
       }
-    }
-
-    // Otherwise, query the database for an active license.
-    this.firebase
-      .fetchCollection<WtLicense>(LICENCES_FB_COLLECTION, [
-        where("wtUserId", "==", this.currentUser.id),
-        where("ends", ">=", new Date()),
-        orderBy("ends", "desc"),
-        limit(1),
-      ])
-      .then((licenses) => {
-        if (licenses.length === 0) {
-          throw new LicenseFailure(
-            "No se encontró una licencia activa para el usuario actual."
-          );
-        }
-
-        // If license was found, patch state.
-        if (licenses[0].id !== this.store.state.license?.id) {
-          this.patchLicense(licenses[0]);
-        }
-      })
-      .catch((e) => {
-        // If not found or error, clean license from state.
+    } catch (e: unknown) {
+      // If error, set license to null an patch error.
+      const failure = FailureUtils.errorToFailure(e);
+      if (!(failure instanceof NoNetworkFailure)) {
         if (this.store.state.license !== null) this.patchLicense(null);
-
-        // Set Failure in UserState.
-        const failure = FailureUtils.errorToFailure(e);
         this.patchError(failure);
 
         if (!environment.production) {
@@ -433,7 +413,32 @@ export class UserService implements OnDestroy {
           console.log("failure", failure);
           console.groupEnd();
         }
-      });
+        return;
+      }
+    }
+
+    // Otherwise, try to retrieve license from local storage.
+    const license = this.licenseService.fetchFromLocalStorage();
+
+    // If license is found in LocalStorage.
+    if (license) {
+      const now = new Date().getTime();
+      const ends = (license.ends as Timestamp).toDate().getTime();
+
+      // If active, patch it in state and exit.
+      if (ends <= now) {
+        this.patchLicense(license);
+        return;
+      }
+    }
+
+    // If no license was found, set license null and se error.
+    this.patchLicense(null);
+    this.patchError(
+      new LicenseFailure(
+        "No se encontró una licencia activa para el usuario actual."
+      )
+    );
   }
 
   /**
@@ -496,58 +501,46 @@ export class UserService implements OnDestroy {
    * is found.
    */
   public async retrieveUserCompany(): Promise<void> {
-    // Try to retrieve license from local storage.
-    const company = this.companyService.fetchFromLocalStorage();
-
-    // If company is found and it's valid, patch state.
-    if (company) {
-      if (
-        company.numerodocumento !== this.store.state.company?.numerodocumento
-      ) {
-        this.patchCompany(company);
-      }
-      return;
-    }
-
-    // If there's no license, fail.
-    if (!this.store.state.license) {
-      throw new LicenseFailure(
-        "No se cargó la Compañía, porque el no se encontró una Licencia activa para el Usuario autenticado."
-      );
-    }
-
-    // Otherwise, query the database for User's Company.
-    this.firebase
-      .fetchDoc<WtCompany>(
+    try {
+      let company = await this.firebase.fetchDoc<WtCompany>(
         `${COMPANYS_FB_COLLECTION}/${this.store.state.license.wtCompanyId}`
-      )
-      .then(async (company) => {
-        if (!company) {
-          throw new CompanyFailure(
-            "No se encontró una Compañía para el Usuario autenticado."
-          );
-        }
+      );
 
-        // If company was found, patch state.
-        if (
-          company.numerodocumento !== this.store.state.company?.numerodocumento
-        ) {
-          // Try to download company logo.
-          const photo = await this.firebase
-            .downloadStringFromStorage(
-              `fotoPerfilUser/${this.store.state.license.wtCompanyId}`
-            )
-            .catch((e) => "");
+      // If no company was found, throw error to handle it in catch and retrieve data from local storage.
+      if (!company) {
+        throw new NotFoundFailure(
+          "No se encontró la Compañía del Usuario.",
+          "not-found"
+        );
+      }
 
-          this.patchCompany({ ...company, photo });
+      // Try to download company logo and patch state.
+      const photo = await this.firebase
+        .downloadStringFromStorage(
+          `fotoPerfilUser/${this.store.state.license.wtCompanyId}`
+        )
+        .catch((e) => "");
+      this.patchCompany({ ...company, photo });
+      return;
+    } catch (e: unknown) {
+      const failure = FailureUtils.errorToFailure(e);
+
+      // If not network or not found, try to retrieve company from local storage.
+      if (
+        failure instanceof NotFoundFailure ||
+        failure instanceof NoNetworkFailure
+      ) {
+        // Try to retrieve license from local storage.
+        const company = this.companyService.fetchFromLocalStorage();
+
+        // If company is found and it's valid, patch state.
+        if (company) {
+          this.patchCompany(company);
+          return;
         }
-      })
-      .catch((e) => {
-        // If not found or error, clean license from state.
+        // Otherwise, set company to null and patch error.
+      } else {
         if (this.store.state.company) this.patchCompany(null);
-
-        // Throw Failures.
-        const failure = FailureUtils.errorToFailure(e);
         this.patchError(failure);
 
         if (!environment.production) {
@@ -559,7 +552,8 @@ export class UserService implements OnDestroy {
           console.log("failure", failure);
           console.groupEnd();
         }
-      });
+      }
+    }
   }
 
   /**
