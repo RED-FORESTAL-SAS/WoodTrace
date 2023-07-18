@@ -7,7 +7,6 @@ import {
 import { WoodService } from "./wood.service";
 import { Timestamp } from "../types/timestamp.type";
 import { ACTIVE_REPORT_LS_KEY } from "../constants/active-report-ls-key.constant";
-import { LocalStorageRepository } from "../infrastructure/local-storage.repository";
 import { UserService } from "./user.service";
 import { ReportStore } from "../state/report.store";
 import { Observable } from "rxjs";

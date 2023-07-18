@@ -2,6 +2,8 @@
 
 # [RED-23] -2023-07-18 (Diana)
 
+- Fix carga de License y Company en el state.
+- Fix Company loading in state.
 - Cambio de icono al blanco.
 - Ajustes de ortografía.
 - Estilos de los turoriales para que se ajusten a los dispositivos más cortos.
