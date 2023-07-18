@@ -549,14 +549,14 @@ export class FirebaseService {
   }
 
   /**
-   * Returns a promise with a base64 string from a file in Firebase Storage.
+   * Returns a promise with a base64 string from a file URI or path in Firebase Storage.
    * This is intended to be used with images.
    *
-   * @param url
+   * @param urlOrPath
    * @returns
    */
-  public async downloadStringFromStorage(url: string): Promise<string> {
-    const httpsReference = ref(getStorage(), url);
+  public async downloadStringFromStorage(urlOrPath: string): Promise<string> {
+    const httpsReference = ref(getStorage(), urlOrPath);
     const blob = await getBlob(httpsReference);
     const reader = new FileReader();
     reader.readAsDataURL(blob);

@@ -24,9 +24,7 @@
 
     <ion-item>
       <ion-label position="stacked">Fecha/Hora</ion-label>
-      <ion-input
-        >{{ this.fCreado.value.toDate() | date: 'dd-MM-yyyy hh:mm' }}</ion-input
-      >
+      <ion-input>{{ this.fCreado.value | date: 'dd-MM-yyyy hh:mm' }}</ion-input>
     </ion-item>
   </ion-list>
 </ion-row>

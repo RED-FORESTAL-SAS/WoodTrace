@@ -20,10 +20,11 @@ export interface WtCompany {
   departamento: string;
   /** Ciudad o municipio de la entidad */
   municipio: string;
-
   /**
-   * @todo @diana Terminar de definir los campos.
+   * String with profile picture. In localstorage is stored as/converted to a base64 data url.
+   * This field doesn't exist in Firestore. It's stored directly in localstorage
    */
+  photo: string;
 }
 
 /**
