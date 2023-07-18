@@ -3,6 +3,7 @@ import { FormControl } from "@angular/forms";
 import { UserService } from "src/app/services/user.service";
 import { WtCompany } from "src/app/models/wt-company";
 import { Observable } from "rxjs";
+import { WtLicense } from "src/app/models/wt-license";
 
 @Component({
   selector: "app-company",
@@ -18,8 +19,10 @@ export class CompanyPage implements OnInit {
   loadingPhoto: boolean;
 
   public company$: Observable<WtCompany | null>;
+  public license$: Observable<WtLicense | null>;
 
   constructor(private userService: UserService) {
+    this.license$ = this.userService.license;
     this.company$ = this.userService.company;
   }
 

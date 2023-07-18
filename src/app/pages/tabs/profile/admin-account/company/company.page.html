@@ -1,9 +1,25 @@
-<app-header
-  backButton="/tabs/profile/profile"
-  title="Empresa asociada"
-></app-header>
+<app-header backButton="/tabs/profile" title="Empresa asociada"></app-header>
 <ion-content>
-  <div class="form">
+  <ion-grid class="center" *ngIf="(license$ | async) === null">
+    <ion-row>
+      <ion-col align-items-center>
+        <h5 style="margin: 30px 0px">
+          ¡Ups! Necesitas una licencia activa, para conocer la información de la
+          empresa.
+        </h5>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col align-items-center>
+        <img
+          src="assets/img/nolicenceanalisis-img.svg"
+          routerLink="/tabs/profile/admin-account/membership"
+        />
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <div class="form" *ngIf="company$ | async as company">
     <!-- Photo -->
     <div class="ion-text-center ion-padding-bottom">
       <ion-spinner
@@ -13,17 +29,17 @@
       ></ion-spinner>
 
       <ion-icon
-        *ngIf="!photo.value && !loadingPhoto"
+        *ngIf="!company.photo && !loadingPhoto"
         class="default-photo"
         name="person-circle-outline"
       >
       </ion-icon>
 
-      <ion-avatar class="photo" *ngIf="photo.value && !loadingPhoto">
-        <img [src]="photo.value" />
+      <ion-avatar class="photo" *ngIf="company.photo && !loadingPhoto">
+        <img [src]="company.photo" />
       </ion-avatar>
     </div>
-    <ion-list *ngIf="company$ | async as company">
+    <ion-list>
       <ion-item>
         <ion-label position="stacked">Nombre de la empresa</ion-label>
         <ion-input>{{ company.nombres }} {{ company.apellidos }}</ion-input>
@@ -31,7 +47,7 @@
 
       <ion-item>
         <ion-label position="stacked">NIT</ion-label>
-        <ion-input>{{ company.numerodocumento }}</ion-input>
+        <ion-input>{{ company.numeroDocumento }}</ion-input>
       </ion-item>
 
       <ion-item>

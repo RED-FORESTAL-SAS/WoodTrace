@@ -46,7 +46,7 @@ export class CompanyService {
     return {
       nombres: company.nombres,
       apellidos: company.apellidos,
-      numerodocumento: company.numerodocumento,
+      numeroDocumento: company.numeroDocumento,
       direccion: company.direccion,
       pais: company.pais,
       departamento: company.departamento,
@@ -68,7 +68,7 @@ export class CompanyService {
       ? {
           nombres: locaStorageWtCompany.nombres,
           apellidos: locaStorageWtCompany.apellidos,
-          numerodocumento: locaStorageWtCompany.numerodocumento,
+          numeroDocumento: locaStorageWtCompany.numeroDocumento,
           direccion: locaStorageWtCompany.direccion,
           pais: locaStorageWtCompany.pais,
           departamento: locaStorageWtCompany.departamento,

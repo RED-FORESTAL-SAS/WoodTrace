@@ -21,3 +21,10 @@ ion-item {
   --border-width: 0 0 2px 0;
   --border-color: var(--ion-color-secondary);
 }
+
+.center {
+  text-align: center;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+}

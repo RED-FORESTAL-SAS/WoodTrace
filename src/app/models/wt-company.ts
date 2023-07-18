@@ -11,7 +11,7 @@ export interface WtCompany {
   /** Apellidos de la entidad o empresa */
   apellidos: string;
   /** Número de documento de la entidad o empresa. */
-  numerodocumento: string;
+  numeroDocumento: string;
   /** Dirección de la entidad*/
   direccion: string;
   /** Pais de la entidad */
