@@ -238,16 +238,18 @@ export class ReportService {
       true
     );
 
-    reports.unshift({
+    const newReport = {
       ...this.store.state.activeReport,
       urlPdf: pdfReportDataUrl,
-    });
+    };
+
+    reports.unshift(newReport);
 
     this.store.patch({
       reports: reports,
     });
 
-    this.saveReportsToLocalStorage(reports);
+    await this.saveReportToLocalStorage(newReport);
 
     // Clean active report.
     this.patchActiveReport(null);
@@ -257,12 +259,48 @@ export class ReportService {
    * Retrieves created Reports from localStorage.
    */
   private async fetchReportsFromLocalStorage(): Promise<WtReport[]> {
-    const localStorageReports = await this.localStorage.fetch<
-      LocalStorageWtReport[]
-    >(REPORTS_LS_KEY);
-    return localStorageReports
-      ? localStorageReports.map((report) => this.reportFromLocalStorage(report))
-      : [];
+    const reportsKeys = await this.localStorage.fetch<string[]>(REPORTS_LS_KEY);
+
+    if (reportsKeys === null) {
+      return [];
+    }
+
+    const promises: Promise<WtReport>[] = [];
+    for (const key of reportsKeys) {
+      promises.push(
+        this.localStorage
+          .fetch<LocalStorageWtReport>(key)
+          .then((r) => this.reportFromLocalStorage(r))
+      );
+    }
+
+    const reports = await Promise.all(promises);
+    return reports;
+  }
+
+  /**
+   * Saves a WtReport to localStorage with 'localId' as its key.
+   *
+   * @param report
+   */
+  private async saveReportToLocalStorage(report: WtReport): Promise<void> {
+    const reportsKeys = await this.localStorage.fetch<string[]>(REPORTS_LS_KEY);
+    const addedReportsKeys = [report.localId, ...reportsKeys];
+    const uniqueReportKeys = addedReportsKeys.filter(
+      (item, pos) => addedReportsKeys.indexOf(item) === pos
+    );
+
+    const localStorageReport = this.reportToLocalStorage(report);
+
+    const promises: Promise<void>[] = [
+      this.localStorage.save<string[]>(REPORTS_LS_KEY, uniqueReportKeys),
+      this.localStorage.save<LocalStorageWtReport>(
+        report.localId,
+        localStorageReport
+      ),
+    ];
+
+    await Promise.all(promises);
   }
 
   /**
@@ -270,14 +308,44 @@ export class ReportService {
    *
    * @param reports WtReport[]
    */
-  private saveReportsToLocalStorage(reports: WtReport[]): void {
-    const localStorageReports = reports.map((report) =>
-      this.reportToLocalStorage(report)
+  private async saveReportsToLocalStorage(reports: WtReport[]): Promise<void> {
+    const reportsKeys = reports.map((report) => report.localId);
+
+    const promises: Promise<void>[] = [];
+    for (const report of reports) {
+      const localStorageReport = this.reportToLocalStorage(report);
+      promises.push(
+        this.localStorage.save<LocalStorageWtReport>(
+          report.localId,
+          localStorageReport
+        )
+      );
+    }
+
+    promises.push(
+      this.localStorage.save<string[]>(REPORTS_LS_KEY, reportsKeys)
     );
-    this.localStorage.save<LocalStorageWtReport[]>(
-      REPORTS_LS_KEY,
-      localStorageReports
+
+    await Promise.all(promises);
+  }
+
+  /**
+   * Removs a WtReport from localStorage.
+   *
+   * @param report
+   */
+  private async removeReportFromLocalStorage(report: WtReport): Promise<void> {
+    const reportsKeys = await this.localStorage.fetch<string[]>(REPORTS_LS_KEY);
+    const removedReportsKeys = reportsKeys.filter(
+      (item) => item !== report.localId
     );
+
+    const promises: Promise<void>[] = [
+      this.localStorage.save<string[]>(REPORTS_LS_KEY, removedReportsKeys),
+      this.localStorage.delete(report.localId),
+    ];
+
+    await Promise.all(promises);
   }
 
   /**

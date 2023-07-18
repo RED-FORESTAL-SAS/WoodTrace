@@ -93,7 +93,9 @@ export class PdfService {
           text: [
             { text: "Nombre Entidad: ", style: "dt" },
             {
-              text: `${company.nombres} ${company.apellidos}`.trim(),
+              text: `${company.nombres} ${
+                company.apellidos ? company.apellidos : ""
+              }`.trim(),
               style: "dd",
             },
           ],

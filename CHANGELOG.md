@@ -2,6 +2,8 @@
 
 # [RED-23] -2023-07-18 (Diana)
 
+- ReportService: Preparar para sincronización remota.
+- ReportsPage: Descargar reporte (pendiente por abrir).
 - Fix carga de License y Company en el state.
 - Fix Company loading in state.
 - Cambio de icono al blanco.

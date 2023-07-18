@@ -4,6 +4,7 @@ import { Observable } from "rxjs";
 import { WtReport } from "src/app/models/wt-report";
 import { ReportService } from "src/app/services/report.service";
 import { UtilsService } from "src/app/services/utils.service";
+import { Filesystem, Directory, Encoding } from "@capacitor/filesystem";
 
 @Component({
   selector: "app-reports",
@@ -29,9 +30,24 @@ export class ReportsPage implements OnInit {
     this.utilsSvc.routerLink("/tabs/reports/report-details");
   }
 
-  onDawnloadReport(index: number) {
-    this.utilsSvc.presentToast(
-      "Esta funcionalidad está pendiente por desarrollar."
-    );
+  /**
+   * Downloads pdf report.
+   *
+   * @param report
+   */
+  public async onDawnloadReport(report: WtReport) {
+    const result = await Filesystem.writeFile({
+      path: `reporte-${report.localId}.pdf`,
+      data: report.urlPdf,
+      directory: Directory.Documents,
+      encoding: Encoding.UTF8,
+    });
+
+    /**
+     * @todo @mario Abrir archivo pdf.
+     */
+
+    // urlPdf
+    this.utilsSvc.presentToast(`Archivo descargado en ${result.uri}.`);
   }
 }
