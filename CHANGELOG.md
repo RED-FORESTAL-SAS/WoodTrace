@@ -10,6 +10,7 @@
 
 # [RED-23] -2023-07-18 (Mario)
 
+- Configurar drivers para el local-storage.
 - Instalar @ionic/storage-angular y crear IonicLocalStorage para poder almacenar objetos más grandes en el local storage.
 - Fix para que termine/inicie un nuevo reporte apropiadamente.
 - Hacer fixes del manejo del ciclo de vida ionViewWillEnter/ngOnInit, ionViewWillLeave/ngOnDestroy.

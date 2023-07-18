@@ -4,7 +4,7 @@ import { ReportService } from "src/app/services/report.service";
 import { WtReport } from "src/app/models/wt-report";
 import { Observable, Subscription } from "rxjs";
 import { WtWood } from "src/app/models/wt-wood";
-import { take, tap } from "rxjs/operators";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-analysis-list",
@@ -14,38 +14,12 @@ import { take, tap } from "rxjs/operators";
 export class AnalysisListPage {
   public report$: Observable<WtReport | null>;
 
-  private sbs: Subscription[] = [];
-
   constructor(
     private utilsSvc: UtilsService,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private router: Router
   ) {
     this.report$ = this.reportService.activeReport;
-  }
-
-  /**
-   * Every time the user enters the page, watch if there is an active report, to redirect user to
-   * start a new report.
-   */
-  onWillEnter() {
-    this.sbs.push(
-      this.reportService.activeReport
-        .pipe(
-          take(1),
-          tap({
-            next: (activeReport) => {
-              if (!activeReport) {
-                this.utilsSvc.routerLink("/tabs/analysis");
-              }
-            },
-          })
-        )
-        .subscribe()
-    );
-  }
-
-  onWillLeave() {
-    this.sbs.forEach((s) => s.unsubscribe());
   }
 
   onDeleteWood(index: number) {
@@ -95,7 +69,9 @@ export class AnalysisListPage {
              */
             await this.reportService.saveActiveReport();
             this.utilsSvc.presentToast("Reporte generado.");
-            this.utilsSvc.routerLink("/tabs/reports");
+            this.router.navigate(["/tabs/analysis"]).then(() => {
+              this.utilsSvc.routerLink("/tabs/reports");
+            });
           },
         },
         {
