@@ -97,6 +97,12 @@ export interface WtReport {
   fCreado: Timestamp | FieldValue | null;
   /** Fecha de modificación del reporte. */
   fModificado: Timestamp | FieldValue | null;
+  /**
+   * Bandera que indica si la sincronización del reporte se completó exitosamente. Esto, porque una
+   * vez creado el reporte en Firestore, es necesario subir los archivos y actualizar las urls
+   * apropiadamente. Una vez esto ocurra, se puede marcar el reporte como sincronizado.
+   */
+  synced: boolean;
 }
 
 export interface Ubicacion {
@@ -136,6 +142,7 @@ export interface LocalStorageWtReport {
     seconds: number;
     nanoseconds: number;
   };
+  synced: boolean;
 }
 
 /** Empty Report. */
@@ -164,4 +171,5 @@ export const NEW_WT_REPORT: WtReport = {
   wtUserId: "",
   fCreado: null,
   fModificado: null,
+  synced: false,
 };

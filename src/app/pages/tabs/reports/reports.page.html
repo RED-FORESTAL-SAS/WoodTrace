@@ -51,6 +51,13 @@
                 </td>
               </tr>
             </table>
+            <p *ngIf="(loadingReports$ | async) === true">Cargando...</p>
+            <p
+              *ngIf="(loadingReports$ | async) === false"
+              (click)="fetchNextReportPage()"
+            >
+              Cargar +
+            </p>
           </ion-col>
         </ion-row>
       </ion-grid>

@@ -217,7 +217,7 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
    * that resolves to a Coordinates object
    */
   async getCurrentPosition(): Promise<void> {
-    this.utilsSvc.presentLoading();
+    await this.utilsSvc.presentLoading();
     try {
       let permissionStatus = await Geolocation.checkPermissions().catch((e) => {
         throw new LocationDisabledFailure(
@@ -254,7 +254,7 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
       }
     }
 
-    this.utilsSvc.dismissLoading();
+    await this.utilsSvc.dismissLoading();
   }
 
   validator() {

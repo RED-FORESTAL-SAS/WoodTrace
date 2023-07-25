@@ -16,13 +16,12 @@ import {
 } from "rxjs/operators";
 import { WtLicense } from "../models/wt-license";
 import { LicenseFailure, LicenseService } from "./license.service";
-import { CompanyFailure, CompanyService } from "./company.service";
+import { CompanyService } from "./company.service";
 import { FirebaseService, FirebaseUser } from "./firebase.service";
 import { Timestamp } from "../types/timestamp.type";
 import { limit, orderBy, where } from "../types/query-constraint.type";
 import { LICENCES_FB_COLLECTION } from "../constants/licenses-fb-collection";
 import {
-  AuthNetworkRequestFailedFailure,
   Failure,
   FailureUtils,
   NoNetworkFailure,
@@ -246,7 +245,7 @@ export class UserService implements OnDestroy {
    * @throws {FirestoreFailure} if User document update fails.
    */
   async updateUserPhoto(photo: Photo): Promise<void> {
-    const downloadUrl = await this.firebase.uploadStringToStorage(
+    const downloadUrl = await this.firebase.uploadPhotoToStorage(
       photo,
       `${USERS_FB_COLLECTION}/${this.store.state.user?.id}/profile`,
       `${this.store.state.user?.id}_profile_photo`

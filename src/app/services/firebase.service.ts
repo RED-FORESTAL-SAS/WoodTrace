@@ -30,6 +30,7 @@ import { QueryConstraint } from "../types/query-constraint.type";
 import {
   DocumentData,
   DocumentReference,
+  DocumentSnapshot,
   Firestore,
   addDoc,
   collection,
@@ -41,7 +42,9 @@ import {
   limit,
   query,
   setDoc,
+  startAfter,
   updateDoc,
+  where,
 } from "@angular/fire/firestore";
 import {
   getBlob,
@@ -62,6 +65,7 @@ import {
   signOut,
   UserCredential,
 } from "@angular/fire/auth";
+import { orderBy } from "firebase/firestore";
 
 export { FirebaseUser };
 
@@ -411,6 +415,35 @@ export class FirebaseService {
   }
 
   /**
+   * Returns a page of documents, given a path, a DocumentSnapshot and a page size.
+   *
+   * @param collectionPath
+   * @param cursorId Id for document after wich the page should start.
+   * @param pageSize
+   */
+  public async fetchPage<T>(
+    userId: string,
+    collectionPath: string,
+    cursorId: string | null,
+    pageSize: number = 20
+  ): Promise<T[]> {
+    let paginationConstraints: QueryConstraint[] = [
+      where("wtUserId", "==", userId),
+      orderBy("fCreado", "desc"),
+      limit(pageSize),
+    ];
+
+    if (cursorId !== null) {
+      const cursor = await getDoc(
+        doc(this.firestore, `${collectionPath}/${cursorId}`)
+      );
+      paginationConstraints.push(startAfter(cursor));
+    }
+
+    return this.fetchCollection<T>(collectionPath, paginationConstraints);
+  }
+
+  /**
    * Observable con el documento de Firestore.
    *
    * @param path path del documento.
@@ -510,6 +543,43 @@ export class FirebaseService {
   }
 
   /**
+   * Uploads a base64 dataUrl to Firebase Storage and returns it's download URL.
+   *
+   * @param dataUrl {String} with the dataUrl to upload.
+   * @param folder {String} Path with the folder name.
+   * @param fileName {String} Name of the file with or without extension.
+   * @returns {String} with the download URL.
+   * @throws {StorageFailure} if upload fails.
+   */
+  public async uploadDataUrlToStorage(
+    dataUrl: string,
+    folder: string,
+    fileName: string
+  ): Promise<string> {
+    const folderWithoutInitialTrailingSlash = folder
+      .replace(/^\/+/g, "")
+      .replace(/\/+$/, "");
+    const fileNameWithoutExtension = this.fileNameFromPath(fileName);
+    const fileExt = dataUrl.split(";")[0].split("/")[1];
+
+    const fileRef = ref(
+      getStorage(),
+      `${folderWithoutInitialTrailingSlash}/${fileNameWithoutExtension}.${fileExt}`
+    );
+    await uploadString(fileRef, dataUrl, "data_url").catch((e: unknown) => {
+      const f = FailureUtils.errorToFailure(e);
+      if (!environment.production) {
+        console.groupCollapsed(`🧰 FirebaseService.uploadString [error]`);
+        console.log(f);
+        console.log({ dataUrl, folder, fileName });
+        console.groupEnd();
+      }
+      throw f;
+    });
+    return getDownloadURL(fileRef);
+  }
+
+  /**
    * Uploads a file to Firebase Storage and returns it's download URL.
    *
    * @param photo {Photo} with the dataUrl to upload.
@@ -518,7 +588,7 @@ export class FirebaseService {
    * @returns {String} with the download URL.
    * @throws {StorageFailure} if upload fails.
    */
-  public async uploadStringToStorage(
+  public async uploadPhotoToStorage(
     photo: Photo,
     folder: string,
     fileName: string
