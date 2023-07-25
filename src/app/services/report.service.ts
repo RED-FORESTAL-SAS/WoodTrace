@@ -438,6 +438,15 @@ export class ReportService implements OnDestroy {
               return;
             }
 
+            /**
+             * @todo @mario Es necesario descargar y convertir las fotos y los pdfs de cada reporte
+             * a DataUrls para que se puedan mostrar en la app. Esto es necesario hacerlo aquí para
+             * que puedan estar disponibles cuando el dispositivo esté offline.
+             *
+             * @todo @mario En que momento se limitaría/eliminarían los reportes qu esobrepasen el
+             * humbral de reportes disponibles offline?
+             */
+
             // Update reports in state if localId is the same. Otherwise append.
             const allReports = [...reports];
             const newReports = [];
