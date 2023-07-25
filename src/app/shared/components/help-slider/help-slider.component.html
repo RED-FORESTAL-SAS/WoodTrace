@@ -2,7 +2,7 @@
 <!--Para forzar el enrutamiento a este componente es necesario quitar el Guard de
 D:\angular\WoodTrace\src\app\app-routing.module.ts -->
 
-<div class="ion-text-center">
+<div class="wrapper ion-text-center">
   <!-- Logo -->
   <img class="logo" src="/assets/icon/wt_Group424.svg" />
 
@@ -19,7 +19,7 @@ D:\angular\WoodTrace\src\app\app-routing.module.ts -->
   >
     <ng-template *ngFor="let h of helpSlides" swiperSlide>
       <div>
-        <ion-grid style="margin-bottom: 25px">
+        <ion-grid class="grid-slide">
           <ion-row>
             <ion-col
               ><h1>{{ h.title }}</h1></ion-col

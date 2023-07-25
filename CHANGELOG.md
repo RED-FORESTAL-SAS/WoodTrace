@@ -1,5 +1,12 @@
 # CHANGELOG
 
+# [DIANA/RED-23-FIX] -2023-07-25 (Diana)
+
+- Sincronizar los sources del icono.
+- Ajustar layout de help/contacto.
+- Ajustar layout de membership.
+- Ajustar layout de intro.
+
 # [RED-23] -2023-07-18 (Diana)
 
 - ReportDetailsPage: Al abandonar el componente, marcar el active report como null.

@@ -285,7 +285,8 @@ export class ReportService {
    */
   private async saveReportToLocalStorage(report: WtReport): Promise<void> {
     const reportsKeys = await this.localStorage.fetch<string[]>(REPORTS_LS_KEY);
-    const addedReportsKeys = [report.localId, ...reportsKeys];
+    const reportsKeysClean = reportsKeys !== null ? reportsKeys : [];
+    const addedReportsKeys = [report.localId, ...reportsKeysClean];
     const uniqueReportKeys = addedReportsKeys.filter(
       (item, pos) => addedReportsKeys.indexOf(item) === pos
     );

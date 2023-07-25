@@ -1,5 +1,21 @@
+.wrapper {
+  text-align: center;
+  display: block;
+  // flex-direction: column;
+  height: 70vh;
+}
+
+.scroll {
+  height: 100% !important;
+}
+
 .logo {
+  height: 12%;
   margin-top: 1%;
+}
+
+.swiper {
+  position: static;
 }
 
 ion-item ion-label {
@@ -10,6 +26,7 @@ ion-item ion-label {
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 5%;
 }
 
 .img-slide {
