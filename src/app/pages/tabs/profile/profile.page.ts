@@ -2,11 +2,18 @@ import { Component, OnDestroy } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { BehaviorSubject, Observable, Subscription } from "rxjs";
 import { isEqual } from "lodash";
-import { distinctUntilChanged, skip, switchMap, tap } from "rxjs/operators";
+import {
+  distinctUntilChanged,
+  skip,
+  switchMap,
+  take,
+  tap,
+} from "rxjs/operators";
 import { WtUser } from "src/app/models/wt-user";
 import { UserService } from "src/app/services/user.service";
 import { UtilsService } from "src/app/services/utils.service";
 import { CameraService } from "src/app/services/camera.service";
+import { ReportService } from "src/app/services/report.service";
 
 @Component({
   selector: "app-profile",
@@ -29,7 +36,8 @@ export class ProfilePage implements OnDestroy {
   constructor(
     private userService: UserService,
     private cameraService: CameraService,
-    private utilsSvc: UtilsService
+    private utilsSvc: UtilsService,
+    private reportService: ReportService
   ) {
     // Watch events and User.
     this.watchUploadPhotoClicks();
@@ -40,6 +48,34 @@ export class ProfilePage implements OnDestroy {
    * Destroy subscriptions.
    */
   ngOnDestroy(): void {
+    this.sbs.forEach((s) => s.unsubscribe());
+  }
+
+  ionViewDidEnter() {
+    /**
+     * @todo @mario Ajustar los triggers para que no ocurra todo el tiempo. Solo en monentos específicos.
+     * Así no está intentando syncronizar todo el tiempo.
+     */
+    // Sync reports.
+    this.sbs.push(
+      this.reportService.reports.pipe().subscribe(async (reports) => {
+        if (reports.length === 0) {
+          console.log("No hay reports para sincronizar");
+          return;
+        }
+
+        const reportsToSync = reports.filter(
+          (report) => report.synced === false
+        );
+        for (const report of reportsToSync) {
+          console.log("Sincronizando reporte", report);
+          await this.reportService.syncReport(report);
+        }
+      })
+    );
+  }
+
+  ionViewWillLeave(): void {
     this.sbs.forEach((s) => s.unsubscribe());
   }
 

@@ -21,7 +21,9 @@ export class ReportStore extends BaseStore<ReportState> {
       activeReport: null,
       activeWood: null,
       reports: [],
+      loadingReports: false,
       isFirstReport: true,
+      error: null,
     });
   }
 }

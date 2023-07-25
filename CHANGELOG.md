@@ -7,7 +7,13 @@
 - Ajustar layout de membership.
 - Ajustar layout de intro.
 
-# [RED-23] -2023-07-18 (Diana)
+# [RED-23] -2023-07-25 (Mario)
+
+- AnalysisFormPage: Fix bug con loading.
+- Implementar sync remota con Firestore.
+- Implementar paginación para el ReportsPage (incompleto).
+
+# [RED-23] -2023-07-18 (Diana) (build 7)
 
 - ReportDetailsPage: Al abandonar el componente, marcar el active report como null.
 - ReportService: Preparar para sincronización remota.

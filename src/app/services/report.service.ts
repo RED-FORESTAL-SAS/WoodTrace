@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, OnDestroy } from "@angular/core";
 import {
   LocalStorageWtReport,
   NEW_WT_REPORT,
@@ -9,15 +9,17 @@ import { Timestamp } from "../types/timestamp.type";
 import { ACTIVE_REPORT_LS_KEY } from "../constants/active-report-ls-key.constant";
 import { UserService } from "./user.service";
 import { ReportStore } from "../state/report.store";
-import { Observable } from "rxjs";
-import { map, take } from "rxjs/operators";
+import { BehaviorSubject, Observable, Subscription } from "rxjs";
+import { map, skipWhile, take, tap, withLatestFrom } from "rxjs/operators";
 import { NEW_WT_WOOD, WtWood } from "../models/wt-wood";
-import { Failure } from "../utils/failure.utils";
+import { Failure, FailureUtils } from "../utils/failure.utils";
 import { REPORTS_LS_KEY } from "../constants/reports-ls-key.constant";
 import { AiFailure, AiService } from "./ai.service";
 import { PdfService } from "./pdf.service";
 import { PersonaType } from "src/assets/data/persona-types";
 import { IonicLocalStorageRepository } from "../infrastructure/ionic-local-storage.repository";
+import { FirebaseService } from "./firebase.service";
+import { WtUser } from "../models/wt-user";
 
 /**
  * Failure for Report Domain.
@@ -27,16 +29,26 @@ export class ReportFailure extends Failure {}
 @Injectable({
   providedIn: "root",
 })
-export class ReportService {
+export class ReportService implements OnDestroy {
+  private sbs: Subscription[] = [];
+
+  /// BehaviourSubject to trigger nextPage event.
+  private nextReportPage = new BehaviorSubject<null | number>(null);
+
   constructor(
     private localStorage: IonicLocalStorageRepository,
     private store: ReportStore,
     private userService: UserService,
     private woodService: WoodService,
     private aiService: AiService,
-    private pdfService: PdfService
+    private pdfService: PdfService,
+    private firebase: FirebaseService
   ) {
     this.init();
+  }
+
+  ngOnDestroy(): void {
+    this.sbs.forEach((s) => s.unsubscribe());
   }
 
   private async init(): Promise<void> {
@@ -54,6 +66,9 @@ export class ReportService {
        */
       // isFirstReport: this.fetchIsFirstReportFromLocalStorage(),
     });
+
+    // Intentar solicitar la primera página de Reports del servidor.
+    this.initReportsPagination();
   }
 
   /**
@@ -107,6 +122,27 @@ export class ReportService {
    */
   get reports(): Observable<WtReport[]> {
     return this.store.state$.pipe(map((state) => state.reports));
+  }
+
+  /**
+   * Getter for loadingReports from state.
+   */
+  get loadingReports(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.loadingReports));
+  }
+
+  /**
+   * Getter for error from state.
+   */
+  get error(): Observable<Failure | null> {
+    return this.store.state$.pipe(map((state) => state.error));
+  }
+
+  /**
+   * Cleans the error from state.
+   */
+  cleanError(): void {
+    this.store.patch({ error: null });
   }
 
   /**
@@ -256,6 +292,192 @@ export class ReportService {
   }
 
   /**
+   * Syncs Reports from localStorage to Firestore.
+   */
+  public async syncReport(report: WtReport): Promise<void> {
+    // Reject a Report if it was already synced.
+    if (report.synced === true) return;
+
+    // Keep report/woods original data to upload files later.
+    let localReport = { ...report };
+    const localWoods = [...report.woods];
+
+    // Create report in Firestore.
+    const reportData = {
+      ...report,
+      urlPdf: "",
+      woods: localWoods.map((wood) => ({ ...wood, url: "" })),
+    };
+
+    // Only create report if it wasn´t already created.
+    let id = report.id;
+    if (id === "0") {
+      const createdReportRef = await this.firebase
+        .create(REPORTS_LS_KEY, reportData)
+        .catch((e) => {
+          /**
+           * @todo @mario Manejar apropiadamente los errores.
+           */
+          console.log(e);
+          throw e;
+        });
+
+      id = createdReportRef.id;
+
+      // Update id in localStorageReport in case something fails later.
+      localReport.id = id;
+      await this.saveReportToLocalStorage(localReport);
+    }
+
+    // Upload pdf file. If it fails, process should be aborted silently.
+    const uploadedReportPdfUrl = await this.firebase.uploadDataUrlToStorage(
+      localReport.urlPdf,
+      `wt-reports/${id}`,
+      "report"
+    );
+
+    /**
+     * @todo @mario Modificar cómo se sube el pdf. Cuando se sube como uploaDataUrl, se descuadra.
+     * Intentar guardando el archivo y subiendolo a ver si así.
+     */
+
+    console.log(`🛫 PDF subido al storage wt-reports/${id}`);
+
+    // Upload photos for each wood. If it fails, process should be aborted silently.
+    const uploadedWoods = [];
+    for (const wood of localWoods) {
+      const uploadedWoodPhotoUrl = await this.firebase.uploadDataUrlToStorage(
+        wood.url,
+        `wt-reports/${id}`,
+        `wood_${wood.localId}`
+      );
+      uploadedWoods.push({ ...wood, url: uploadedWoodPhotoUrl });
+    }
+
+    console.log(`🛫 Fotos de los Woods subidos al storage wt-reports/${id}`);
+
+    // Update report with uploaded files urls. If succeeds, we can mark localStorageReport as synced.
+    await this.firebase.update<WtReport>(`${REPORTS_LS_KEY}/${id}`, {
+      urlPdf: uploadedReportPdfUrl,
+      woods: uploadedWoods,
+      synced: true,
+    });
+
+    // Mark localStorage Report as synced.
+    localReport.synced = true;
+    await this.saveReportToLocalStorage(localReport);
+
+    // Update state with synced report.
+    const reports = [...this.store.state.reports];
+    const reportIndexInState = reports.findIndex(
+      (r) => r.localId === report.localId
+    );
+    reports[reportIndexInState] = localReport;
+    this.store.patch({
+      reports,
+    });
+
+    console.log(
+      `✅ Reporte ${report.localId} sincronizado en Firestore con el id ${id}.`
+    );
+  }
+
+  /**
+   * Triggers the fetch of the next page of Reports from the server.
+   */
+  public fetchNextReportPage(): void {
+    this.store.patch({ loadingReports: true });
+    this.nextReportPage.next(Date.now());
+  }
+
+  /**
+   * Initializes the pagination of Reports from the server.
+   */
+  public async initReportsPagination(): Promise<void> {
+    this.nextReportPage
+      .asObservable()
+      .pipe(
+        skipWhile((v) => v === null),
+        withLatestFrom(this.userService.user),
+        withLatestFrom(this.reports),
+        map(
+          ([[page, user], reports]) => [user, reports] as [WtUser, WtReport[]]
+        ),
+        tap({
+          next: async ([user, reports]) => {
+            /// Get cursor from last Report in state.reports (for startAfter query).
+            let cursorId = null;
+            const createdReports = reports.filter((r) => r.id !== "0");
+            if (createdReports.length > 0) {
+              cursorId = createdReports[createdReports.length - 1].id;
+            }
+
+            /// Fetch a page of reports.
+            const reportPageOrFailure = await this.firebase
+              .fetchPage<WtReport>(user.id, REPORTS_LS_KEY, cursorId, 5)
+              .catch((e: unknown) => {
+                const failure = FailureUtils.errorToFailure(e);
+                FailureUtils.log(failure);
+
+                /**
+                 * @dev Es posible que ocurra un NotFoundFailure, cuando el cursor no exista. Pero,
+                 * a partir de las premisas, los reports no deberían ser eliminados, así que no se
+                 * verifica este error.
+                 *
+                 * En caso de que sea necesario manejarlo, la opción es reintentar con el penúltimo
+                 * cursor y así sucesivamente hasta que cargue la página como es.
+                 */
+                return failure;
+              });
+
+            if (reportPageOrFailure instanceof Failure) {
+              this.store.patch({
+                loadingReports: false,
+                error: reportPageOrFailure,
+              });
+              return;
+            }
+
+            /**
+             * @todo @mario Es necesario descargar y convertir las fotos y los pdfs de cada reporte
+             * a DataUrls para que se puedan mostrar en la app. Esto es necesario hacerlo aquí para
+             * que puedan estar disponibles cuando el dispositivo esté offline.
+             *
+             * @todo @mario En que momento se limitaría/eliminarían los reportes qu esobrepasen el
+             * humbral de reportes disponibles offline?
+             */
+
+            // Update reports in state if localId is the same. Otherwise append.
+            const allReports = [...reports];
+            const newReports = [];
+            for (const report of reportPageOrFailure) {
+              const existingReportIndex = reports.findIndex(
+                (r) => r.localId === report.localId // r.id === report.id
+              );
+              if (existingReportIndex !== -1) {
+                allReports[existingReportIndex] = report;
+              } else {
+                newReports.push(report);
+              }
+            }
+
+            // Patch store with retrieved reports.
+            this.store.patch({
+              reports: [...allReports, ...newReports],
+              loadingReports: false,
+            });
+
+            // Save new incomming reports to localStorage.
+            for (const lsReport of newReports) {
+              await this.saveReportToLocalStorage(lsReport);
+            }
+          },
+        })
+      )
+      .subscribe();
+  }
+
+  /**
    * Retrieves created Reports from localStorage.
    */
   private async fetchReportsFromLocalStorage(): Promise<WtReport[]> {
@@ -285,8 +507,7 @@ export class ReportService {
    */
   private async saveReportToLocalStorage(report: WtReport): Promise<void> {
     const reportsKeys = await this.localStorage.fetch<string[]>(REPORTS_LS_KEY);
-    const reportsKeysClean = reportsKeys !== null ? reportsKeys : [];
-    const addedReportsKeys = [report.localId, ...reportsKeysClean];
+    const addedReportsKeys = [report.localId, ...(reportsKeys ?? [])];
     const uniqueReportKeys = addedReportsKeys.filter(
       (item, pos) => addedReportsKeys.indexOf(item) === pos
     );
@@ -408,6 +629,7 @@ export class ReportService {
         seconds: (report.fModificado as Timestamp).seconds,
         nanoseconds: (report.fModificado as Timestamp).nanoseconds,
       },
+      synced: report.synced,
     };
   }
 
@@ -452,6 +674,7 @@ export class ReportService {
             localStorageWtReport.fModificado.seconds,
             localStorageWtReport.fModificado.nanoseconds
           ),
+          synced: localStorageWtReport.synced,
         }
       : null;
   }

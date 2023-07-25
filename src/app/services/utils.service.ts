@@ -95,7 +95,7 @@ export class UtilsService {
     await loading.present();
   }
 
-  dismissLoading() {
+  async dismissLoading(): Promise<void> {
     this.loadingController.dismiss();
   }
 

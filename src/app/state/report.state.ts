@@ -1,5 +1,6 @@
 import { WtReport } from "../models/wt-report";
 import { WtWood } from "../models/wt-wood";
+import { Failure } from "../utils/failure.utils";
 
 /**
  * Describes the state of the active Report.
@@ -24,7 +25,17 @@ export interface ReportState {
   reports: WtReport[];
 
   /**
+   * Indicates if a page of reports is being loaded from database.
+   */
+  loadingReports: boolean;
+
+  /**
    * Bandera para mostrar el help del reporte ...
    */
   isFirstReport: boolean;
+
+  /**
+   * Report state error.
+   */
+  error: Failure | null;
 }
