@@ -96,7 +96,7 @@ export class UtilsService {
   }
 
   async dismissLoading(): Promise<void> {
-    this.loadingController.dismiss();
+    await this.loadingController.dismiss();
   }
 
   //======= Toast =======

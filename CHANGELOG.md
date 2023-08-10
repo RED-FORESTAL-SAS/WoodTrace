@@ -2,6 +2,8 @@
 
 # [RED-23] -2023-08-10 (Mario) (build 8)
 
+- UtilsServce.dismissLoading: Agregar await.
+- AnalysisFormPage: Ajustar verificación de permisos del gps.
 - Agregar @capacitor-community/file-opener.
 - Regenerar los iconos.
 
