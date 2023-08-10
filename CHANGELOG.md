@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# [RED-23] -2023-08-10 (Mario) (build 8)
+
+- Agregar @capacitor-community/file-opener.
+- Regenerar los iconos.
+
 # [RED-23] -2023-07-25 (Mario)
 
 - AnalysisFormPage: Fix bug con loading.
