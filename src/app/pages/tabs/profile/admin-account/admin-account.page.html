@@ -48,7 +48,11 @@
 
         <ion-col align-items-start class="label-btn"> Licencia </ion-col>
       </ion-row>
-      <ion-row class="btn" routerLink="owner">
+      <ion-row
+        *ngIf="(online$ | async) === true"
+        class="btn"
+        routerLink="owner"
+      >
         <ion-col align-items-center class="bg-icon-btn" size="2">
           <ion-icon
             style="font-size: 30px"
@@ -58,7 +62,7 @@
 
         <ion-col align-items-start class="label-btn"> Editar perfil </ion-col>
       </ion-row>
-      <ion-row class="btn">
+      <ion-row *ngIf="(online$ | async) === true" class="btn">
         <ion-col align-items-center class="bg-icon-btn" size="2">
           <ion-icon
             style="font-size: 25px"
@@ -70,7 +74,11 @@
           Cambiar contraseña
         </ion-col>
       </ion-row>
-      <ion-row class="btn" (click)="eliminarCuenta()">
+      <ion-row
+        *ngIf="(online$ | async) === true"
+        class="btn"
+        (click)="eliminarCuenta()"
+      >
         <ion-col align-items-center class="bg-icon-btn" size="2">
           <ion-icon
             style="font-size: 20px"

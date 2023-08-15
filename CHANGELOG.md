@@ -4,6 +4,7 @@
 
 - Crear input-datapicker.
 - npm i capacitor.
+- Validación onLine$ para botones editar perfil, cambiar contraseña y eliminar cuenta.
 
 # [RED-23] -2023-08-15 (Mario)
 

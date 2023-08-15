@@ -33,6 +33,9 @@ export class AdminAccountPage implements OnInit, OnDestroy {
 
   public user$: Observable<WtUser | null>;
 
+  /** Observable that checks if device is online/offline. */
+  public online$: Observable<boolean>;
+
   constructor(
     private userService: UserService,
     private utilsSvc: UtilsService,
@@ -40,6 +43,7 @@ export class AdminAccountPage implements OnInit, OnDestroy {
     private firebaseSvc: FirebaseService
   ) {
     this.user$ = this.userService.user;
+    this.online$ = this.userService.online;
   }
 
   ngOnInit() {
