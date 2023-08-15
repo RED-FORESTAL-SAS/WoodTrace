@@ -33,7 +33,7 @@ export class IntroGuard implements CanActivate {
       map((user) => {
         let introViewed = localStorage.getItem("introViewed");
 
-        if (!!introViewed) {
+        if (!!introViewed && !!user) {
           this.utilsService.routerLink("/login");
           return false;
         } else {

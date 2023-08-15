@@ -11,7 +11,11 @@ export class FailureUtils {
    */
   public static errorToFailure(e: unknown): Failure {
     let f: Failure;
-    if (e instanceof FirebaseError || e instanceof FirestoreError) {
+
+    // Just rethrow if it's already a Failure.
+    if (e instanceof Failure) {
+      f = e;
+    } else if (e instanceof FirebaseError || e instanceof FirestoreError) {
       const code = e.code;
       switch (code) {
         case "auth/account-exists-with-different-credential":
@@ -170,9 +174,6 @@ export class FailureUtils {
           f = new UnknownFailure(e.message, "unknown", e);
           break;
       }
-      // Just rethrow same Failure.
-    } else if (e instanceof Failure) {
-      f = e;
     } else if (e instanceof Error) {
       const message = e.message;
       switch (message) {

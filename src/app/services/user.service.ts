@@ -11,6 +11,7 @@ import {
   map,
   skip,
   switchMap,
+  take,
   tap,
   withLatestFrom,
 } from "rxjs/operators";
@@ -67,11 +68,12 @@ export class UserService implements OnDestroy {
       this.user
         .pipe(
           skip(1), // Avoid first null emission.
-          distinctUntilChanged((prev, curr) => prev?.id === curr?.id)
+          distinctUntilChanged((prev, curr) => prev?.id === curr?.id),
+          withLatestFrom(this.online) // Force online check.
         )
-        .subscribe((user: WtUser | null) => {
+        .subscribe(async ([user, online]: [WtUser | null, boolean]) => {
           if (user) {
-            this.retrieveActiveLicense().catch((e) => {
+            await this.retrieveActiveLicense().catch((e) => {
               this.patchError(e);
             });
           } else {
@@ -147,12 +149,35 @@ export class UserService implements OnDestroy {
               .doc$<WtUser>(`${USERS_FB_COLLECTION}/${firebaseUser.uid}`)
               .pipe(
                 map((user: WtUser | undefined) => {
-                  // If user doesn't exist in user collection, fail.
+                  // Returned user can be undefined if document doesn't exist or if there is a
+                  // network error.
                   if (user === undefined) {
-                    throw new NotFoundFailure(
-                      "El usuario no existe en la base de datos."
-                    );
+                    // In case network is offline, try to retrieve user from localstorage.
+                    const localstorageUser = this.fetchUserFromLocalStorage();
+                    if (
+                      localstorageUser &&
+                      localstorageUser.id === firebaseUser.uid
+                    ) {
+                      return localstorageUser;
+                    }
+
+                    // If user is not in localstorage or is not the same as the authenticated,
+                    // clean local storage and return null.
+                    if (localstorageUser) {
+                      this.saveUserToLocalStorage(null);
+                    }
+                    return null;
+
+                    /**
+                     * @todo @mario Debe cerrarse la sesión de firebase cuando esto ocurre?
+                     */
+
+                    // throw new NotFoundFailure(
+                    //   "El usuario no existe en la base de datos."
+                    // );
                   }
+
+                  // If user is a valid WtUser, return it with updated 'emailVerified' property.
                   return { ...user, emailVerified: firebaseUser.emailVerified };
                 })
               )
@@ -378,10 +403,9 @@ export class UserService implements OnDestroy {
    * contra la licencia real, para evitar abusos. Se deja para el futuro.
    */
   public async retrieveActiveLicense(): Promise<void> {
-    let licenses: WtLicense[] = [];
-
     try {
-      licenses = await this.firebase.fetchCollection<WtLicense>(
+      // Try to retrieve license from database. If offline, licenses will be empty.
+      const licenses = await this.firebase.fetchCollection<WtLicense>(
         LICENCES_FB_COLLECTION,
         [
           where("wtUserId", "==", this.currentUser.id),
@@ -396,48 +420,38 @@ export class UserService implements OnDestroy {
         this.patchLicense(licenses[0]);
         return;
       }
-    } catch (e: unknown) {
-      // If error, set license to null an patch error.
-      const failure = FailureUtils.errorToFailure(e);
-      if (!(failure instanceof NoNetworkFailure)) {
-        if (this.store.state.license !== null) this.patchLicense(null);
-        this.patchError(failure);
 
-        if (!environment.production) {
-          console.groupCollapsed(`🏹 [UserService error]`);
-          console.log(
-            "Ocurrió un error al intentar obtener la licencia activa del usuario autenticado."
-          );
-          console.log("error", e);
-          console.log("failure", failure);
-          console.groupEnd();
+      // If no license was found, check if device if online to be shure it was not found.
+      const online = await this.online.pipe(take(1)).toPromise();
+      if (online) {
+        this.patchCompany(null);
+        throw new NotFoundFailure(
+          "No se encontró una licencia activa (online)."
+        );
+      }
+
+      // If device is offline, try to retrieve license from local storage.
+      const localStorageLicense = this.licenseService.fetchFromLocalStorage();
+
+      // If license was found in LocalStorage, check if active and patch it in state
+      if (localStorageLicense) {
+        const now = new Date().getTime();
+        const ends = (localStorageLicense.ends as Timestamp).toDate().getTime();
+        if (ends >= now) {
+          this.patchLicense(localStorageLicense);
+          return;
         }
-        return;
       }
+
+      // If no license was found, set license null and se error.
+      this.patchLicense(null);
+      throw new NotFoundFailure(
+        "No se encontró una licencia activa (offline)."
+      );
+    } catch (e: unknown) {
+      const f = FailureUtils.errorToFailure(e);
+      throw f;
     }
-
-    // Otherwise, try to retrieve license from local storage.
-    const license = this.licenseService.fetchFromLocalStorage();
-
-    // If license is found in LocalStorage.
-    if (license) {
-      const now = new Date().getTime();
-      const ends = (license.ends as Timestamp).toDate().getTime();
-
-      // If active, patch it in state and exit.
-      if (ends <= now) {
-        this.patchLicense(license);
-        return;
-      }
-    }
-
-    // If no license was found, set license null and se error.
-    this.patchLicense(null);
-    this.patchError(
-      new LicenseFailure(
-        "No se encontró una licencia activa para el usuario actual."
-      )
-    );
   }
 
   /**
@@ -492,7 +506,7 @@ export class UserService implements OnDestroy {
 
   /**
    * Retrieves the "Company" for current authenticated user. First, tries to retrieve it from
-   * localStorage. If fails, retrieves it from the database. If fails, throws a Failure.
+   * localStorage. If that fails, retrieves it from database. If that fails, throws a Failure.
    *
    * @returns Promise<void> No Company is returned. Company must be obtained using UserService.company
    * getter. keep it inmutable!
@@ -501,57 +515,54 @@ export class UserService implements OnDestroy {
    */
   public async retrieveUserCompany(): Promise<void> {
     try {
-      let company = await this.firebase.fetchDoc<WtCompany>(
-        `${COMPANYS_FB_COLLECTION}/${this.store.state.license.wtCompanyId}`
-      );
+      // Try to retrieve company from database. If offline, company will be undefined.
+      let company = await this.firebase
+        .fetchDoc<WtCompany>(
+          `${COMPANYS_FB_COLLECTION}/${this.store.state.license.wtCompanyId}`
+        )
+        .catch((e) => {
+          const f = FailureUtils.errorToFailure(e);
+          if (f instanceof NoNetworkFailure) {
+            return undefined;
+          }
+        });
 
-      // If no company was found, throw error to handle it in catch and retrieve data from local storage.
-      if (!company) {
+      // If company was found, try to download logo and patch it in state.
+      if (company) {
+        const photo = await this.firebase
+          .downloadStringFromStorage(
+            `fotoPerfilUser/${this.store.state.license.wtCompanyId}`
+          )
+          .catch((e) => "");
+        this.patchCompany({ ...company, photo });
+        return;
+      }
+
+      // If no license was found, check if device if online to be shure it was not found.
+      const online = await this.online.pipe(take(1)).toPromise();
+      if (online) {
+        this.patchCompany(null);
         throw new NotFoundFailure(
-          "No se encontró la Compañía del Usuario.",
-          "not-found"
+          "No se encontró la Compañía del Usuario (online)."
         );
       }
 
-      // Try to download company logo and patch state.
-      const photo = await this.firebase
-        .downloadStringFromStorage(
-          `fotoPerfilUser/${this.store.state.license.wtCompanyId}`
-        )
-        .catch((e) => "");
-      this.patchCompany({ ...company, photo });
-      return;
-    } catch (e: unknown) {
-      const failure = FailureUtils.errorToFailure(e);
+      // If device is offline, try to retrieve company from local storage.
+      const localStorageCompany = this.companyService.fetchFromLocalStorage();
 
-      // If not network or not found, try to retrieve company from local storage.
-      if (
-        failure instanceof NotFoundFailure ||
-        failure instanceof NoNetworkFailure
-      ) {
-        // Try to retrieve license from local storage.
-        const company = this.companyService.fetchFromLocalStorage();
-
-        // If company is found and it's valid, patch state.
-        if (company) {
-          this.patchCompany(company);
-          return;
-        }
-        // Otherwise, set company to null and patch error.
-      } else {
-        if (this.store.state.company) this.patchCompany(null);
-        this.patchError(failure);
-
-        if (!environment.production) {
-          console.groupCollapsed(`🏹 [UserService error]`);
-          console.log(
-            "Ocurrió un error al intentar obtener la compañía asociada al usuario autenticado."
-          );
-          console.log("error", e);
-          console.log("failure", failure);
-          console.groupEnd();
-        }
+      // If company was found in LocalStorage, patch it in state.
+      if (localStorageCompany) {
+        this.patchCompany(localStorageCompany);
+        return;
       }
+
+      this.patchCompany(null);
+      throw new NotFoundFailure(
+        "No se encontró la Compañía del Usuario (offline)."
+      );
+    } catch (e: unknown) {
+      const f = FailureUtils.errorToFailure(e);
+      throw f;
     }
   }
 

@@ -10,9 +10,20 @@ import { ACTIVE_REPORT_LS_KEY } from "../constants/active-report-ls-key.constant
 import { UserService } from "./user.service";
 import { ReportStore } from "../state/report.store";
 import { BehaviorSubject, Observable, Subscription } from "rxjs";
-import { map, skipWhile, take, tap, withLatestFrom } from "rxjs/operators";
+import {
+  map,
+  skip,
+  skipWhile,
+  take,
+  tap,
+  withLatestFrom,
+} from "rxjs/operators";
 import { NEW_WT_WOOD, WtWood } from "../models/wt-wood";
-import { Failure, FailureUtils } from "../utils/failure.utils";
+import {
+  Failure,
+  FailureUtils,
+  NoNetworkFailure,
+} from "../utils/failure.utils";
 import { REPORTS_LS_KEY } from "../constants/reports-ls-key.constant";
 import { AiFailure, AiService } from "./ai.service";
 import { PdfService } from "./pdf.service";
@@ -20,6 +31,7 @@ import { PersonaType } from "src/assets/data/persona-types";
 import { IonicLocalStorageRepository } from "../infrastructure/ionic-local-storage.repository";
 import { FirebaseService } from "./firebase.service";
 import { WtUser } from "../models/wt-user";
+import { where } from "@angular/fire/firestore";
 
 /**
  * Failure for Report Domain.
@@ -80,6 +92,7 @@ export class ReportService implements OnDestroy {
   get emptyReport(): WtReport {
     return {
       ...NEW_WT_REPORT,
+      woods: [],
       localId: new Date().getTime().toString(),
       wtUserId: this.userService.currentUser!.id,
       fCreado: Timestamp.fromDate(new Date()),
@@ -251,135 +264,229 @@ export class ReportService implements OnDestroy {
   }
 
   /**
-   * Process active report to generate pdf and xls files.
-   * Then saves it to state into reports field.
+   * Process active Report to generate pdf file.
+   * Saves pdf file path in "pdfLocalPath" field in active Report.
+   * Saves active Report into "reports" field in local storage.
    * Then sets active Report to null.
    */
   public async saveActiveReport(): Promise<void> {
-    const activeReport = await this.activeReport.pipe(take(1)).toPromise();
-    const user = await this.userService.user.pipe(take(1)).toPromise();
-    const company = await this.userService.company.pipe(take(1)).toPromise();
+    try {
+      const activeReport = await this.activeReport.pipe(take(1)).toPromise();
+      const user = await this.userService.user.pipe(take(1)).toPromise();
+      const company = await this.userService.company.pipe(take(1)).toPromise();
 
-    if (!activeReport) {
-      throw new ReportFailure("No hay reporte activo.");
+      if (!activeReport) {
+        throw new ReportFailure("No hay reporte activo.");
+      }
+
+      const reports = [...this.store.state.reports];
+
+      const localPathPdf = await this.pdfService.buildReportPdf(
+        activeReport,
+        user,
+        company,
+        true
+      );
+
+      const newReport: WtReport = {
+        ...this.store.state.activeReport,
+        localPathPdf: localPathPdf,
+      };
+
+      reports.unshift(newReport);
+
+      this.store.patch({
+        reports: reports,
+      });
+
+      await this.saveReportToLocalStorage(newReport);
+
+      // Clean active report.
+      this.patchActiveReport(null);
+    } catch (e) {
+      const f = new ReportFailure("Error al generar el reporte.", e.code, e);
+      FailureUtils.log(f);
+      this.store.patch({ error: f });
     }
-
-    const reports = [...this.store.state.reports];
-
-    // Generate pdf report and add new report to beginning of reports array in LocalStorage.
-    const pdfReportDataUrl = await this.pdfService.buildReportPdf(
-      activeReport,
-      user,
-      company,
-      true
-    );
-
-    const newReport = {
-      ...this.store.state.activeReport,
-      urlPdf: pdfReportDataUrl,
-    };
-
-    reports.unshift(newReport);
-
-    this.store.patch({
-      reports: reports,
-    });
-
-    await this.saveReportToLocalStorage(newReport);
-
-    // Clean active report.
-    this.patchActiveReport(null);
   }
 
   /**
-   * Syncs Reports from localStorage to Firestore.
+   * Syncs a Report from localStorage to Firestore.
    */
   public async syncReport(report: WtReport): Promise<void> {
-    // Reject a Report if it was already synced.
-    if (report.synced === true) return;
+    try {
+      // Reject a Report if it was already synced.
+      if (report.synced === true) return;
 
-    // Keep report/woods original data to upload files later.
-    let localReport = { ...report };
-    const localWoods = [...report.woods];
+      // Keep report/woods original data to upload files later.
+      let localReport = { ...report };
+      const localWoods = [...report.woods];
 
-    // Create report in Firestore.
-    const reportData = {
-      ...report,
-      urlPdf: "",
-      woods: localWoods.map((wood) => ({ ...wood, url: "" })),
-    };
+      // Build report data without dataUrls.
+      const reportData = {
+        ...report,
+        woods: localWoods.map((wood) => ({ ...wood, url: "" })),
+      };
 
-    // Only create report if it wasn´t already created.
-    let id = report.id;
-    if (id === "0") {
-      const createdReportRef = await this.firebase
-        .create(REPORTS_LS_KEY, reportData)
-        .catch((e) => {
-          /**
-           * @todo @mario Manejar apropiadamente los errores.
-           */
-          console.log(e);
-          throw e;
-        });
+      // Read pdf file as base64 string and check if valid. If not, generate pdf and retry again.
+      let pdfFileReadResult = await this.pdfService.readPdfFile(
+        report.localPathPdf
+      );
+      if (!pdfFileReadResult || pdfFileReadResult === "") {
+        const user = await this.userService.user.pipe(take(1)).toPromise();
+        const company = await this.userService.company
+          .pipe(take(1))
+          .toPromise();
+        const localPathPdf = await this.pdfService.buildReportPdf(
+          report,
+          user,
+          company,
+          false
+        );
+        pdfFileReadResult = await this.pdfService.readPdfFile(localPathPdf);
+        if (!pdfFileReadResult || pdfFileReadResult === "") {
+          throw new ReportFailure("No se pudo regenerar el pdf (sync).");
+        }
+      }
 
-      id = createdReportRef.id;
+      // Search duplicated reports by localId and wtUserId.
+      const duplicatedReports = await this.promiseWithTimeout(
+        this.firebase.fetchCollection<WtReport>(REPORTS_LS_KEY, [
+          where("localId", "==", report.localId),
+          where("wtUserId", "==", report.wtUserId),
+        ]),
+        5000
+      );
+
+      console.log("duplicated reports");
+      console.log(duplicatedReports);
+
+      // Create report only if it doesn´t exist in Firestore.
+      let id: string;
+      if (duplicatedReports.length === 0) {
+        id = this.firebase.generateNextId(REPORTS_LS_KEY);
+
+        console.log("Generated id is", id);
+        console.log("Set path is", `${REPORTS_LS_KEY}/${id}`);
+
+        reportData.id = id;
+        await this.promiseWithTimeout(
+          this.firebase
+            .set(`${REPORTS_LS_KEY}/${id}`, reportData)
+            .catch((e) => {
+              throw new ReportFailure(
+                "Error al crear el reporte.",
+                "report-failure",
+                e
+              );
+            }),
+          5000
+        );
+      } else {
+        id = duplicatedReports[0].id;
+      }
+
+      console.log("Report being sync is", id);
 
       // Update id in localStorageReport in case something fails later.
       localReport.id = id;
       await this.saveReportToLocalStorage(localReport);
-    }
 
-    // Upload pdf file. If it fails, process should be aborted silently.
-    const uploadedReportPdfUrl = await this.firebase.uploadDataUrlToStorage(
-      localReport.urlPdf,
-      `wt-reports/${id}`,
-      "report"
-    );
-
-    /**
-     * @todo @mario Modificar cómo se sube el pdf. Cuando se sube como uploaDataUrl, se descuadra.
-     * Intentar guardando el archivo y subiendolo a ver si así.
-     */
-
-    console.log(`🛫 PDF subido al storage wt-reports/${id}`);
-
-    // Upload photos for each wood. If it fails, process should be aborted silently.
-    const uploadedWoods = [];
-    for (const wood of localWoods) {
-      const uploadedWoodPhotoUrl = await this.firebase.uploadDataUrlToStorage(
-        wood.url,
-        `wt-reports/${id}`,
-        `wood_${wood.localId}`
+      // Upload pdf file.
+      const uploadedReportPdfUrl = await this.promiseWithTimeout(
+        this.firebase
+          .uploadDataUrlToStorage(
+            pdfFileReadResult,
+            `wt-reports/${id}`,
+            "report.pdf",
+            "base64"
+          )
+          .catch((e) => {
+            throw new ReportFailure(
+              "Error al cargar el pdf.",
+              "report-failure",
+              e
+            );
+          }),
+        5000
       );
-      uploadedWoods.push({ ...wood, url: uploadedWoodPhotoUrl });
+
+      console.log(`🛫 PDF subido al storage wt-reports/${id}`);
+
+      // Upload photos for each wood.
+      const uploadedWoods = [];
+      for (const wood of localWoods) {
+        const uploadedWoodPhotoUrl = await this.promiseWithTimeout(
+          this.firebase
+            .uploadDataUrlToStorage(
+              wood.url,
+              `wt-reports/${id}`,
+              `wood_${wood.localId}`
+            )
+            .catch((e) => {
+              throw new ReportFailure(
+                "Error al cargar las imágenes.",
+                "report-failure",
+                e
+              );
+            }),
+          5000
+        );
+
+        uploadedWoods.push({ ...wood, url: uploadedWoodPhotoUrl });
+      }
+
+      console.log(`🛫 Fotos de los Woods subidos al storage wt-reports/${id}`);
+
+      // Update report with uploaded files urls.
+      await this.promiseWithTimeout(
+        this.firebase
+          .update<WtReport>(`${REPORTS_LS_KEY}/${id}`, {
+            urlPdf: uploadedReportPdfUrl,
+            woods: uploadedWoods,
+            synced: true,
+          })
+          .catch((e) => {
+            throw new ReportFailure(
+              "Error al actualizar el reporte.",
+              "report-failure",
+              e
+            );
+          }),
+        5000
+      );
+      // .catch((e) => {
+      //   throw new ReportFailure("Error al actualizar el reporte.", e.code, e);
+      // });
+
+      // Mark localStorage Report as synced.
+      localReport.synced = true;
+      await this.saveReportToLocalStorage(localReport);
+
+      // Update state with synced report.
+      const reports = [...this.store.state.reports];
+      const reportIndexInState = reports.findIndex(
+        (r) => r.localId === report.localId
+      );
+      reports[reportIndexInState] = localReport;
+      this.store.patch({
+        reports,
+      });
+
+      console.log(
+        `✅ Reporte ${report.localId} sincronizado en Firestore con el id ${id}.`
+      );
+    } catch (e: unknown) {
+      const f = FailureUtils.errorToFailure(e);
+      FailureUtils.log(f);
+
+      /**
+       * @dev No se actualiza el errore en el state, sino que se reporta directamente el error a la
+       * función que solicitó la sincronización.
+       */
+
+      throw f;
     }
-
-    console.log(`🛫 Fotos de los Woods subidos al storage wt-reports/${id}`);
-
-    // Update report with uploaded files urls. If succeeds, we can mark localStorageReport as synced.
-    await this.firebase.update<WtReport>(`${REPORTS_LS_KEY}/${id}`, {
-      urlPdf: uploadedReportPdfUrl,
-      woods: uploadedWoods,
-      synced: true,
-    });
-
-    // Mark localStorage Report as synced.
-    localReport.synced = true;
-    await this.saveReportToLocalStorage(localReport);
-
-    // Update state with synced report.
-    const reports = [...this.store.state.reports];
-    const reportIndexInState = reports.findIndex(
-      (r) => r.localId === report.localId
-    );
-    reports[reportIndexInState] = localReport;
-    this.store.patch({
-      reports,
-    });
-
-    console.log(
-      `✅ Reporte ${report.localId} sincronizado en Firestore con el id ${id}.`
-    );
   }
 
   /**
@@ -454,10 +561,32 @@ export class ReportService implements OnDestroy {
               const existingReportIndex = reports.findIndex(
                 (r) => r.localId === report.localId // r.id === report.id
               );
+
+              // Download pdf and woods photos as base64 urls.
+              const pdfDataUrl = report.urlPdf.startsWith(
+                "https://firebasestorage"
+              )
+                ? await this.firebase.downloadStringFromStorage(report.urlPdf)
+                : "";
+              const woodsData = [];
+              for (const wood of report.woods) {
+                const woodDataUrl = wood.url.startsWith(
+                  "https://firebasestorage"
+                )
+                  ? await this.firebase.downloadStringFromStorage(wood.url)
+                  : "";
+                woodsData.push({ ...wood, url: woodDataUrl });
+              }
+              const reportData = {
+                ...report,
+                urlPdf: pdfDataUrl,
+                woods: woodsData,
+              };
+
               if (existingReportIndex !== -1) {
-                allReports[existingReportIndex] = report;
+                allReports[existingReportIndex] = reportData;
               } else {
-                newReports.push(report);
+                newReports.push(reportData);
               }
             }
 
@@ -497,7 +626,7 @@ export class ReportService implements OnDestroy {
     }
 
     const reports = await Promise.all(promises);
-    return reports;
+    return reports.sort((a, b) => +b.localId - +a.localId);
   }
 
   /**
@@ -677,5 +806,31 @@ export class ReportService implements OnDestroy {
           synced: localStorageWtReport.synced,
         }
       : null;
+  }
+
+  /**
+   * Returns a Promise.race with given promise and timeout, so promise won't take more time than
+   * expected.
+   *
+   * @param promise
+   * @param ms
+   * @param timeoutError
+   * @returns
+   * @throws {NoNetworkFailure}
+   */
+  private promiseWithTimeout<T>(
+    promise: Promise<T>,
+    timeoutMilliseconds: number = 5000,
+    timeoutFailure = new NoNetworkFailure("Request timed out")
+  ): Promise<T> {
+    // create a promise that rejects in milliseconds
+    const timeout = new Promise<never>((_, reject) => {
+      setTimeout(() => {
+        reject(timeoutFailure);
+      }, timeoutMilliseconds);
+    });
+
+    // returns a race between timeout and the passed promise
+    return Promise.race<T>([promise, timeout]);
   }
 }

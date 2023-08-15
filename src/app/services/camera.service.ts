@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 import { ImageExtension } from "../types/image-extension.type";
+import { Failure } from "../utils/failure.utils";
 
 /** Describes a Photo, selected from files or taken with a camera. */
 export interface Photo {
@@ -23,6 +24,8 @@ export interface PickOrTakePhotoConfig {
   source: CameraSource;
 }
 
+export class CameraPermissionsFailure extends Failure {}
+
 /**
  * Repository to access Camera.
  */
@@ -37,10 +40,59 @@ export class CameraService {
    * @param promptLabelPhoto
    * @param promptLabelPicture
    * @returns {Photo} or null.
+   * @throws {CameraPermissionsFailure}
    */
   public async pickOrTakePhoto(
     pickOrTakePhotoConfig: Partial<PickOrTakePhotoConfig>
   ): Promise<Photo | null> {
+    // Check permissions. I user denies, cancell operation.
+    let permissionStatus = await Camera.checkPermissions();
+
+    if (
+      pickOrTakePhotoConfig.source === CameraSource.Prompt ||
+      pickOrTakePhotoConfig.source === CameraSource.Camera
+    ) {
+      if (permissionStatus.camera !== "granted") {
+        const cameraPermissionStatus = await Camera.requestPermissions({
+          permissions: ["camera"],
+        });
+
+        if (cameraPermissionStatus.camera !== "granted") {
+          throw new CameraPermissionsFailure(
+            "No se han concedido permisos de cámara"
+          );
+        }
+      }
+    }
+
+    /**
+     * @bug Check https://github.com/ionic-team/capacitor-plugins/issues/1512
+     * Check https://github.com/ionic-team/capacitor-plugins/issues?q=camera+photos
+     */
+
+    // if (
+    //   pickOrTakePhotoConfig.source === CameraSource.Prompt ||
+    //   pickOrTakePhotoConfig.source === CameraSource.Photos
+    // ) {
+    //   if (permissionStatus.photos !== "granted") {
+    //     const photosPermissionStatus = await Camera.requestPermissions({
+    //       permissions: ["photos"],
+    //     });
+
+    //     /**
+    //      * @bug Check https://github.com/ionic-team/capacitor-plugins/issues/1512
+    //      */
+
+    //     console.log("photosPermissionStatus", photosPermissionStatus);
+
+    //     if (photosPermissionStatus.camera !== "granted") {
+    //       throw new CameraPermissionsFailure(
+    //         "No se han concedido permisos para las fotos."
+    //       );
+    //     }
+    //   }
+    // }
+
     const defaultConfig: PickOrTakePhotoConfig = {
       quality: 70,
       allowEditing: false,

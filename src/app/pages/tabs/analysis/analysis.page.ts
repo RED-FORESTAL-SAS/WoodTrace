@@ -94,7 +94,7 @@ export class AnalysisPage implements OnInit, OnDestroy {
           tap({
             next: (report) => {
               // If there is no active report, it creates a new one and start the analysis.
-              if (report === null) {
+              if (!report) {
                 this.continueWithNewReport();
                 return;
               }
@@ -128,7 +128,8 @@ export class AnalysisPage implements OnInit, OnDestroy {
    * Creates an empty Report in local storage and redirects to the analysis form.
    */
   private continueWithNewReport(): void {
-    this.reportService.patchActiveReport(this.reportService.emptyReport);
+    const emptyReport = this.reportService.emptyReport;
+    this.reportService.patchActiveReport({ ...emptyReport });
     this.utilsSvc.routerLink("/tabs/analysis/analysis-form");
   }
 

@@ -20,6 +20,11 @@ export class AnalysisListPage {
     private router: Router
   ) {
     this.report$ = this.reportService.activeReport;
+
+    /**
+     * @todo @mario Suscribirse al reportService.error, para vigilar los errores que ocurran en el
+     * state.
+     */
   }
 
   onDeleteWood(index: number) {
@@ -64,14 +69,13 @@ export class AnalysisListPage {
         {
           text: "Generar Reporte",
           handler: async () => {
-            /**
-             * @todo @diana Mostrar un loading.
-             */
+            await this.utilsSvc.presentLoading("Generando...");
             await this.reportService.saveActiveReport();
             this.utilsSvc.presentToast("Reporte generado.");
             this.router.navigate(["/tabs/analysis"]).then(() => {
               this.utilsSvc.routerLink("/tabs/reports");
             });
+            await this.utilsSvc.dismissLoading();
           },
         },
         {

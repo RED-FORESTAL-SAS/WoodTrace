@@ -1,5 +1,14 @@
 # CHANGELOG
 
+# [RED-23] -2023-08-15 (Mario)
+
+- Instalar lodash.
+- AndroidManifest: Agregar READ_MEDIA_IMAGES.
+- Ajustar generación del reporte en pdf para que el formato sea consistente.
+- IonicLocalStorageRepository: Ajustar para que se guarden objetos sin convertirse a JSON por default.
+- Ajustar Generación y Sincronización de reportes.
+- Ajustar comportamiento offline para Usuario/Licencia/Compañia.
+
 # [RED-23] -2023-08-10 (Mario) (build 8)
 
 - UtilsServce.dismissLoading: Agregar await.

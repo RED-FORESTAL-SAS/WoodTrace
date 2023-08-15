@@ -87,16 +87,30 @@ export class UtilsService {
   }
 
   //======= Loading =======
-  async presentLoading(message?: string) {
-    const loading = await this.loadingController.create({
-      message,
-      mode: "ios",
-    });
+  async presentLoading(message?: string, id?: string) {
+    let loading: HTMLIonLoadingElement;
+    if (id) {
+      loading = await this.loadingController.create({
+        id,
+        message,
+        mode: "ios",
+      });
+    } else {
+      loading = await this.loadingController.create({
+        message,
+        mode: "ios",
+      });
+    }
+
     await loading.present();
   }
 
-  async dismissLoading(): Promise<void> {
-    await this.loadingController.dismiss();
+  async dismissLoading(id?: string): Promise<void> {
+    if (id) {
+      await this.loadingController.dismiss(id);
+    } else {
+      await this.loadingController.dismiss();
+    }
   }
 
   //======= Toast =======

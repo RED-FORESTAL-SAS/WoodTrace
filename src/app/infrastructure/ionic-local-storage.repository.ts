@@ -21,11 +21,15 @@ export class IonicLocalStorageRepository {
    * Returns a value from local storage, given it's key.
    *
    * @param key
+   * @param convertFromJson If true, returned value will be parsed as JSON.
    * @returns
    */
-  public async fetch<T>(key: string): Promise<T | null> {
+  public async fetch<T>(
+    key: string,
+    convertFromJson: boolean = false
+  ): Promise<T | null> {
     const data = await this.storageInstance.get(key);
-    return JSON.parse(data) as T | null;
+    return convertFromJson ? (JSON.parse(data) as T | null) : data;
   }
 
   /**
@@ -33,11 +37,20 @@ export class IonicLocalStorageRepository {
    * stringified and complex objects could loose data.
    *
    * @param key
+   * @param convertToJson If true, data will be stringified before save.
    * @param data
    */
-  public async save<T>(key: string, data: T | null): Promise<void> {
-    const json = JSON.stringify(data);
-    await this.storageInstance.set(key, json);
+  public async save<T>(
+    key: string,
+    data: T | null,
+    convertToJson: boolean = false
+  ): Promise<void> {
+    if (convertToJson) {
+      const json = JSON.stringify(data);
+      await this.storageInstance.set(key, json);
+    } else {
+      await this.storageInstance.set(key, data);
+    }
   }
 
   /**
