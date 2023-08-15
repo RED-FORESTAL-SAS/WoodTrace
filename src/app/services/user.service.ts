@@ -223,19 +223,29 @@ export class UserService implements OnDestroy {
     const mergedUser = user ? { ...this.store.state.user, ...user } : null;
 
     if (patchDb && user) {
-      await this.firebase.update(`${USERS_FB_COLLECTION}/${mergedUser.id}`, {
+      const userUpdateData: Partial<WtUser> = {
         fullName: mergedUser.fullName,
         docType: mergedUser.docType,
         docNumber: mergedUser.docNumber,
         genero: mergedUser.genero,
         fNacimiento: mergedUser.fNacimiento,
         movil: mergedUser.movil,
-        /**
-         * @dev Do not update "photo" in Firestore. LocalStorage photo is a base64 string.
-         */
         activo: mergedUser.activo,
         firstReport: !!mergedUser.firstReport,
-      });
+      };
+
+      // Only update photo if its a valida url.
+      if (
+        mergedUser.photo &&
+        mergedUser.photo.startsWith("https://firebasestorage")
+      ) {
+        userUpdateData.photo = mergedUser.photo;
+      }
+
+      await this.firebase.update(
+        `${USERS_FB_COLLECTION}/${mergedUser.id}`,
+        userUpdateData
+      );
     }
 
     if (patchLocalStorage) {
@@ -276,8 +286,7 @@ export class UserService implements OnDestroy {
       `${this.store.state.user?.id}_profile_photo`
     );
 
-    await this.patchUser({ photo: downloadUrl }, true);
-    return;
+    return this.patchUser({ photo: downloadUrl }, true, true);
   }
 
   /**

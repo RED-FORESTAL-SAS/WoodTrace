@@ -20,7 +20,7 @@
               </ion-avatar>
             </ion-col>
           </ion-row>
-          <ion-row>
+          <ion-row *ngIf="(online$ |async) === true">
             <ion-col align-items-center>
               <span class="change-photo" (click)="onUploadPhotoClick()"
                 ><strong>Tomar/Seleccionar</strong></span

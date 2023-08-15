@@ -8,7 +8,7 @@ import {
 } from "@angular/router";
 import { Observable } from "rxjs";
 import { UserService } from "../services/user.service";
-import { map, take } from "rxjs/operators";
+import { map, take, withLatestFrom } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root",
@@ -26,7 +26,8 @@ export class AuthGuard implements CanActivate {
     | UrlTree {
     return this.userService.authState.pipe(
       take(1),
-      map((user) => {
+      withLatestFrom(this.userService.online), // Force online check.
+      map(([user, _]) => {
         if (!user || !user.activo) {
           this.router.navigate(["/login"]);
           return false;
