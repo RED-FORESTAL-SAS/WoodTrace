@@ -8,6 +8,7 @@
 
 # [RED-23] -2023-08-15 (Mario)
 
+- Ajustar ciclo de apertura de reportes existentes / creación nuevo reporte.
 - Fix upload photo Usuario.
 - Fix detección offline/online al abrir la app.
 - Instalar lodash.
