@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# [DIANA/RED-23-FIX] -2023-08-15 (Diana)
+
+- Crear input-datapicker.
+
 # [RED-23] -2023-08-15 (Mario)
 
 - Fix upload photo Usuario.
@@ -17,6 +21,13 @@
 - AnalysisFormPage: Ajustar verificación de permisos del gps.
 - Agregar @capacitor-community/file-opener.
 - Regenerar los iconos.
+
+# [DIANA/RED-23-FIX] -2023-07-25 (Diana)
+
+- Sincronizar los sources del icono.
+- Ajustar layout de help/contacto.
+- Ajustar layout de membership.
+- Ajustar layout de intro.
 
 # [RED-23] -2023-07-25 (Mario)
 

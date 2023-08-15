@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HeaderComponent } from "./components/header/header.component";
 import { InputGradientComponent } from "./components/input-gradient/input-gradient.component";
 import { InputCostumComponent } from "./components/input-costum/input-costum.component";
+import { InputDatapickerComponent } from "./components/input-datapicker/input-datapicker.component";
 import { LogoComponent } from "./components/logo/logo.component";
 import { HelpSliderComponent } from "./components/help-slider/help-slider.component";
 import { SwiperModule } from "swiper/angular";
@@ -22,6 +23,7 @@ import { ErrorModalComponent } from "./components/error-modal/error-modal.compon
   declarations: [
     HeaderComponent,
     InputGradientComponent,
+    InputDatapickerComponent,
     InputCostumComponent,
     LogoComponent,
     HelpSliderComponent,
@@ -37,6 +39,7 @@ import { ErrorModalComponent } from "./components/error-modal/error-modal.compon
   exports: [
     HeaderComponent,
     InputGradientComponent,
+    InputDatapickerComponent,
     InputCostumComponent,
     LogoComponent,
     HelpSliderComponent,

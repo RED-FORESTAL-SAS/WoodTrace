@@ -1,0 +1,19 @@
+<div class="gradient-input">
+  <ion-list>
+    <ion-item lines="none" id="open-modal2">
+      <ion-label>Fecha de nacimiento</ion-label>
+      <ion-note slot="end">{{ dateExample | date }}</ion-note>
+    </ion-item>
+    <ion-modal trigger="open-modal2" [cssClass]="'bottom-end'">
+      <ng-template>
+        <ion-datetime
+          presentation="date"
+          size="cover"
+          [showDefaultButtons]="true"
+          doneText="Aceptar"
+          cancelText="Cancelar"
+          formControlvalue="dateExample"
+        ></ion-datetime>
+      </ng-template> </ion-modal
+  ></ion-list>
+</div>
