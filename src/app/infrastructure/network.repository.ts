@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { Network } from "@capacitor/network";
 import { BehaviorSubject, Observable } from "rxjs";
 import { skip } from "rxjs/operators";
 
@@ -10,20 +11,18 @@ import { skip } from "rxjs/operators";
 })
 export class NetworkRepository {
   private online = new BehaviorSubject<boolean>(false);
+
+  /**
+   * Observable that returns a boolean with Network status.
+   *
+   * @dev This only works for Android and iOS. Not for web.
+   */
   public online$: Observable<boolean>;
 
   constructor() {
     this.online$ = this.online.asObservable();
-
-    /**
-     * @todo @mario Implementar detección de la conexión. Actualmente no funciona con @capacitor/network.
-     * así que se comenta el código y se implementa un mock.
-     */
-    this.online.next(true);
-
-    // Network.addListener("networkStatusChange", (status) => {
-    //   console.log("Network status changed", status);
-    //   this.online.next(status.connected);
-    // });
+    Network.addListener("networkStatusChange", (status) => {
+      this.online.next(status.connected);
+    });
   }
 }

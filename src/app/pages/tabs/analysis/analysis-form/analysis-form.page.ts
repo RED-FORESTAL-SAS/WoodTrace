@@ -219,15 +219,19 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
   async getCurrentPosition(): Promise<void> {
     await this.utilsSvc.presentLoading();
     try {
-      let permissionStatus = await Geolocation.checkPermissions().catch((e) => {
-        throw new LocationDisabledFailure(
-          "Por favor habilite el GPS del dispositivo."
-        );
-      });
+      let permissionStatus = await Geolocation.checkPermissions().catch(
+        async (e) => {
+          await this.utilsSvc.dismissLoading();
+          throw new LocationDisabledFailure(
+            "Por favor habilite el GPS del dispositivo."
+          );
+        }
+      );
       if (permissionStatus.location !== "granted") {
         permissionStatus = await Geolocation.requestPermissions();
       }
       if (permissionStatus.location !== "granted") {
+        await this.utilsSvc.dismissLoading();
         throw new LocationNotGrantedFailure(
           "Por favor autorice el acceso a la ubicación para la aplicación."
         );
@@ -244,11 +248,11 @@ export class AnalysisFormPage implements OnInit, OnDestroy {
         e instanceof LocationDisabledFailure ||
         e instanceof LocationNotGrantedFailure
       ) {
-        this.utilsSvc.presentToast(
+        await this.utilsSvc.presentToast(
           `No se pudo obtener la ubicación. ${e.message}`
         );
       } else {
-        this.utilsSvc.presentToast(
+        await this.utilsSvc.presentToast(
           "Ocurrion un error al obtener la ubicación. Por favor intente de nuevo."
         );
       }

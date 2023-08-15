@@ -11,7 +11,10 @@ import { ModalController } from "@ionic/angular";
 import { WtWood } from "src/app/models/wt-wood";
 import { LoadingModalComponent } from "src/app/shared/components/loading-modal/loading-modal.component";
 import { ErrorModalComponent } from "src/app/shared/components/error-modal/error-modal.component";
-import { CameraService } from "src/app/services/camera.service";
+import {
+  CameraPermissionsFailure,
+  CameraService,
+} from "src/app/services/camera.service";
 
 @Component({
   selector: "app-take-photos",
@@ -96,9 +99,18 @@ export class TakePhotosPage implements OnInit, OnDestroy {
    * Funciona para cuando se escoge seleccionar una foto del dispositovo
    */
   async uploadPhoto() {
-    const photo = await this.cameraService.pickOrTakePhoto({
-      source: CameraSource.Photos,
-    });
+    const photo = await this.cameraService
+      .pickOrTakePhoto({
+        source: CameraSource.Photos,
+      })
+      .catch((e) => {
+        if (e instanceof CameraPermissionsFailure) {
+          this.utilsSvc.presentToast(e.message);
+        } else {
+          this.utilsSvc.presentToast("Ocurrió un error con la cámara.");
+        }
+      });
+
     if (!photo) return;
 
     this.loadingPhoto = true;
@@ -110,9 +122,17 @@ export class TakePhotosPage implements OnInit, OnDestroy {
    * Funciona para cuando se toma una foto con la camara del dispositivo
    */
   async takePhoto() {
-    const photo = await this.cameraService.pickOrTakePhoto({
-      source: CameraSource.Camera,
-    });
+    const photo = await this.cameraService
+      .pickOrTakePhoto({
+        source: CameraSource.Camera,
+      })
+      .catch((e) => {
+        if (e instanceof CameraPermissionsFailure) {
+          this.utilsSvc.presentToast("No se puede acceder a la cámara.");
+        } else {
+          this.utilsSvc.presentToast("Ocurrió un error con la cámara.");
+        }
+      });
     if (!photo) return;
 
     this.loadingPhoto = true;

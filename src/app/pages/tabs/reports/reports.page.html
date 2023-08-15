@@ -32,7 +32,10 @@
                 <th>Acciones</th>
               </thead>
               <tr *ngFor="let report of reports$ | async; index as i">
-                <td>{{ report.placa }}{{report.docNumber}}</td>
+                <td>
+                  <span *ngIf="report.synced"> &#x2713;</span> {{ report.placa
+                  }}{{report.docNumber}}
+                </td>
                 <td>{{ report.municipio }}</td>
                 <td>{{ report.fCreado | timestamp | date: 'dd-MM-yyyy' }}</td>
                 <td>
@@ -46,19 +49,21 @@
                     class="option-icon"
                     src="assets/icon/dawnload_report.svg"
                     title="Descargar reporte"
-                    (click)="onDawnloadReport(report)"
+                    (click)="downloadReport(report)"
                   ></ion-icon>
                 </td>
               </tr>
             </table>
-            <p *ngIf="(loadingReports$ | async) === true">Cargando...</p>
-            <p
-              *ngIf="(loadingReports$ | async) === false"
-              (click)="fetchNextReportPage()"
-            >
-              Cargar +
-            </p>
           </ion-col>
+        </ion-row>
+        <ion-row *ngIf="(online$ | async) === true">
+          <p *ngIf="(loadingReports$ | async) === true">Cargando...</p>
+          <p
+            *ngIf="(loadingReports$ | async) === false"
+            (click)="fetchNextReportPage()"
+          >
+            Cargar +
+          </p>
         </ion-row>
       </ion-grid>
     </div>

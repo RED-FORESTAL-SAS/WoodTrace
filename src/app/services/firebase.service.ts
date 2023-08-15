@@ -15,6 +15,7 @@ import {
   uploadString as uploadStringLegacy,
   uploadBytes as uploadBytesLegacy,
   deleteObject as deleteObjectLegacy,
+  StringFormat,
 } from "firebase/storage";
 
 /**
@@ -30,7 +31,6 @@ import { QueryConstraint } from "../types/query-constraint.type";
 import {
   DocumentData,
   DocumentReference,
-  DocumentSnapshot,
   Firestore,
   addDoc,
   collection,
@@ -429,7 +429,7 @@ export class FirebaseService {
   ): Promise<T[]> {
     let paginationConstraints: QueryConstraint[] = [
       where("wtUserId", "==", userId),
-      orderBy("fCreado", "desc"),
+      orderBy("localId", "desc"),
       limit(pageSize),
     ];
 
@@ -543,6 +543,16 @@ export class FirebaseService {
   }
 
   /**
+   * Returns an id for a new document in a collection, given a collection path.
+   *
+   * @param colPath
+   * @returns
+   */
+  public generateNextId(colPath: string): string {
+    return doc(collection(this.firestore, colPath)).id;
+  }
+
+  /**
    * Uploads a base64 dataUrl to Firebase Storage and returns it's download URL.
    *
    * @param dataUrl {String} with the dataUrl to upload.
@@ -554,19 +564,34 @@ export class FirebaseService {
   public async uploadDataUrlToStorage(
     dataUrl: string,
     folder: string,
-    fileName: string
+    fileName: string,
+    stringFormat: StringFormat = StringFormat.DATA_URL
   ): Promise<string> {
     const folderWithoutInitialTrailingSlash = folder
       .replace(/^\/+/g, "")
       .replace(/\/+$/, "");
     const fileNameWithoutExtension = this.fileNameFromPath(fileName);
-    const fileExt = dataUrl.split(";")[0].split("/")[1];
+
+    // Get file extension.
+    let fileExt: string;
+    // If file is a dataUrl, get the extension from the dataUrl (must be an image).
+    if (stringFormat === StringFormat.DATA_URL) {
+      fileExt = dataUrl.split(";")[0].split("/")[1];
+
+      // If file is any other format, get the extension from the fileName.
+    } else {
+      fileExt = fileName.split(".").pop();
+    }
+    // If not extension is found, throw an error.
+    if (!fileExt) {
+      throw new Error("No se encontró la extensión del archivo.");
+    }
 
     const fileRef = ref(
       getStorage(),
       `${folderWithoutInitialTrailingSlash}/${fileNameWithoutExtension}.${fileExt}`
     );
-    await uploadString(fileRef, dataUrl, "data_url").catch((e: unknown) => {
+    await uploadString(fileRef, dataUrl, stringFormat).catch((e: unknown) => {
       const f = FailureUtils.errorToFailure(e);
       if (!environment.production) {
         console.groupCollapsed(`🧰 FirebaseService.uploadString [error]`);

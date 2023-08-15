@@ -4,6 +4,22 @@
 
 - Crear input-datapicker.
 
+# [RED-23] -2023-08-15 (Mario)
+
+- Instalar lodash.
+- AndroidManifest: Agregar READ_MEDIA_IMAGES.
+- Ajustar generación del reporte en pdf para que el formato sea consistente.
+- IonicLocalStorageRepository: Ajustar para que se guarden objetos sin convertirse a JSON por default.
+- Ajustar Generación y Sincronización de reportes.
+- Ajustar comportamiento offline para Usuario/Licencia/Compañia.
+
+# [RED-23] -2023-08-10 (Mario) (build 8)
+
+- UtilsServce.dismissLoading: Agregar await.
+- AnalysisFormPage: Ajustar verificación de permisos del gps.
+- Agregar @capacitor-community/file-opener.
+- Regenerar los iconos.
+
 # [DIANA/RED-23-FIX] -2023-07-25 (Diana)
 
 - Sincronizar los sources del icono.

@@ -39,6 +39,23 @@
       </div>
       <div class="btn-container">
         <ion-grid>
+          <ion-row
+            *ngIf="(showSyncButton$ | async) === true"
+            class="btn"
+            (click)="syncReports()"
+          >
+            <ion-col align-items-center class="bg-icon-btn" size="2">
+              <ion-icon
+                class="icon-btn"
+                src="../../../../assets/icon/wt_Icon list=Edit.svg"
+              ></ion-icon>
+            </ion-col>
+
+            <ion-col align-items-start class="label-btn">
+              Syncronizar ({{ (reports$ | async).length }}) {{ online$ | async
+              }}
+            </ion-col>
+          </ion-row>
           <ion-row class="btn" routerLink="admin-account">
             <ion-col align-items-center class="bg-icon-btn" size="2">
               <ion-icon
