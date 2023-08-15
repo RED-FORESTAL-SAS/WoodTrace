@@ -3,6 +3,7 @@
 # [DIANA/RED-23-FIX] -2023-08-15 (Diana)
 
 - Crear input-datapicker.
+- npm i capacitor.
 
 # [RED-23] -2023-08-15 (Mario)
 
