@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# [DIANA/RED-23-FIX] -2023-08-15 (Diana)
+
+- Crear input-datapicker.
+
 # [DIANA/RED-23-FIX] -2023-07-25 (Diana)
 
 - Sincronizar los sources del icono.
