@@ -34,12 +34,15 @@ export class ReportDetailsPage implements OnInit {
     this.activeReport$ = this.reportService.activeReport;
   }
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  ionViewDidEnter() {
     this.populateForm();
   }
 
-  ionViewWillLeave() {
+  async ionViewWillLeave() {
     this.reportService.patchActiveReport(null);
+    this.sbs.forEach((s) => s.unsubscribe());
   }
 
   populateForm() {
@@ -49,6 +52,12 @@ export class ReportDetailsPage implements OnInit {
           take(1),
           tap({
             next: (report) => {
+              // Exit component if report is null or not created.
+              if (!report || report.urlPdf === "") {
+                this.utilsSvc.routerLink("/tabs/reports");
+                return;
+              }
+
               this.placa.setValue(report.placa);
               this.guia.setValue(report.guia);
               this.ubicacion.setValue(report.ubicacion);

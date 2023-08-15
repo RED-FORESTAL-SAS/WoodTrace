@@ -7,6 +7,12 @@ import { AnalysisPage } from "./analysis.page";
 const routes: Routes = [
   {
     path: "",
+    redirectTo: "analysis-first",
+    pathMatch: "full",
+  },
+
+  {
+    path: "analysis-first",
     component: AnalysisPage,
   },
   {
@@ -15,6 +21,7 @@ const routes: Routes = [
       import("./analysis-form/analysis-form.module").then(
         (m) => m.AnalysisFormPageModule
       ),
+    canActivate: [AnalysisGuard],
   },
   {
     path: "how-to-use",
@@ -22,7 +29,7 @@ const routes: Routes = [
       import("./how-to-use/how-to-use.module").then(
         (m) => m.HowToUsePageModule
       ),
-    // canActivate: [AnalysisGuard],
+    canActivate: [AnalysisGuard],
   },
   {
     path: "take-photos",
@@ -30,7 +37,7 @@ const routes: Routes = [
       import("./take-photos/take-photos.module").then(
         (m) => m.TakePhotosPageModule
       ),
-    // canActivate: [AnalysisGuard],
+    canActivate: [AnalysisGuard],
   },
   {
     path: "analysis-result",
@@ -38,7 +45,7 @@ const routes: Routes = [
       import("./analysis-result/analysis-result.module").then(
         (m) => m.AnalysisResultPageModule
       ),
-    // canActivate: [AnalysisGuard],
+    canActivate: [AnalysisGuard],
   },
   {
     path: "analysis-result-content",
@@ -46,7 +53,7 @@ const routes: Routes = [
       import("./analysis-result-content/analysis-result-content.module").then(
         (m) => m.AnalysisResultContentPageModule
       ),
-    // canActivate: [AnalysisGuard],
+    canActivate: [AnalysisGuard],
   },
   {
     path: "analysis-list",
@@ -54,7 +61,7 @@ const routes: Routes = [
       import("./analysis-list/analysis-list.module").then(
         (m) => m.AnalysisListPageModule
       ),
-    // canActivate: [AnalysisGuard],
+    canActivate: [AnalysisGuard],
   },
   {
     path: "analysis-details",
@@ -62,7 +69,7 @@ const routes: Routes = [
       import("./analysis-details/analysis-details.module").then(
         (m) => m.AnalysisDetailsPageModule
       ),
-    // canActivate: [AnalysisGuard],
+    canActivate: [AnalysisGuard],
   },
 ];
 
