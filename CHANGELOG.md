@@ -2,6 +2,8 @@
 
 # [RED-23] -2023-08-15 (Mario)
 
+- Fix upload photo Usuario.
+- Fix detección offline/online al abrir la app.
 - Instalar lodash.
 - AndroidManifest: Agregar READ_MEDIA_IMAGES.
 - Ajustar generación del reporte en pdf para que el formato sea consistente.

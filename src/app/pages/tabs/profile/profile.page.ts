@@ -208,13 +208,13 @@ export class ProfilePage implements OnDestroy, OnInit {
       .asObservable()
       .pipe(
         skip(1),
-        switchMap((_) => this.userService.online),
+        withLatestFrom(this.userService.online),
         tap({
-          next: async (online) => {
-            if (!online) {
-              this.utilsSvc.presentToast("No tienes conexión a internet.");
-              return;
-            }
+          next: async ([_, online]) => {
+            // if (!online) {
+            //   this.utilsSvc.presentToast("No tienes conexión a internet.");
+            //   return;
+            // }
 
             const photo = await this.cameraService.pickOrTakePhoto({
               promptLabelHeader: "Foto de perfil",
