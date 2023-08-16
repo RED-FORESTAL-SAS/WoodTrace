@@ -70,6 +70,15 @@ export class AdminAccountPage implements OnInit, OnDestroy {
   }
 
   eliminarCuenta() {
+    this.online$.subscribe((res) => {
+      if (res === false) {
+        this.utilsSvc.presentToast(
+          "No tienes conexión, por lo tanto no es posible actualizar la información del usuario."
+        );
+        return;
+      }
+    });
+
     this.utilsSvc.presentAlertConfirm({
       header: "Eliminar la cuenta",
       message: "¿Está seguro de que desea eliminar la cuenta?",

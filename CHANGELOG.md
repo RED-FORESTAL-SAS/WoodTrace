@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# [DIANA/RED-23-FIX] -2023-08-16 (Diana)
+
+- Validación onLine$ para botones de guardar en los formularios de editar perfil, cambiar contraseña y eliminar cuenta.
+- Aumentar tamaño de las celdas en el report page.
+
 # [DIANA/RED-23-FIX] -2023-08-15 (Diana)
 
 - Crear input-datapicker.

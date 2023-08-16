@@ -1,8 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { FormControl, Validators } from "@angular/forms";
 import { ModalController } from "@ionic/angular";
+import { Observable } from "rxjs";
 import { User } from "src/app/models/user.model";
 import { FirebaseService } from "src/app/services/firebase.service";
+import { UserService } from "src/app/services/user.service";
 import { UtilsService } from "src/app/services/utils.service";
 
 @Component({
@@ -23,11 +25,17 @@ export class UpdatePasswordComponent implements OnInit {
 
   user = {} as User;
 
+  /** Observable that checks if device is online/offline. */
+  public online$: Observable<boolean>;
+
   constructor(
     private modalController: ModalController,
     private utilsSvc: UtilsService,
-    private firebaseSvc: FirebaseService
-  ) {}
+    private firebaseSvc: FirebaseService,
+    private userService: UserService
+  ) {
+    this.online$ = this.userService.online;
+  }
 
   ngOnInit() {
     this.user = this.utilsSvc.getCurrentUser();
@@ -41,6 +49,14 @@ export class UpdatePasswordComponent implements OnInit {
    * It updates the user password.
    */
   updatePassword() {
+    this.online$.subscribe((res) => {
+      if (res === false) {
+        this.utilsSvc.presentToast(
+          "No tienes conexión, por lo tanto no es posible actualizar la información del usuario."
+        );
+        return;
+      }
+    });
     this.loading = true;
     this.firebaseSvc.changeUserPassword(this.password.value).then(
       (res) => {

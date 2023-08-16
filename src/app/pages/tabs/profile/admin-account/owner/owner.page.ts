@@ -42,6 +42,9 @@ export class OwnerPage implements OnInit, OnDestroy {
   /** Observable with active license or null. */
   public user$: Observable<WtUser | null>;
 
+  /** Observable that checks if device is online/offline. */
+  public online$: Observable<boolean>;
+
   constructor(
     private firebaseSvc: FirebaseService,
     private utilsSvc: UtilsService,
@@ -49,6 +52,7 @@ export class OwnerPage implements OnInit, OnDestroy {
     private userService: UserService
   ) {
     this.user$ = this.userService.user;
+    this.online$ = this.userService.online;
   }
 
   ngOnInit() {
@@ -101,6 +105,15 @@ export class OwnerPage implements OnInit, OnDestroy {
    * It updates the user information in the database.
    */
   updateUser() {
+    this.online$.subscribe((res) => {
+      if (res === false) {
+        this.utilsSvc.presentToast(
+          "No tienes conexión, por lo tanto no es posible actualizar la información del usuario."
+        );
+        return;
+      }
+    });
+
     this.sbs.push(
       this.userService.user
         .pipe(
