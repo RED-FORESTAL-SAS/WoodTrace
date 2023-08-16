@@ -104,15 +104,14 @@ export class OwnerPage implements OnInit, OnDestroy {
   /**
    * It updates the user information in the database.
    */
-  updateUser() {
-    this.online$.subscribe((res) => {
-      if (res === false) {
-        this.utilsSvc.presentToast(
-          "No tienes conexión, por lo tanto no es posible actualizar la información del usuario."
-        );
-        return;
-      }
-    });
+  async updateUser() {
+    const online = await this.online$.pipe(take(1)).toPromise();
+    if (online === false) {
+      this.utilsSvc.presentToast(
+        "No tienes conexión actualmente, por lo tanto no es posible actualizar el usuario."
+      );
+      return;
+    }
 
     this.sbs.push(
       this.userService.user

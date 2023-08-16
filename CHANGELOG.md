@@ -2,8 +2,9 @@
 
 # [DIANA/RED-23-FIX] -2023-08-16 (Diana)
 
-- Validación onLine$ para botones de guardar en los formularios de editar perfil, cambiar contraseña y eliminar cuenta.
+- Validación onLine para botones de guardar en los formularios de editar perfil, cambiar contraseña y eliminar cuenta.
 - Aumentar tamaño de las celdas en el report page.
+- Aumentar tamaño de iconos de acción en listado de reportes y análisis.
 
 # [DIANA/RED-23-FIX] -2023-08-15 (Diana)
 

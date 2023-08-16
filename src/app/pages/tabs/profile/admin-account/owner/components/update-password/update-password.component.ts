@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { FormControl, Validators } from "@angular/forms";
 import { ModalController } from "@ionic/angular";
 import { Observable } from "rxjs";
+import { take } from "rxjs/operators";
 import { User } from "src/app/models/user.model";
 import { FirebaseService } from "src/app/services/firebase.service";
 import { UserService } from "src/app/services/user.service";
@@ -48,15 +49,15 @@ export class UpdatePasswordComponent implements OnInit {
   /**
    * It updates the user password.
    */
-  updatePassword() {
-    this.online$.subscribe((res) => {
-      if (res === false) {
-        this.utilsSvc.presentToast(
-          "No tienes conexión, por lo tanto no es posible actualizar la información del usuario."
-        );
-        return;
-      }
-    });
+  async updatePassword() {
+    const online = await this.online$.pipe(take(1)).toPromise();
+    if (online === false) {
+      this.utilsSvc.presentToast(
+        "No tienes conexión actualmente, por lo tanto no es posible cambiar la contraseña."
+      );
+      return;
+    }
+
     this.loading = true;
     this.firebaseSvc.changeUserPassword(this.password.value).then(
       (res) => {
