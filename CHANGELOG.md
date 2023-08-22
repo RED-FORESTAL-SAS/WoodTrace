@@ -2,6 +2,7 @@
 
 # [DIANA/RED-23-FIX] -2023-08-22 (Diana) (build 9)
 
+- Ajustar detección online/offline.
 - Build 9.
 
 # [DIANA/RED-23-FIX] -2023-08-16 (Diana)
