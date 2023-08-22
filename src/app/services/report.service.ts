@@ -285,7 +285,7 @@ export class ReportService implements OnDestroy {
         activeReport,
         user,
         company,
-        true
+        false
       );
 
       const newReport: WtReport = {

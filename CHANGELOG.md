@@ -2,6 +2,8 @@
 
 # [DIANA/RED-23-FIX] -2023-08-22 (Diana) (build 9)
 
+- No abrir el pdf automáticamente durante de la generación del Reporte.
+- Fix Bug que no dejaba abrir los reportes.
 - Ajustar detección online/offline.
 - Build 9.
 
