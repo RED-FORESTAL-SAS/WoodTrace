@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# [DIANA/RED-23-FIX] -2023-08-22 (Diana) (build 9)
+
+- Build 9.
+
 # [DIANA/RED-23-FIX] -2023-08-16 (Diana)
 
 - Validación onLine para botones de guardar en los formularios de editar perfil, cambiar contraseña y eliminar cuenta.
