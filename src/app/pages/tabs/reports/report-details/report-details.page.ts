@@ -53,7 +53,7 @@ export class ReportDetailsPage implements OnInit {
           tap({
             next: (report) => {
               // Exit component if report is null or not created.
-              if (!report || report.urlPdf === "") {
+              if (!report || report.localPathPdf === "") {
                 this.utilsSvc.routerLink("/tabs/reports");
                 return;
               }

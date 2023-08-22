@@ -30,9 +30,6 @@ export class AnalysisGuard implements CanActivate {
     return this.reportService.activeReport.pipe(
       take(1),
       map((report) => {
-        console.log("AnalysisGuard");
-        console.log(report);
-
         // Only open Analysis if active report is not created yet.
         if (report && report.urlPdf === "") {
           return true;
