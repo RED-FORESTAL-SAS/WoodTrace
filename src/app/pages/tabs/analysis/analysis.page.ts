@@ -147,7 +147,7 @@ export class AnalysisPage implements OnInit, OnDestroy {
             next: (report) => {
               // If there is no active report, it creates a new one and start the analysis.
               if (report !== null) {
-                this.utilsSvc.routerLink("/tabs/analysis/analysis-form");
+                this.utilsSvc.routerLink("/tabs/analysis/analysis-list");
                 return;
               }
 

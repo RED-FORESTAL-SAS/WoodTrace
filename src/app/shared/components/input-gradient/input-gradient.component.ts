@@ -32,7 +32,7 @@ export class InputGradientComponent implements OnInit {
       this.isPassword = true;
     }
 
-    if (this.type == "dateTime") {
+    if (this.type == "date") {
       this.isDate = true;
     }
   }

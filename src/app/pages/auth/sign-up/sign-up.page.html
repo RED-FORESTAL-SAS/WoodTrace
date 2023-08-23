@@ -99,7 +99,14 @@
         >
       </div>
 
-      <!-- <app-input-datapicker></app-input-datapicker> -->
+      <!-- <app-input-datapicker
+        [formControlValue]="fNacimiento"
+      ></app-input-datapicker>
+      <div class="validators" *ngIf="fNacimiento.touched && fNacimiento.errors">
+        <span *ngIf="fNacimiento.errors?.['required']"
+          >Selecciona una fecha de nacimiento</span
+        >
+      </div> -->
 
       <!-- Tipo de documento  -->
       <app-input-gradient

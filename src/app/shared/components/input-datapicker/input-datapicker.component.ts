@@ -20,14 +20,17 @@ export class InputDatapickerComponent implements OnInit {
   @Input() max: null | string;
   @Input() icon: string;
 
-  dateExample = new Date().toISOString();
+  public dateExample: string;
 
   hide: boolean = true;
   isPassword: boolean;
   isDate: boolean;
   noInputTypes = ["select", "button", "currency"];
   mask = { prefix: "COP    ", thousands: ".", decimal: ",", align: "left" };
-  constructor() {}
+  constructor() {
+    const fNacimientoString = this.formControlValue.value.toISOString();
+    this.dateExample = fNacimientoString;
+  }
 
   ngOnInit() {
     if (this.type == "password") {

@@ -1,5 +1,15 @@
 # CHANGELOG
 
+# [DIANA/RED-23-FIX] -2023-08-23 (Diana) (build 9)
+
+- Modal de cambiar contraseña disminuir el alto.
+- Label fecha de nacimiento en formulario signin.
+- Layout login-page, profile-page.
+- Fix numerodocumento.
+- Fix ortografia how-to-use.
+- Ajustar routerlink de "Continuar Reporte".
+  Ajustar routerlink de "Ingresar licencia".
+
 # [DIANA/RED-23-FIX] -2023-08-22 (Diana) (build 9)
 
 - No abrir el pdf automáticamente durante de la generación del Reporte.

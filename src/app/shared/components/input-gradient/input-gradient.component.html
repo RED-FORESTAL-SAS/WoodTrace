@@ -29,6 +29,7 @@
     <!-- ========= Input Regular ========= -->
 
     <ion-item lines="none" *ngIf="!noInputTypes.includes(type)">
+      <ion-label *ngIf="isDate">Fecha de nacimiento</ion-label>
       <ion-input
         debounce="400"
         [minlength]="min"
@@ -46,6 +47,7 @@
       </ion-icon>
       <ion-icon
         *ngIf="isDate"
+        title="fecha de nacimiento"
         slot="end"
         name="calendar-number-outline"
       ></ion-icon>
