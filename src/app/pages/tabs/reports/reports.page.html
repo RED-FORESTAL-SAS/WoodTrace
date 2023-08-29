@@ -57,13 +57,26 @@
           </ion-col>
         </ion-row>
         <ion-row *ngIf="(online$ | async) === true">
-          <p *ngIf="(loadingReports$ | async) === true">Cargando...</p>
-          <p
-            *ngIf="(loadingReports$ | async) === false"
-            (click)="fetchNextReportPage()"
+          <ion-col align-items-center>
+            <div class="btn-gradient">
+              <p *ngIf="(loadingReports$ | async) === true">
+                Cargando reportes...
+              </p>
+              <!-- <p
+                *ngIf="(loadingReports$ | async) === false"
+                (click)="fetchNextReportPage()"
+              >
+                Cargar +
+              </p> -->
+              <ion-button
+                mode="ios"
+                *ngIf="(loadingReports$ | async) === false"
+                (click)="fetchNextReportPage()"
+              >
+                <span>Cargar más</span>
+              </ion-button>
+            </div></ion-col
           >
-            Cargar +
-          </p>
         </ion-row>
       </ion-grid>
     </div>

@@ -217,7 +217,7 @@ export class TakePhotosPage implements OnInit, OnDestroy {
       cssClass: "modal-especie",
     });
     if (selected) {
-      this.especie.setValue(selected.especie.nombreCienticifo);
+      this.especie.setValue(selected.especie.nombreCientifico);
     }
   }
 

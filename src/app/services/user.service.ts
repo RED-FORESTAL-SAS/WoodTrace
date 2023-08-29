@@ -617,9 +617,12 @@ export class UserService implements OnDestroy {
       genero: user.genero,
       fNacimiento:
         user.fNacimiento &&
-        user.fNacimiento.nanoseconds &&
-        user.fNacimiento.seconds
-          ? user.fNacimiento
+        user.fNacimiento.nanoseconds !== undefined &&
+        user.fNacimiento.seconds !== undefined
+          ? {
+              seconds: (user.fNacimiento as Timestamp).seconds,
+              nanoseconds: (user.fNacimiento as Timestamp).nanoseconds,
+            }
           : null,
       movil: user.movil,
       devices: user.devices,
@@ -647,15 +650,12 @@ export class UserService implements OnDestroy {
           docNumber: localStorageUser.docNumber,
           emailVerified: localStorageUser.emailVerified,
           genero: localStorageUser.genero,
-          fNacimiento:
-            localStorageUser.fNacimiento &&
-            localStorageUser.fNacimiento.seconds &&
-            localStorageUser.fNacimiento.nanoseconds
-              ? new Timestamp(
-                  localStorageUser.fNacimiento.seconds,
-                  localStorageUser.fNacimiento.nanoseconds
-                )
-              : null,
+          fNacimiento: localStorageUser.fNacimiento
+            ? new Timestamp(
+                localStorageUser.fNacimiento.seconds,
+                localStorageUser.fNacimiento.nanoseconds
+              )
+            : null,
           movil: localStorageUser.movil,
           devices: localStorageUser.devices,
           photo: localStorageUser.photo,

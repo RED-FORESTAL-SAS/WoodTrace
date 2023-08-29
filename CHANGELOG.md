@@ -1,5 +1,12 @@
 # CHANGELOG
 
+# [DIANA/RED-23-FIX] -2023-08-23 (Diana) (build 10)
+
+- Analisys-list: Validar el botón generar reporte, que sea disabled cuando no hayan análisis.
+- Cambiar nombreCienticifo por nombreCientifico.
+- Porifle-page: Ajustar estilos de botón sincronizar.
+- report-page: Asutar estilos de botón cargar más.
+
 # [DIANA/RED-23-FIX] -2023-08-23 (Diana) (build 9)
 
 - Modal de cambiar contraseña disminuir el alto.

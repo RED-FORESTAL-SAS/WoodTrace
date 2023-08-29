@@ -1,5 +1,5 @@
 export interface especie {
-  nombreCienticifo: string;
+  nombreCientifico: string;
   nombreComun: string[];
   familia: string;
   densidadBasica: number;
@@ -15,7 +15,7 @@ export interface especie {
 
 export const especie: especie[] = [
   {
-    nombreCienticifo: "Anacardium excelsum",
+    nombreCientifico: "Anacardium excelsum",
     nombreComun: [
       "mijuguo de Venezuela",
       "mijao",
@@ -46,7 +46,7 @@ export const especie: especie[] = [
     regional: ["CARSUCRE 0617/2015"],
   },
   {
-    nombreCienticifo: "Campnosperma panamensis",
+    nombreCientifico: "Campnosperma panamensis",
     nombreComun: ["Sajo", "Orey"],
     familia: "Anacardiaceae",
     caracteristicasEspecie: `Hojas: alternas, simples y agrupadas.
@@ -63,7 +63,7 @@ export const especie: especie[] = [
     regional: [],
   },
   {
-    nombreCienticifo: "Cariniana pyriformis",
+    nombreCientifico: "Cariniana pyriformis",
     nombreComun: [
       "Colombian mahogany",
       "chibugá",
@@ -95,7 +95,7 @@ export const especie: especie[] = [
     ],
   },
   {
-    nombreCienticifo: "Cedrela odorata",
+    nombreCientifico: "Cedrela odorata",
     nombreComun: ["Cedro rojo", "cedro americano"],
     familia: "Meliaceae",
     caracteristicasEspecie: `Hojas: caducifolias, alternas, paripinnadas o imparipinnadas, lanceoladas u oblongos. 
@@ -117,7 +117,7 @@ export const especie: especie[] = [
     regional: ["CRC 10403/2017", "CORPOCHIVOR 495/2015", "CORSUCRE 0617/2015"],
   },
   {
-    nombreCienticifo: "Cedrelinga cateniformis",
+    nombreCientifico: "Cedrelinga cateniformis",
     nombreComun: [
       "Seiqui",
       "Achapo Blanco",
@@ -149,7 +149,7 @@ export const especie: especie[] = [
     regional: [],
   },
   {
-    nombreCienticifo: "Centrolobium yavizanum",
+    nombreCientifico: "Centrolobium yavizanum",
     nombreComun: ["Amarillo de Guayaquil", "amarillo puyú", "Guayacán"],
     familia: "Fabaceae",
     caracteristicasEspecie: `Hojas: compuestas con folíolos algo vellosos, 
@@ -172,7 +172,7 @@ export const especie: especie[] = [
     regional: [],
   },
   {
-    nombreCienticifo: "Clathrotropis brunnea",
+    nombreCientifico: "Clathrotropis brunnea",
     nombreComun: ["Sapán", "alma negra"],
     familia: "Fabaceae",
     caracteristicasEspecie: `Hojas: compuestas, alternas. 
@@ -194,7 +194,7 @@ export const especie: especie[] = [
     regional: ["CAS 00188/2020"],
   },
   {
-    nombreCienticifo: "Cordia alliodora",
+    nombreCientifico: "Cordia alliodora",
     nombreComun: [
       "moho",
       "Laurel blanco",
@@ -242,7 +242,7 @@ export const especie: especie[] = [
     regional: [],
   },
   {
-    nombreCienticifo: "Couma macrocarpa",
+    nombreCientifico: "Couma macrocarpa",
     nombreComun: [
       "Huansoco",
       "aso",
@@ -271,7 +271,7 @@ export const especie: especie[] = [
     regional: [],
   },
   {
-    nombreCienticifo: "Dipterix oleifera",
+    nombreCientifico: "Dipterix oleifera",
     nombreComun: ["Choibá", " almendro", " palo de piedra"],
     familia: "Fabaceae",
     caracteristicasEspecie: `Hojas: alternas, compuestas, pinnadas, margen entero. 
@@ -292,7 +292,7 @@ export const especie: especie[] = [
     regional: ["CORPOURABA 076395/1995"],
   },
   {
-    nombreCienticifo: "Erythrina sp",
+    nombreCientifico: "Erythrina sp",
     nombreComun: ["Chachafruto", "poroto", "balú"],
     familia: "Fabaceae",
     caracteristicasEspecie: `Hojas: alternas, trifolioladas, peciolos glabros. 
@@ -319,7 +319,7 @@ export const especie: especie[] = [
     regional: [],
   },
   {
-    nombreCienticifo: "Eucalyptus tereticornis",
+    nombreCientifico: "Eucalyptus tereticornis",
     nombreComun: ["eucalipto rojo", "eucalipto"],
     familia: "Myrtaceae",
     caracteristicasEspecie: `Hojas: angostas lanceoladas, alternas. 
@@ -342,7 +342,7 @@ export const especie: especie[] = [
     regional: [],
   },
   {
-    nombreCienticifo: "Eucalyptus viminales",
+    nombreCientifico: "Eucalyptus viminales",
     nombreComun: ["Eucalipto"],
     familia: "Myrtaceae",
     caracteristicasEspecie: `Hojas: angostas lanceoladas, alternas. 
@@ -358,7 +358,7 @@ export const especie: especie[] = [
     regional: [],
   },
   {
-    nombreCienticifo: "Fraxinus chinensis",
+    nombreCientifico: "Fraxinus chinensis",
     nombreComun: ["urapán", "fresno"],
     familia: "Oleaceae",
     caracteristicasEspecie: `Hojas: caducifolias, compuestas, opuestas, peninervadas, coriáceas. 
@@ -373,7 +373,7 @@ export const especie: especie[] = [
     regional: [],
   },
   {
-    nombreCienticifo: "Handroanthus guayacán",
+    nombreCientifico: "Handroanthus guayacán",
     nombreComun: [
       "guayacán amarillo",
       "cortés amarillo",
@@ -399,7 +399,7 @@ export const especie: especie[] = [
     regional: [],
   },
   {
-    nombreCienticifo: "Handroanthus serratifolius",
+    nombreCientifico: "Handroanthus serratifolius",
     nombreComun: [
       "chicalá",
       "floramarilla",
@@ -429,7 +429,7 @@ export const especie: especie[] = [
     regional: [],
   },
   {
-    nombreCienticifo: "Hymenaea courbaril",
+    nombreCientifico: "Hymenaea courbaril",
     nombreComun: ["algarrobo", "algarrobillo", "ámbar", "copal", "courbail"],
     familia: "Fabaceae",
     caracteristicasEspecie: `Hojas: alternas, compuestas por un par de folíolos opuestos, presenta puntos aceitosos. 
@@ -463,7 +463,7 @@ export const especie: especie[] = [
     ],
   },
   {
-    nombreCienticifo: "Jacaranda copaia",
+    nombreCientifico: "Jacaranda copaia",
     nombreComun: ["chingale", "pavito", "gualanday", "vainillo", "gualancho"],
     familia: "Bignoniaceae",
     caracteristicasEspecie: `Hojas: bipinnas, opuestas, 
@@ -488,7 +488,7 @@ export const especie: especie[] = [
     regional: [],
   },
   {
-    nombreCienticifo: "Myroxylon balsamum",
+    nombreCientifico: "Myroxylon balsamum",
     nombreComun: [
       "bálsamo",
       "bálsamo de tolú",
@@ -523,7 +523,7 @@ export const especie: especie[] = [
     regional: ["CORPOCHIVOR 495/2015", "CARSUCRE 0617/2015"],
   },
   {
-    nombreCienticifo: "Ocotea bofo",
+    nombreCientifico: "Ocotea bofo",
     nombreComun: [
       "Laurel",
       "laurel amarillo",
@@ -556,7 +556,7 @@ export const especie: especie[] = [
     regional: [],
   },
   {
-    nombreCienticifo: "Ocotea insularis",
+    nombreCientifico: "Ocotea insularis",
     nombreComun: [
       "laurel mono",
       "laurel pajita",
@@ -579,7 +579,7 @@ export const especie: especie[] = [
     regional: [],
   },
   {
-    nombreCienticifo: "Peltogyne purpurea",
+    nombreCientifico: "Peltogyne purpurea",
     nombreComun: [
       "nazareno",
       "tananeo",
@@ -610,7 +610,7 @@ export const especie: especie[] = [
     regional: [],
   },
   {
-    nombreCienticifo: "Pinus pátula",
+    nombreCientifico: "Pinus pátula",
     nombreComun: [
       "Pino",
       "Pino Candelabro",
@@ -638,7 +638,7 @@ export const especie: especie[] = [
     regional: [],
   },
   {
-    nombreCienticifo: "Pinus radiata",
+    nombreCientifico: "Pinus radiata",
     nombreComun: [
       "pino candelabro",
       "pino",
@@ -666,7 +666,7 @@ export const especie: especie[] = [
     regional: [],
   },
   {
-    nombreCienticifo: "Platymiscium pinnatum",
+    nombreCientifico: "Platymiscium pinnatum",
     nombreComun: [
       "chachimbo",
       "trébol",
@@ -697,7 +697,7 @@ export const especie: especie[] = [
     regional: ["CARSUCRE 0617/2015"],
   },
   {
-    nombreCienticifo: "Pseudosamanea guachapele",
+    nombreCientifico: "Pseudosamanea guachapele",
     nombreComun: ["Cenízaro blanco", "Guayaquil", "Iguá"],
     familia: "Fabaceae",
     caracteristicasEspecie: `Hojas compuestas, alternas, foliolos oblongos, asimétricos. 
@@ -714,7 +714,7 @@ export const especie: especie[] = [
     regional: [],
   },
   {
-    nombreCienticifo: "Qualea acuminata",
+    nombreCientifico: "Qualea acuminata",
     nombreComun: [
       "pomo",
       "Pau-terra",
@@ -738,7 +738,7 @@ export const especie: especie[] = [
     regional: [],
   },
   {
-    nombreCienticifo: "Quercus humboldtii",
+    nombreCientifico: "Quercus humboldtii",
     nombreComun: ["roble de tierra fría", "roble"],
     familia: "Fagaceae",
     caracteristicasEspecie: `Hojas glabras agrupadas al final de las amas con estípulas acintadas, 
@@ -756,7 +756,7 @@ export const especie: especie[] = [
     regional: [],
   },
   {
-    nombreCienticifo: "Tabebuia rosea",
+    nombreCientifico: "Tabebuia rosea",
     nombreComun: [
       "apamate",
       "guayacán rosado",
@@ -791,7 +791,7 @@ export const especie: especie[] = [
     regional: [],
   },
   {
-    nombreCienticifo: "Tectona grandis",
+    nombreCientifico: "Tectona grandis",
     nombreComun: ["teca", "teco"],
     familia: "Lamiaceae",
     caracteristicasEspecie: `Hojas: semicaducifolias, son hojas grandes de más de 40 cm de largo, 
@@ -812,7 +812,7 @@ export const especie: especie[] = [
     regional: [],
   },
   {
-    nombreCienticifo: "Xylosma benthamii",
+    nombreCientifico: "Xylosma benthamii",
     nombreComun: [
       "corono",
       "puyón",
