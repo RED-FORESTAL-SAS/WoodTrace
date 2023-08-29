@@ -171,11 +171,21 @@ export class ReportService implements OnDestroy {
     }
 
     try {
-      const analayzedWood = await this.aiService.withRemoteImage(
+      // const analayzedWood = await this.aiService.withRemoteImage(
+      //   this.store.state.activeWood
+      // );
+
+      /**
+       * @todo @mario Habilitar this.aiService.withLocalImage, que es el que consume la AI.
+       */
+
+      const analayzedWood = await this.aiService.withLocalImage(
         this.store.state.activeWood
       );
+
       this.patchActiveWood(analayzedWood);
     } catch (e) {
+      console.log(e);
       throw new ReportFailure("Error al analizar la muestra.", e.code, e);
     }
   }

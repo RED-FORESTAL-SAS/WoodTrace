@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# [DIANA/RED-23-FIX] -2023-08-29 (Diana) (build 10)
+
+- Integrar modelo AI.
+
 # [DIANA/RED-23-FIX] -2023-08-23 (Diana) (build 9)
 
 - Modal de cambiar contraseña disminuir el alto.
