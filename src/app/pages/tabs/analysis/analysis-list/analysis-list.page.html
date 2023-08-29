@@ -16,12 +16,16 @@
         <ion-grid style="padding: 0">
           <ion-row>
             <ion-col align-items-center>
-              <div class="btn-gradient">
+              <div class="btn-gradient" *ngIf="report$ | async as report">
                 <ion-button mode="ios" (click)="nuevoAnalisis()">
                   <span>Añadir análisis</span>
                 </ion-button>
 
-                <ion-button mode="ios" (click)="generarReporte()">
+                <ion-button
+                  mode="ios"
+                  (click)="generarReporte()"
+                  [disabled]="report.woods.length <= 0"
+                >
                   <span>Generar reporte</span>
                 </ion-button>
               </div>
