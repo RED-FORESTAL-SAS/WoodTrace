@@ -1,6 +1,12 @@
 # CHANGELOG
 
-# [DIANA/RED-23-FIX] -2023-08-23 (Diana) (build 10)
+# [DIANA/RED-23-FIX] -2023-08-29 (Mario) (build 11)
+
+- Generar build 11.
+- Hacer ajustes en los componentes para ver los resultados del análisis.
+- Implementar consumo del modelo.
+
+# [DIANA/RED-23-FIX] -2023-08-28 (Diana) (build 10)
 
 - Agregar model AI.
 - Analisys-list: Validar el botón generar reporte, que sea disabled cuando no hayan análisis.

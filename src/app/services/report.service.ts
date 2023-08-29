@@ -166,27 +166,17 @@ export class ReportService implements OnDestroy {
    * error en caso de falla.
    */
   async analyzeWood(): Promise<void> {
-    if (!this.store.state.activeWood) {
+    if (!this.store.state.activeWood)
       throw new ReportFailure("No hay un Wood activo.");
-    }
 
     try {
-      // const analayzedWood = await this.aiService.withRemoteImage(
-      //   this.store.state.activeWood
-      // );
-
-      /**
-       * @todo @mario Habilitar this.aiService.withLocalImage, que es el que consume la AI.
-       */
-
       const analayzedWood = await this.aiService.withLocalImage(
         this.store.state.activeWood
       );
 
       this.patchActiveWood(analayzedWood);
-    } catch (e) {
-      console.log(e);
-      throw new ReportFailure("Error al analizar la muestra.", e.code, e);
+    } catch (e: unknown) {
+      throw new ReportFailure("Error al analizar la muestra.", "", e);
     }
   }
 
@@ -368,16 +358,10 @@ export class ReportService implements OnDestroy {
         5000
       );
 
-      console.log("duplicated reports");
-      console.log(duplicatedReports);
-
       // Create report only if it doesn´t exist in Firestore.
       let id: string;
       if (duplicatedReports.length === 0) {
         id = this.firebase.generateNextId(REPORTS_LS_KEY);
-
-        console.log("Generated id is", id);
-        console.log("Set path is", `${REPORTS_LS_KEY}/${id}`);
 
         reportData.id = id;
         await this.promiseWithTimeout(
@@ -395,8 +379,6 @@ export class ReportService implements OnDestroy {
       } else {
         id = duplicatedReports[0].id;
       }
-
-      console.log("Report being sync is", id);
 
       // Update id in localStorageReport in case something fails later.
       localReport.id = id;
@@ -421,8 +403,6 @@ export class ReportService implements OnDestroy {
         5000
       );
 
-      console.log(`🛫 PDF subido al storage wt-reports/${id}`);
-
       // Upload photos for each wood.
       const uploadedWoods = [];
       for (const wood of localWoods) {
@@ -446,8 +426,6 @@ export class ReportService implements OnDestroy {
         uploadedWoods.push({ ...wood, url: uploadedWoodPhotoUrl });
       }
 
-      console.log(`🛫 Fotos de los Woods subidos al storage wt-reports/${id}`);
-
       // Update report with uploaded files urls.
       await this.promiseWithTimeout(
         this.firebase
@@ -465,9 +443,6 @@ export class ReportService implements OnDestroy {
           }),
         5000
       );
-      // .catch((e) => {
-      //   throw new ReportFailure("Error al actualizar el reporte.", e.code, e);
-      // });
 
       // Mark localStorage Report as synced.
       localReport.synced = true;
@@ -482,10 +457,6 @@ export class ReportService implements OnDestroy {
       this.store.patch({
         reports,
       });
-
-      console.log(
-        `✅ Reporte ${report.localId} sincronizado en Firestore con el id ${id}.`
-      );
     } catch (e: unknown) {
       const f = FailureUtils.errorToFailure(e);
       FailureUtils.log(f);

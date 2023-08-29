@@ -296,7 +296,6 @@ export class PdfService {
         },
 
         { text: "Análisis", style: "h3", pageBreak: "before" },
-        // { text: "Análisis", style: "h3" },
 
         {
           text: "A continuación se listan los resultados del análisis para cada una de las piezas de madera analizadas en campo con sus respectivo resultados encontrados.",
@@ -304,6 +303,15 @@ export class PdfService {
         },
         report.woods.map((wood) => {
           const woodImage = wood.url;
+          const especieDeclarada = wood.especieDeclarada
+            ? wood.especieDeclarada
+            : "-";
+          const especieResultante = wood.especieResultante
+            ? wood.especieResultante
+            : "-";
+          const acierto = wood.acierto
+            ? Math.round(wood.acierto).toString()
+            : "-";
           return {
             table: {
               dontBreakRows: true,
@@ -320,7 +328,7 @@ export class PdfService {
                       text: [
                         { text: "Especie Reportada: ", style: "dt" },
                         {
-                          text: `${wood.especieDeclarada}`,
+                          text: especieDeclarada,
                           style: "dd",
                         },
                       ],
@@ -330,7 +338,7 @@ export class PdfService {
                       text: [
                         { text: "Especie Encontrada: ", style: "dt" },
                         {
-                          text: `${wood.especie}`,
+                          text: especieResultante,
                           style: "dd",
                         },
                       ],
@@ -340,7 +348,7 @@ export class PdfService {
                       text: [
                         { text: "% de Acierto: ", style: "dt" },
                         {
-                          text: `${wood.acierto}`,
+                          text: acierto,
                           style: "dd",
                         },
                       ],

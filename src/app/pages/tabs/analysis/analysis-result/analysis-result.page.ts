@@ -13,6 +13,7 @@ import { Timestamp } from "src/app/types/timestamp.type";
 })
 export class AnalysisResultPage implements OnInit, OnDestroy {
   especie = new FormControl("", []);
+  especieResultante = new FormControl("", []);
   especieReportada = new FormControl("", []);
   photo = new FormControl("");
   acierto = new FormControl(0);
@@ -57,6 +58,9 @@ export class AnalysisResultPage implements OnInit, OnDestroy {
           tap({
             next: (wood) => {
               this.especieReportada.setValue(wood.especieDeclarada);
+              this.especieResultante.setValue(
+                wood.especieResultante ? wood.especieResultante : ""
+              );
               this.especie.setValue(wood.especie);
               this.acierto.setValue(wood.acierto);
               this.photo.setValue(wood.url);

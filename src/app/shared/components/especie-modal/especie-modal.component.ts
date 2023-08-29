@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { UtilsService } from "src/app/services/utils.service";
-import { especie } from "src/assets/data/especies";
+import { ESPECIES, Especie } from "src/assets/data/especies";
 
 @Component({
   selector: "app-especie-modal",
@@ -11,13 +11,13 @@ import { especie } from "src/assets/data/especies";
 export class EspecieModalComponent implements OnInit {
   searchString = new FormControl("", []);
   loading: boolean;
-  especies = especie;
+  especies = ESPECIES;
 
   constructor(private utilsSvc: UtilsService) {}
 
   ngOnInit() {}
 
-  selectEspecie(especie: especie) {
+  selectEspecie(especie: Especie) {
     this.utilsSvc.closeModal({ especie });
   }
 

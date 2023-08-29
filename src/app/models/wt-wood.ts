@@ -40,8 +40,15 @@ export interface WtWood {
    */
   especieDeclarada: string;
   /**
-   * Tipo de madera que se identificó en la muestra, como resultado del análisis con la AI. Si no se
-   * ha analizado, será un string vacío.
+   * Nombre de la especie resultante del análisis con la AI. Si no se ha analizado, será un string
+   * vacío.
+   */
+  especieResultante: string;
+  /**
+   * Codigo del tipo de madera que se identificó en la muestra, como resultado del análisis con la AI.
+   * Si no se ha analizado, será un string vacío. Tras el análisis, será un string con un número
+   * entero correspondiente al listado de especies de madera en especies.ts, que tiene que ser el
+   * mismo que devuelve la AI.
    */
   especie: string;
   /**
@@ -68,6 +75,7 @@ export interface LocalStorageWtWood {
   path: string;
   url: string;
   especieDeclarada: string;
+  especieResultante: string;
   especie: string;
   acierto: number | null;
   wtUserId: string;
@@ -87,6 +95,7 @@ export const NEW_WT_WOOD: WtWood = {
   path: "",
   url: "",
   especieDeclarada: "",
+  especieResultante: "",
   especie: "",
   acierto: null,
   wtUserId: "",

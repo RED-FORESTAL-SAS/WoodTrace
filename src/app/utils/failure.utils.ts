@@ -211,6 +211,9 @@ export class FailureUtils {
     if (!environment.production || includeProductionEnvironment) {
       console.groupCollapsed(`🦧 [Failure: ${where}] [${failure.code}]`);
       console.log("failure", failure);
+      if (failure.cause) {
+        console.log("cause", failure.cause);
+      }
       if (data) {
         console.log("data", data);
       }

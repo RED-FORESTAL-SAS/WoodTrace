@@ -5,7 +5,7 @@ import { FormControl, Validators } from "@angular/forms";
 import { ReportService } from "src/app/services/report.service";
 import { BehaviorSubject, Observable, Subscription } from "rxjs";
 import { map, skipWhile, switchMap, take, tap } from "rxjs/operators";
-import { especie } from "src/assets/data/especies";
+import { ESPECIES } from "src/assets/data/especies";
 import { EspecieModalComponent } from "src/app/shared/components/especie-modal/especie-modal.component";
 import { ModalController } from "@ionic/angular";
 import { WtWood } from "src/app/models/wt-wood";
@@ -26,7 +26,7 @@ export class TakePhotosPage implements OnInit, OnDestroy {
   photo = new FormControl("");
   loadingPhoto: boolean;
 
-  especies = especie;
+  especies = ESPECIES;
 
   private sbs: Subscription[] = [];
 
@@ -38,13 +38,10 @@ export class TakePhotosPage implements OnInit, OnDestroy {
   /** Observable with boolean indicating if there is an active report or not. */
   public hasActiveWood$: Observable<boolean>;
 
-  /**
-   * Contiene un conteo para obligar a que el análisis falle siempre la primera vez.
-   * Para poder ver las pantallas de error.
-   *
-   * @todo @diana Borrar esto cuando se termine de probar como se ven los errores en la interfaz.
-   */
-  private failOnCeroCounter = 1;
+  /** Modal with Freddy, to show during loading. */
+  private modalLoading: HTMLIonModalElement;
+  /** Modal with Freddy, to show on error. */
+  private modalError: HTMLIonModalElement;
 
   constructor(
     private utilsSvc: UtilsService,
@@ -64,6 +61,13 @@ export class TakePhotosPage implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.saveWoodHandler();
     this.populateForm();
+  }
+
+  /**
+   * Create modals every time Page is 'Entered'.
+   */
+  ionViewDidEnter() {
+    this.createModals();
   }
 
   /**
@@ -153,56 +157,35 @@ export class TakePhotosPage implements OnInit, OnDestroy {
           switchMap((_) => this.reportService.activeWood.pipe(take(1))),
           tap({
             next: async (activeWood) => {
-              // Check if active wood is null.
-              const wood = activeWood
-                ? activeWood
-                : this.reportService.emptyWood;
-
-              const patchData = {
-                ...wood,
-                especieDeclarada: this.especie.value,
-                /**
-                 * @dev url is a base64 string for localstorage/state and a download url for firebase.
-                 */
-                url: this.photo.value,
-              };
-              this.reportService.patchActiveWood(patchData);
-
-              const modalLoading = await this.modalController.create({
-                component: LoadingModalComponent,
-                cssClass: "modal-especie",
-                backdropDismiss: false,
-              });
-              modalLoading.present();
-
               try {
-                /**
-                 * @todo @diana Eliminar el "if" y el "else" y dejar solo la llamada al método analyzeWood, así:
-                 *
-                 * await this.reportService.analyzeWood();
-                 */
-                if (this.failOnCeroCounter !== 0) {
-                  await this.reportService.analyzeWood();
-                } else {
-                  this.failOnCeroCounter += 1;
-                  await this.reportService.analayzedWoodWithFailure();
-                }
-                /**
-                 * @todo @diana Eliminar hasta aquí.
-                 */
+                await this.modalLoading.present();
 
-                modalLoading.dismiss();
+                // Check if active wood is null.
+                const wood = activeWood
+                  ? activeWood
+                  : this.reportService.emptyWood;
+
+                const patchData = {
+                  ...wood,
+                  especieDeclarada: this.especie.value,
+                  /**
+                   * @dev url is a base64 string for localstorage/state and a download url for firebase.
+                   */
+                  url: this.photo.value,
+                };
+                this.reportService.patchActiveWood(patchData);
+
+                // Run analysis.
+                await this.reportService.analyzeWood();
+
+                this.modalLoading.dismiss();
                 this.utilsSvc.routerLink(
                   "/tabs/analysis/analysis-result-content"
                 );
                 this.resetForm();
               } catch (e) {
-                const modalError = await this.modalController.create({
-                  component: ErrorModalComponent,
-                  cssClass: "modal-especie",
-                });
-                modalError.present();
-                modalLoading.dismiss();
+                this.modalError.present();
+                this.modalLoading.dismiss();
               }
             },
           })
@@ -227,5 +210,21 @@ export class TakePhotosPage implements OnInit, OnDestroy {
   private resetForm(): void {
     this.especie.reset();
     this.photo.reset();
+  }
+
+  /**
+   * Initialize modals for this page, so they are ready to be used withoud delay.
+   */
+  private async createModals(): Promise<void> {
+    this.modalLoading = await this.modalController.create({
+      component: LoadingModalComponent,
+      cssClass: "modal-especie",
+      backdropDismiss: false,
+    });
+
+    this.modalError = await this.modalController.create({
+      component: ErrorModalComponent,
+      cssClass: "modal-especie",
+    });
   }
 }

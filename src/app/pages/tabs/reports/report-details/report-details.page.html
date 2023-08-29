@@ -45,13 +45,16 @@
         <div class="table-container">
           <table>
             <thead class="header">
-              <th>Especie resultado</th>
+              <th>Especie/Resultado</th>
               <th>Acierto</th>
               <th>Acciones</th>
             </thead>
             <tr *ngFor="let wood of this.woods; index as i">
-              <td>{{ wood.especie }}</td>
-              <td>{{ wood.acierto }}</td>
+              <td>
+                <strong>{{ wood.especieResultante }}</strong><br />
+                ({{ wood.especieDeclarada }})
+              </td>
+              <td><strong>{{ wood.acierto | percent }}</strong></td>
               <td>
                 <ion-icon
                   class="option-icon"

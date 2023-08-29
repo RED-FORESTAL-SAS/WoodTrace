@@ -14,12 +14,12 @@
 
     <ion-item>
       <ion-label position="stacked">Especie Resultado</ion-label>
-      <ion-input>{{ this.especie.value }}</ion-input>
+      <ion-input>{{ this.especieResultante.value }}</ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label position="stacked">Acierto</ion-label>
-      <ion-input><strong>{{ this.acierto.value }}</strong></ion-input>
+      <ion-input><strong>{{ this.acierto.value | percent }}</strong></ion-input>
     </ion-item>
 
     <ion-item>
