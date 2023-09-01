@@ -17,7 +17,7 @@ export interface Especie {
 
 export const ESPECIES: Especie[] = [
   {
-    codigo: 5,
+    codigo: 8,
     nombreCientifico: "Anacardium excelsum",
     nombreComun: [
       "mijuguo de Venezuela",
@@ -49,7 +49,7 @@ export const ESPECIES: Especie[] = [
     regional: ["CARSUCRE 0617/2015"],
   },
   {
-    codigo: 25,
+    codigo: 27,
     nombreCientifico: "Campnosperma panamensis",
     nombreComun: ["Sajo", "Orey"],
     familia: "Anacardiaceae",
@@ -67,7 +67,7 @@ export const ESPECIES: Especie[] = [
     regional: [],
   },
   {
-    codigo: 28,
+    codigo: 4,
     nombreCientifico: "Cariniana pyriformis",
     nombreComun: [
       "Colombian mahogany",
@@ -100,7 +100,7 @@ export const ESPECIES: Especie[] = [
     ],
   },
   {
-    codigo: 4,
+    codigo: 26,
     nombreCientifico: "Cedrela odorata",
     nombreComun: ["Cedro rojo", "cedro americano"],
     familia: "Meliaceae",
@@ -123,7 +123,7 @@ export const ESPECIES: Especie[] = [
     regional: ["CRC 10403/2017", "CORPOCHIVOR 495/2015", "CORSUCRE 0617/2015"],
   },
   {
-    codigo: 27,
+    codigo: 16,
     nombreCientifico: "Cedrelinga cateniformis",
     nombreComun: [
       "Seiqui",
@@ -156,7 +156,7 @@ export const ESPECIES: Especie[] = [
     regional: [],
   },
   {
-    codigo: 10,
+    codigo: 22,
     nombreCientifico: "Centrolobium yavizanum",
     nombreComun: ["Amarillo de Guayaquil", "amarillo puyú", "Guayacán"],
     familia: "Fabaceae",
@@ -180,7 +180,7 @@ export const ESPECIES: Especie[] = [
     regional: [],
   },
   {
-    codigo: 22,
+    codigo: 18,
     nombreCientifico: "Clathrotropis brunnea",
     nombreComun: ["Sapán", "alma negra"],
     familia: "Fabaceae",
@@ -203,7 +203,7 @@ export const ESPECIES: Especie[] = [
     regional: ["CAS 00188/2020"],
   },
   {
-    codigo: 6,
+    codigo: 13,
     nombreCientifico: "Cordia alliodora",
     nombreComun: [
       "moho",
@@ -252,7 +252,7 @@ export const ESPECIES: Especie[] = [
     regional: [],
   },
   {
-    codigo: 7,
+    codigo: 21,
     nombreCientifico: "Couma macrocarpa",
     nombreComun: [
       "Huansoco",
@@ -304,7 +304,7 @@ export const ESPECIES: Especie[] = [
     regional: ["CORPOURABA 076395/1995"],
   },
   {
-    codigo: 2,
+    codigo: 17,
     nombreCientifico: "Erythrina sp",
     nombreComun: ["Chachafruto", "poroto", "balú"],
     familia: "Fabaceae",
@@ -332,7 +332,7 @@ export const ESPECIES: Especie[] = [
     regional: [],
   },
   {
-    codigo: 8,
+    codigo: 20,
     nombreCientifico: "Eucalyptus tereticornis",
     nombreComun: ["eucalipto rojo", "eucalipto"],
     familia: "Myrtaceae",
@@ -482,7 +482,7 @@ export const ESPECIES: Especie[] = [
     ],
   },
   {
-    codigo: 18,
+    codigo: 25,
     nombreCientifico: "Jacaranda copaia",
     nombreComun: ["chingale", "pavito", "gualanday", "vainillo", "gualancho"],
     familia: "Bignoniaceae",
@@ -544,7 +544,7 @@ export const ESPECIES: Especie[] = [
     regional: ["CORPOCHIVOR 495/2015", "CARSUCRE 0617/2015"],
   },
   {
-    codigo: 11,
+    codigo: 1,
     nombreCientifico: "Ocotea bofo",
     nombreComun: [
       "Laurel",
@@ -578,7 +578,7 @@ export const ESPECIES: Especie[] = [
     regional: [],
   },
   {
-    codigo: 23,
+    codigo: 28,
     nombreCientifico: "Ocotea insularis",
     nombreComun: [
       "laurel mono",
@@ -602,7 +602,7 @@ export const ESPECIES: Especie[] = [
     regional: [],
   },
   {
-    codigo: 3,
+    codigo: 7,
     nombreCientifico: "Peltogyne purpurea",
     nombreComun: [
       "nazareno",
@@ -663,7 +663,7 @@ export const ESPECIES: Especie[] = [
     regional: [],
   },
   {
-    codigo: 9,
+    codigo: 11,
     nombreCientifico: "Pinus radiata",
     nombreComun: [
       "pino candelabro",
@@ -742,7 +742,7 @@ export const ESPECIES: Especie[] = [
     regional: [],
   },
   {
-    codigo: 21,
+    codigo: 2,
     nombreCientifico: "Qualea acuminata",
     nombreComun: [
       "pomo",
@@ -767,7 +767,7 @@ export const ESPECIES: Especie[] = [
     regional: [],
   },
   {
-    codigo: 24,
+    codigo: 12,
     nombreCientifico: "Quercus humboldtii",
     nombreComun: ["roble de tierra fría", "roble"],
     familia: "Fagaceae",
@@ -786,7 +786,7 @@ export const ESPECIES: Especie[] = [
     regional: [],
   },
   {
-    codigo: 13,
+    codigo: 3,
     nombreCientifico: "Tabebuia rosea",
     nombreComun: [
       "apamate",
@@ -822,7 +822,7 @@ export const ESPECIES: Especie[] = [
     regional: [],
   },
   {
-    codigo: 1,
+    codigo: 5,
     nombreCientifico: "Tectona grandis",
     nombreComun: ["teca", "teco"],
     familia: "Lamiaceae",
@@ -844,7 +844,7 @@ export const ESPECIES: Especie[] = [
     regional: [],
   },
   {
-    codigo: 14,
+    codigo: 23,
     nombreCientifico: "Xylosma benthamii",
     nombreComun: [
       "corono",
@@ -868,23 +868,8 @@ export const ESPECIES: Especie[] = [
     regional: [],
   },
   {
-    codigo: 0,
-    nombreCientifico: "Guazuma Ulmifolia",
-    nombreComun: [],
-    familia: "",
-    caracteristicasEspecie: "",
-    usos: [],
-    densidadBasica: 0,
-    descripcionDensidad: "",
-    dureza: 0,
-    amenazaResolucion: "",
-    categoriaCites: "",
-    nacional: "",
-    regional: [],
-  },
-  {
-    codigo: 12,
-    nombreCientifico: "Albizia Guachapele",
+    codigo: 10,
+    nombreCientifico: "Guazuma ulmifolia",
     nombreComun: [],
     familia: "",
     caracteristicasEspecie: "",
@@ -899,7 +884,7 @@ export const ESPECIES: Especie[] = [
   },
   {
     codigo: 15,
-    nombreCientifico: "Melicoccus Bijugatus",
+    nombreCientifico: "Albizia guachapele",
     nombreComun: [],
     familia: "",
     caracteristicasEspecie: "",
@@ -913,8 +898,8 @@ export const ESPECIES: Especie[] = [
     regional: [],
   },
   {
-    codigo: 16,
-    nombreCientifico: "Ficus Sp",
+    codigo: 24,
+    nombreCientifico: "Melicoccus bijugatus",
     nombreComun: [],
     familia: "",
     caracteristicasEspecie: "",
@@ -928,8 +913,8 @@ export const ESPECIES: Especie[] = [
     regional: [],
   },
   {
-    codigo: 17,
-    nombreCientifico: "Pithecellobium Dulce",
+    codigo: 0,
+    nombreCientifico: "Ficus sp",
     nombreComun: [],
     familia: "",
     caracteristicasEspecie: "",
@@ -943,7 +928,22 @@ export const ESPECIES: Especie[] = [
     regional: [],
   },
   {
-    codigo: 20,
+    codigo: 6,
+    nombreCientifico: "Pithecellobium dulce",
+    nombreComun: [],
+    familia: "",
+    caracteristicasEspecie: "",
+    usos: [],
+    densidadBasica: 0,
+    descripcionDensidad: "",
+    dureza: 0,
+    amenazaResolucion: "",
+    categoriaCites: "",
+    nacional: "",
+    regional: [],
+  },
+  {
+    codigo: 14,
     nombreCientifico: "Gmelina Arborea",
     nombreComun: [],
     familia: "",
@@ -958,7 +958,7 @@ export const ESPECIES: Especie[] = [
     regional: [],
   },
   {
-    codigo: 26,
+    codigo: 9,
     nombreCientifico: "Mangifera Indica",
     nombreComun: [],
     familia: "",

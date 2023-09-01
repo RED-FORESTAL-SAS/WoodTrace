@@ -84,14 +84,17 @@ export class ProfilePage implements OnDestroy, OnInit {
    * Try to sync every time it enters the screen. If there is nothing to sync, it will do nothing.
    */
   async ionViewDidEnter() {
-    const online = await this.online$.pipe(take(1)).toPromise();
-    const reports = await this.reports$.pipe(take(1)).toPromise();
-
-    if (reports.length > 0 && online) {
-      if (this.syncReportsEvent.value === null) {
-        this.syncReportsEvent.next(Date.now());
-      }
-    }
+    /**
+     * @todo @mario Descomentar cuando se arregle el bug que reintenta la sincronización sin éxito.
+     * No debería de reintentar la sincronización tan seguido.
+     */
+    // const online = await this.online$.pipe(take(1)).toPromise();
+    // const reports = await this.reports$.pipe(take(1)).toPromise();
+    // if (reports.length > 0 && online) {
+    //   if (this.syncReportsEvent.value === null) {
+    //     this.syncReportsEvent.next(Date.now());
+    //   }
+    // }
   }
 
   /**

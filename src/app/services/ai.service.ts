@@ -34,6 +34,8 @@ export class AiService {
    */
   private async loadModel() {
     this.model = await tf.loadLayersModel("/assets/tf/model.json");
+    console.log("🔥 Modelo cargado:");
+    console.log(this.model.summary());
   }
 
   /**
@@ -50,31 +52,67 @@ export class AiService {
     // Load image in a new img element.
     const image = new Image();
     image.src = wood.url;
+    // console.log("🔥 Imagen cargada.");
+    // console.log(wood.url);
+
     // Build a 3d tensor with image 3 dimensions (width, heigth, color chanels).
     const imageTensor = tf.browser.fromPixels(image, 3);
+    // console.log("🔥 Tensor con la imagen.");
+    // console.log(imageTensor.toString());
+
     // Resize image to 50x50 (size used to train model).
     const resizedTensor = tf.image.resizeBilinear(imageTensor, [50, 50]);
+    // console.log("🔥 Tensor convertido a 50x50.");
+    // console.log(resizedTensor.toString());
+
     // Cast tensor to float32.
     const castedTensor = tf.cast(resizedTensor, "float32");
+    // console.log("🔥 Tensor convertido a float32.");
+    // console.log(castedTensor.toString());
+
     // Divide tensor by 255 to work with smaller numbers (0 to 1).
     const dividedTensor = castedTensor.div(tf.scalar(255.0));
+    // console.log("🔥 Tensor dividido por 255.0");
+    // console.log(dividedTensor.toString());
+
     // Expand tensor in 1 dimension. Model can take a 4th dimension to analyze more than 1 image.
     const tensor = dividedTensor.expandDims();
+    console.log("🔥 Tensor final.");
+    console.log(tensor.toString());
 
     // Make prediction.
     const result = (await (
       this.model.predict(tensor) as tf.Tensor<tf.Rank>
     ).data()) as Float32Array;
+    console.log("🎯 Resultado predicción.");
+    console.log(result);
 
     // Extract matchValue and matchIndex.
     const matchValue = Math.max(...result);
+    console.log("🎯 Valor máximo.");
+    console.log(matchValue);
+
     const matchIndex = result.indexOf(matchValue);
+    console.log("🎯 Índice del valor máximo.");
+    console.log(matchIndex);
+
     const acierto = matchValue;
     const especieResultante = ESPECIES.find(
       (e) => e.codigo === matchIndex
     ).nombreCientifico;
+    console.log("🎯 Especie resultante.");
+    console.log(especieResultante);
 
-    return { ...wood, especie: `${matchIndex}`, especieResultante, acierto };
+    const woodResultante = {
+      ...wood,
+      especie: `${matchIndex}`,
+      especieResultante,
+      acierto,
+    };
+    console.log("🎯 Wood resultante.");
+    console.log(woodResultante);
+
+    return woodResultante;
   }
 
   /**

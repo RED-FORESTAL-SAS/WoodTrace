@@ -310,7 +310,7 @@ export class PdfService {
             ? wood.especieResultante
             : "-";
           const acierto = wood.acierto
-            ? Math.round(wood.acierto).toString()
+            ? Math.round(wood.acierto * 100).toString()
             : "-";
           return {
             table: {

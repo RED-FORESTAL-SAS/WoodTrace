@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# [DIANA/RED-23-FIX] -2023-09-01 (Mario) (build 12)
+
+- Actualizar el model AI.
+- Agregar console.logs para poder inspeccionar el resultado de la predicción.
+
 # [DIANA/RED-23-FIX] -2023-08-29 (Mario) (build 11)
 
 - Generar build 11.
