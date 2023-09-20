@@ -11,11 +11,6 @@
           type="text"
           [formControlValue]="searchString"
         >
-          <ion-icon
-            slot="end"
-            (click)="buscarEspecie()"
-            [name]="'search'"
-          ></ion-icon>
         </app-input-gradient>
       </div>
 
@@ -28,7 +23,7 @@
               <th></th>
             </thead>
             <tr
-              *ngFor="let especie of especies; index as i"
+              *ngFor="let especie of especies$ | async; index as i"
               (click)="selectEspecie(especie)"
             >
               <td style="text-align: center">{{ i + 1 }}</td>

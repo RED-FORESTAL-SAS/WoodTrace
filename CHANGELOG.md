@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# [DIANA/RED-23-FIX] -2023-09-20 (Mario)
+
+- Implementar buscador en popup de especies.
+
 # [DIANA/RED-23-FIX] -2023-09-01 (Mario) (build 12)
 
 - Actualizar el model AI.

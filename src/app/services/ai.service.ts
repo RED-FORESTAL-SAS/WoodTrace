@@ -11,10 +11,6 @@ export class AiFailure extends Failure {}
 
 /**
  * Clase que consume la API de la AI para el análisis de las maderas.
- *
- * @todo @mario Esta clase no es un Mock. Es la implementación real, que irá a consumir la API de la
- * AI, donde quiera que quede desplegada. Se asume que todos los métodos son asíncronos, partiendo
- * de que, incluso si funciona localmente, el análisis debería tomar un tiempo.
  */
 @Injectable({
   providedIn: "root",
@@ -46,7 +42,10 @@ export class AiService {
    * @returns
    * @throws AiFailure.
    *
-   * @dev Para quitar el fondo negro de la imágenes puede usarse un proceso llamado Binarización.
+   * @dev Si es necesario, para quitar el fondo negro de la imágenes puede usarse un proceso llamado
+   * Binarización.
+   * @dev Los "console.log" comentados en la función se dejan en caso en que sea necesario hacer un
+   * test detallado del comportamiento del modelo.
    */
   async withLocalImage(wood: WtWood): Promise<WtWood> {
     // Load image in a new img element.
@@ -77,31 +76,31 @@ export class AiService {
 
     // Expand tensor in 1 dimension. Model can take a 4th dimension to analyze more than 1 image.
     const tensor = dividedTensor.expandDims();
-    console.log("🔥 Tensor final.");
-    console.log(tensor.toString());
+    // console.log("🔥 Tensor final.");
+    // console.log(tensor.toString());
 
     // Make prediction.
     const result = (await (
       this.model.predict(tensor) as tf.Tensor<tf.Rank>
     ).data()) as Float32Array;
-    console.log("🎯 Resultado predicción.");
-    console.log(result);
+    // console.log("🎯 Resultado predicción.");
+    // console.log(result);
 
     // Extract matchValue and matchIndex.
     const matchValue = Math.max(...result);
-    console.log("🎯 Valor máximo.");
-    console.log(matchValue);
+    // console.log("🎯 Valor máximo.");
+    // console.log(matchValue);
 
     const matchIndex = result.indexOf(matchValue);
-    console.log("🎯 Índice del valor máximo.");
-    console.log(matchIndex);
+    // console.log("🎯 Índice del valor máximo.");
+    // console.log(matchIndex);
 
     const acierto = matchValue;
     const especieResultante = ESPECIES.find(
       (e) => e.codigo === matchIndex
     ).nombreCientifico;
-    console.log("🎯 Especie resultante.");
-    console.log(especieResultante);
+    // console.log("🎯 Especie resultante.");
+    // console.log(especieResultante);
 
     const woodResultante = {
       ...wood,
@@ -109,24 +108,24 @@ export class AiService {
       especieResultante,
       acierto,
     };
-    console.log("🎯 Wood resultante.");
-    console.log(woodResultante);
+    // console.log("🎯 Wood resultante.");
+    // console.log(woodResultante);
 
     return woodResultante;
   }
 
   /**
-   * Ejecuta el análisis de un WtWood, a partir de la "url" de la imagen y devuelve el WtWood con
-   * los campos "especie" y "acierto" poblados.
+   * Ejecuta el análisis remoto de un WtWood, a partir de la "url" de la imagen y devuelve el WtWood
+   * con los campos "especie" y "acierto" poblados.
    *
    * @param wood
    * @returns
    * @throws AiFailure.
+   *
+   * @dev No se implementa porque el análisis de la imagen se hace local. Se deja en caso de que
+   * se requiera su implementación futura.
    */
   async withRemoteImage(wood: WtWood): Promise<WtWood> {
-    /**
-     * @dev No se implementa porque el análisis de la imagen se hace local.
-     */
     throw new Error("Method not implemented.");
   }
 }

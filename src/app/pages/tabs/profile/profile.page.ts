@@ -105,7 +105,7 @@ export class ProfilePage implements OnDestroy, OnInit {
   }
 
   ionViewWillLeave(): void {
-    console.log("ProfilePage::ionViewWillLeave");
+    // console.log("ProfilePage::ionViewWillLeave");
     // this.sbs.forEach((s) => s.unsubscribe());
   }
 
