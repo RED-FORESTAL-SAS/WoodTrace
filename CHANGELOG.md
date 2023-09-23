@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# [DIANA/RED-23-FIX] -2023-09-23 (Mario)
+
+- Primer ejecucion en mac. Agregar campo wtCompanyId a WtReport.
+
 # [DIANA/RED-23-FIX] -2023-09-20 (Mario)
 
 - Implementar buscador en popup de especies.

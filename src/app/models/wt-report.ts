@@ -103,6 +103,10 @@ export interface WtReport {
    * apropiadamente. Una vez esto ocurra, se puede marcar el reporte como sincronizado.
    */
   synced: boolean;
+  /**
+   * uid del Usuario correspondiente a la 'entidad' que crea el reporte.
+   */
+  wtCompanyId: string;
 }
 
 export interface Ubicacion {
@@ -143,6 +147,7 @@ export interface LocalStorageWtReport {
     nanoseconds: number;
   };
   synced: boolean;
+  wtCompanyId: string;
 }
 
 /** Empty Report. */
@@ -172,4 +177,5 @@ export const NEW_WT_REPORT: WtReport = {
   fCreado: null,
   fModificado: null,
   synced: false,
+  wtCompanyId: "",
 };

@@ -2,11 +2,12 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { UtilsService } from "src/app/services/utils.service";
 import { ReportService } from "src/app/services/report.service";
 import { UserService } from "src/app/services/user.service";
-import { switchMap, take, tap } from "rxjs/operators";
+import { switchMap, take, tap, withLatestFrom } from "rxjs/operators";
 import { WtLicense } from "src/app/models/wt-license";
 import { BehaviorSubject, Observable, Subscription } from "rxjs";
 import { map, skipWhile } from "rxjs/operators";
 import { WtReport } from "src/app/models/wt-report";
+import { WtCompany } from "src/app/models/wt-company";
 
 @Component({
   selector: "app-analysis",
@@ -91,11 +92,12 @@ export class AnalysisPage implements OnInit, OnDestroy {
         .pipe(
           skipWhile((v) => v === null),
           switchMap((_) => this.reportService.activeReport.pipe(take(1))),
+          withLatestFrom(this.license$),
           tap({
-            next: (report) => {
+            next: ([report, license]) => {
               // If there is no active report, it creates a new one and start the analysis.
               if (!report) {
-                this.continueWithNewReport();
+                this.continueWithNewReport(license);
                 return;
               }
 
@@ -108,7 +110,7 @@ export class AnalysisPage implements OnInit, OnDestroy {
                   {
                     text: "Nuevo análisis",
                     handler: () => {
-                      this.continueWithNewReport();
+                      this.continueWithNewReport(license);
                     },
                   },
                   {
@@ -127,8 +129,11 @@ export class AnalysisPage implements OnInit, OnDestroy {
   /**
    * Creates an empty Report in local storage and redirects to the analysis form.
    */
-  private continueWithNewReport(): void {
-    const emptyReport = this.reportService.emptyReport;
+  private continueWithNewReport(license: WtLicense): void {
+    const emptyReport = { 
+      ...this.reportService.emptyReport, 
+      wtCompanyId: license.wtCompanyId, 
+    };
     this.reportService.patchActiveReport({ ...emptyReport });
     this.utilsSvc.routerLink("/tabs/analysis/analysis-form");
   }

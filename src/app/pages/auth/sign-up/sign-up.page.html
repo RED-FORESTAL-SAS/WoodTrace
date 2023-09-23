@@ -91,6 +91,7 @@
         label="Fecha de nacimiento"
         type="date"
         [formControlValue]="fNacimiento"
+        datetime="datetime" 
       >
       </app-input-gradient>
       <div class="validators" *ngIf="fNacimiento.touched && fNacimiento.errors">

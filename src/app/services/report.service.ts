@@ -95,6 +95,7 @@ export class ReportService implements OnDestroy {
       woods: [],
       localId: new Date().getTime().toString(),
       wtUserId: this.userService.currentUser!.id,
+      // wtCompanyId: this.userService.c
       fCreado: Timestamp.fromDate(new Date()),
       fModificado: Timestamp.fromDate(new Date()),
     };
@@ -740,6 +741,7 @@ export class ReportService implements OnDestroy {
         nanoseconds: (report.fModificado as Timestamp).nanoseconds,
       },
       synced: report.synced,
+      wtCompanyId: report.wtCompanyId,
     };
   }
 
@@ -785,6 +787,7 @@ export class ReportService implements OnDestroy {
             localStorageWtReport.fModificado.nanoseconds
           ),
           synced: localStorageWtReport.synced,
+          wtCompanyId: localStorageWtReport.wtCompanyId,
         }
       : null;
   }
