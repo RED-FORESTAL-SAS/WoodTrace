@@ -1,8 +1,11 @@
 # CHANGELOG
 
-# [DIANA/RED-23-FIX] -2023-09-23 (Mario)
+# [DIANA/RED-23-FIX] -2023-09-25 (Mario)
 
 - Primer ejecucion en mac. Agregar campo wtCompanyId a WtReport.
+- Agregar archivo GoogleService-Info.plist a iOS. Faltante.
+- Ajustar link contacto de WhatsApp.
+- Ajustar navegacion entre reportes existentes.
 
 # [DIANA/RED-23-FIX] -2023-09-20 (Mario)
 

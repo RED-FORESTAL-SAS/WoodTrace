@@ -1,8 +1,8 @@
 import { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
-  appId: "com.redforestal.finkapp",
-  appName: "FinkApp",
+  appId: "com.redforestal.woodtracer",
+  appName: "WoodTracer",
   webDir: "www",
   bundledWebRuntime: false,
   plugins: {

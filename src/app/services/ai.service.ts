@@ -30,8 +30,8 @@ export class AiService {
    */
   private async loadModel() {
     this.model = await tf.loadLayersModel("/assets/tf/model.json");
-    console.log("🔥 Modelo cargado:");
-    console.log(this.model.summary());
+    // console.log("🔥 Modelo cargado:");
+    // console.log(this.model.summary());
   }
 
   /**

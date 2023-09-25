@@ -45,7 +45,17 @@ export class AnalysisPage implements OnInit, OnDestroy {
       map((license) => !!license)
     );
 
-    this.activeReport$ = this.reportService.activeReport;
+    this.activeReport$ = this.reportService.activeReport
+      .pipe(
+        tap({
+          next: (report) => {
+            // If active report is already finished, clean it to avoid any overwriting.
+            if (report && report.localPathPdf !== "") {
+              this.reportService.patchActiveReport(null);
+            }
+          }
+        })
+      );
     this.hasActiveReport$ = this.reportService.activeReport.pipe(
       map((report) => !!report)
     );
@@ -58,6 +68,14 @@ export class AnalysisPage implements OnInit, OnDestroy {
     this.createNewReportHandler();
     this.continueReportHandler();
   }
+
+  ionViewDidEnter() {
+    this.activeReport$.pipe(take(1)).toPromise().then((report) => {
+      if (report && report.localPathPdf !== "") {
+        this.reportService.patchActiveReport(null);
+      }
+    });
+  }  
 
   /**
    * Destroy subscriptions/event handlers for component, every time Page is 'Left'.
@@ -152,7 +170,21 @@ export class AnalysisPage implements OnInit, OnDestroy {
             next: (report) => {
               // If there is no active report, it creates a new one and start the analysis.
               if (report !== null) {
-                this.utilsSvc.routerLink("/tabs/analysis/analysis-list");
+
+                // Check if report basic data is fulfilled and refirect to the corresponding page.
+                let personaIsFilled = false;
+                if (['persona', 'vehiculo'].includes(report.personaType)) {
+                  personaIsFilled = report.personaType === 'persona' 
+                    ? report.fullName !== '' && [1,2,3,4].includes(report.docType) && report.docNumber !== ''
+                    : report.placa !== '' && report.guia !== '';
+                }
+
+                if (report.departamento !== '' && report.municipio !== '' && personaIsFilled) {
+                  this.utilsSvc.routerLink("/tabs/analysis/analysis-list");
+                } else {
+                  this.utilsSvc.routerLink("/tabs/analysis/analysis-form");
+                }
+
                 return;
               }
 
