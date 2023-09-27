@@ -2,6 +2,7 @@
 
 # [DIANA/RED-23-FIX] -2023-09-27 (Mario) (build 14).
 
+- Ajustar que se muestre la información del usuario despues del primer registro.
 - Incrementar el timeout para la subida de archivos durante la sincronización.
 - Ajustar los selectores de fecha para las fecha de nacimiento.
 
