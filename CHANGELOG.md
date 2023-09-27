@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# [DIANA/RED-23-FIX] -2023-09-25 (Mario) (build 13)
+
+- Hacer deploy de la versión 13.
+
 # [DIANA/RED-23-FIX] -2023-09-25 (Mario)
 
 - Primer ejecucion en mac. Agregar campo wtCompanyId a WtReport.
