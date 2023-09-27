@@ -18,6 +18,7 @@ import { TimeStampPipe } from "./components/pipes/timestamp.pipe";
 import { EspecieModalComponent } from "./components/especie-modal/especie-modal.component";
 import { LoadingModalComponent } from "./components/loading-modal/loading-modal.component";
 import { ErrorModalComponent } from "./components/error-modal/error-modal.component";
+import { IsoDateToddmmyyyyPipe } from "./components/pipes/isoDateToddmmyyyy.pipe";
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { ErrorModalComponent } from "./components/error-modal/error-modal.compon
     LoadingModalComponent,
     ErrorModalComponent,
     TimeStampPipe,
+    IsoDateToddmmyyyyPipe,
   ],
   exports: [
     HeaderComponent,
@@ -51,6 +53,7 @@ import { ErrorModalComponent } from "./components/error-modal/error-modal.compon
     LoadingModalComponent,
     ErrorModalComponent,
     TimeStampPipe,
+    IsoDateToddmmyyyyPipe,
   ],
   imports: [
     CommonModule,

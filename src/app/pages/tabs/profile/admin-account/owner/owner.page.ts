@@ -72,19 +72,12 @@ export class OwnerPage implements OnInit, OnDestroy {
           take(1),
           tap({
             next: (user) => {
-              const fn = user.fNacimiento.toDate();
+              const fNacimientoAsDate = user.fNacimiento !== null 
+                ? user.fNacimiento.toDate().toISOString().slice(0, 10)
+                : null;
 
-              const fnStr = `${fn.getFullYear()}-${(
-                fn.getMonth() + 1
-              ).toLocaleString("en-US", {
-                minimumIntegerDigits: 2,
-                useGrouping: false,
-              })}-${fn.getDate().toLocaleString("en-US", {
-                minimumIntegerDigits: 2,
-                useGrouping: false,
-              })}`;
-              console.log(fnStr);
-              console.log(fn);
+              console.log(fNacimientoAsDate);
+
               this.email.setValue(user.email);
               this.email.disable();
               this.fullName.setValue(user.fullName);
@@ -92,13 +85,22 @@ export class OwnerPage implements OnInit, OnDestroy {
               this.docNumber.setValue(user.docNumber);
               this.photo.setValue(user.photo);
               this.movil.setValue(user.movil);
-              this.fNacimiento.setValue(fnStr);
+              this.fNacimiento.setValue(fNacimientoAsDate);
               this.genero.setValue(user.genero);
             },
           })
         )
         .subscribe()
     );
+  }
+
+  /**
+   * Update fNacimiento when a differente date is picked.
+   * 
+   * @param $event 
+   */
+  public onFNacimientoSelected($event: any): void {
+    this.fNacimiento.setValue($event.detail.value.slice(0, 10));
   }
 
   /**
@@ -135,6 +137,9 @@ export class OwnerPage implements OnInit, OnDestroy {
                 fNacimiento: Timestamp.fromDate(fNacimiento),
                 genero: this.genero.value,
               };
+
+              console.log('patchData', patchData);
+
               this.userService.patchUser(patchData);
 
               this.loading = true;

@@ -315,4 +315,13 @@ export class SignUpPage {
     this.registered.next(false);
     this.registered.complete();
   }
+
+  /**
+   * Update fNacimiento when a differente date is picked.
+   * 
+   * @param $event 
+   */
+  public onFNacimientoSelected($event: any): void {
+    this.fNacimiento.setValue($event.detail.value.slice(0, 10));
+  }
 }

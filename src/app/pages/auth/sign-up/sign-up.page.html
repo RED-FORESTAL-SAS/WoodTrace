@@ -86,28 +86,44 @@
         <span *ngIf="genero.errors?.['required']">Selecciona un genero</span>
       </div>
 
-      <!-- Fecha de nacimiento -->
-      <app-input-gradient
-        label="Fecha de nacimiento"
-        type="date"
-        [formControlValue]="fNacimiento"
-        datetime="datetime" 
+    <!-- Fecha de nacimiento  -->
+    <div class="ion-padding-bottom">
+      <div *ngIf="fNacimiento.value" class="label animate__animated animate__fadeIn">Fecha de nacimiento</div>
+      <div [ngClass]="{
+          'gradient-input': !(fNacimiento.dirty && fNacimiento.errors),
+          'gradient-input-error': fNacimiento.dirty && fNacimiento.errors
+        }"
       >
-      </app-input-gradient>
-      <div class="validators" *ngIf="fNacimiento.touched && fNacimiento.errors">
-        <span *ngIf="fNacimiento.errors?.['required']"
-          >Selecciona una fecha de nacimiento</span
-        >
+        <ion-item lines="none">
+          <ion-label *ngIf="fNacimiento.value === null" class="inside-input-text">Fecha de nacimiento</ion-label>
+          <ion-input [disabled]="true">{{ fNacimiento.value | isoDateToddmmyyyy }}</ion-input>
+          <ion-icon
+            class="inside-input-text"
+            title="fecha de nacimiento"
+            slot="end"
+            name="calendar-number-outline"
+            id="datetimepop"
+          ></ion-icon>
+          <ion-popover trigger="datetimepop" [keepContentsMounted]="true">
+            <ng-template>
+              <ion-datetime 
+                id="datetime" 
+                locale="es-ES" 
+                presentation="date" 
+                showDefaultButtons="true"
+                cancelText="Cancelar"
+                doneText="OK"
+                [value]="fNacimiento.value" 
+                (ionChange)="onFNacimientoSelected($event)"
+              ></ion-datetime>
+            </ng-template>
+          </ion-popover>
+        </ion-item>
       </div>
-
-      <!-- <app-input-datapicker
-        [formControlValue]="fNacimiento"
-      ></app-input-datapicker>
-      <div class="validators" *ngIf="fNacimiento.touched && fNacimiento.errors">
-        <span *ngIf="fNacimiento.errors?.['required']"
-          >Selecciona una fecha de nacimiento</span
-        >
-      </div> -->
+    </div>
+    <div class="validators" *ngIf="fNacimiento.dirty && fNacimiento.errors">
+      <span *ngIf="fNacimiento.errors?.['required']">Ingresa tu fecha de nacimiento</span>
+    </div>
 
       <!-- Tipo de documento  -->
       <app-input-gradient

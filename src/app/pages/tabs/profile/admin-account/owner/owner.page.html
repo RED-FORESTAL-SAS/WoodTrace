@@ -52,16 +52,41 @@
     </div>
 
     <!-- Fecha de nacimiento  -->
-    <app-input-gradient
-      type="date"
-      label="Fecha de nacimiento"
-      [formControlValue]="fNacimiento"
-    >
-    </app-input-gradient>
-    <div class="validators" *ngIf="fNacimiento.dirty && fNacimiento.errors">
-      <span *ngIf="fNacimiento.errors?.['required']"
-        >Ingresa tu fecha de nacimiento</span
+    <div class="ion-padding-bottom">
+      <div class="label animate__animated animate__fadeIn">Fecha de nacimiento</div>
+      <div [ngClass]="{
+          'gradient-input': !(fNacimiento.dirty && fNacimiento.errors),
+          'gradient-input-error': fNacimiento.dirty && fNacimiento.errors
+        }"
       >
+        <ion-item lines="none">
+          <ion-label *ngIf="fNacimiento.value === null">Fecha de nacimiento</ion-label>
+          <ion-input [disabled]="true">{{ fNacimiento.value | isoDateToddmmyyyy }}</ion-input>
+          <ion-icon
+            title="fecha de nacimiento"
+            slot="end"
+            name="calendar-number-outline"
+            id="datetimepop"
+          ></ion-icon>
+          <ion-popover trigger="datetimepop" [keepContentsMounted]="true">
+            <ng-template>
+              <ion-datetime 
+                id="datetime" 
+                locale="es-ES" 
+                presentation="date" 
+                showDefaultButtons="true"
+                cancelText="Cancelar"
+                doneText="OK"
+                [value]="fNacimiento.value" 
+                (ionChange)="onFNacimientoSelected($event)"
+              ></ion-datetime>
+            </ng-template>
+          </ion-popover>
+        </ion-item>
+      </div>
+    </div>
+    <div class="validators" *ngIf="fNacimiento.dirty && fNacimiento.errors">
+      <span *ngIf="fNacimiento.errors?.['required']">Ingresa tu fecha de nacimiento</span>
     </div>
 
     <!-- Tipo de documento  -->

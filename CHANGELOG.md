@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# [DIANA/RED-23-FIX] -2023-09-27 (Mario)
+
+- Incrementar el timeout para la subida de archivos durante la sincronización.
+- Ajustar los selectores de fecha para las fecha de nacimiento.
+
 # [DIANA/RED-23-FIX] -2023-09-25 (Mario) (build 13)
 
 - Hacer deploy de la versión 13.

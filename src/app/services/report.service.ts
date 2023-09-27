@@ -401,7 +401,7 @@ export class ReportService implements OnDestroy {
               e
             );
           }),
-        5000
+        10000
       );
 
       // Upload photos for each wood.
@@ -421,7 +421,7 @@ export class ReportService implements OnDestroy {
                 e
               );
             }),
-          5000
+          10000
         );
 
         uploadedWoods.push({ ...wood, url: uploadedWoodPhotoUrl });
