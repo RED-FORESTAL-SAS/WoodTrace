@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# [DIANA/RED-23-FIX] -2023-09-27 (Mario) (build 15).
+
+- Fix ProfilePage, primera carga después del login.
+
 # [DIANA/RED-23-FIX] -2023-09-27 (Mario) (build 14).
 
 - Ajustar que se muestre la información del usuario despues del primer registro.

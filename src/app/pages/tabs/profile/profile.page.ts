@@ -62,7 +62,7 @@ export class ProfilePage implements OnDestroy, OnInit {
   ) {
     // Watch events and User.
     this.watchUploadPhotoClicks();
-    this.user$ = this.userService.user; //.pipe(distinctUntilChanged(isEqual));
+    this.user$ = this.userService.authState; //.pipe(distinctUntilChanged(isEqual));
     this.reports$ = this.reportService.reports.pipe(
       map((reports) => reports.filter((report) => !report.synced))
     );
