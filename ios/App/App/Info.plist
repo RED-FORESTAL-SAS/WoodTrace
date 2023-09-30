@@ -33,7 +33,7 @@
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Privacy - Location Always Usage Description</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Privacy - Location When In Use Usage Description</string>
+	<string>Usamos la ubicación del dispositivo únicamente para registrar las coordenadas (latitud y logintud) en el momento de creación de un análisis.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
