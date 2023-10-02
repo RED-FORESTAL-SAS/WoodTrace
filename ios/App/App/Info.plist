@@ -22,18 +22,18 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSCameraUsageDescription</key>
-	<string>To capture images</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>To add images</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>To store images</string>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<string>Supports opening documents in place</string>
+	<key>NSCameraUsageDescription</key>
+	<string>To capture images</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Privacy - Location Always Usage Description</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Usamos la ubicación del dispositivo únicamente para registrar las coordenadas (latitud y logintud) en el momento de creación de un análisis.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>To add images</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>To store images</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

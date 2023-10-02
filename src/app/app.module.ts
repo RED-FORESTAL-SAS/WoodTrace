@@ -16,8 +16,8 @@ import { HttpClientModule } from "@angular/common/http";
  */
 import { FIREBASE_OPTIONS } from "@angular/fire/compat";
 
-import { initializeApp, provideFirebaseApp } from "@angular/fire/app";
-import { provideAuth, getAuth, connectAuthEmulator } from "@angular/fire/auth";
+import { getApp, initializeApp, provideFirebaseApp } from "@angular/fire/app";
+import { provideAuth, getAuth, connectAuthEmulator, initializeAuth, indexedDBLocalPersistence } from "@angular/fire/auth";
 import {
   provideFirestore,
   getFirestore,
@@ -35,6 +35,7 @@ import { Device } from "@awesome-cordova-plugins/device/ngx";
 import { CurrencyPipe, registerLocaleData } from "@angular/common";
 import { IonicStorageModule } from "@ionic/storage-angular";
 import { Drivers } from "@ionic/storage";
+import { Capacitor } from "@capacitor/core";
 
 registerLocaleData(es);
 
@@ -50,13 +51,19 @@ registerLocaleData(es);
     AppRoutingModule,
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideAuth(() => {
-      const auth = getAuth();
-      if (environment.useEmulators) {
-        connectAuthEmulator(auth, "http://localhost:9099", {
-          disableWarnings: true,
+      if (Capacitor.isNativePlatform()) {
+        return initializeAuth(getApp(), {
+          persistence: indexedDBLocalPersistence,
         });
+      } else {
+        const auth = getAuth();
+        if (environment.useEmulators) {
+          connectAuthEmulator(auth, "http://localhost:9099", {
+            disableWarnings: true,
+          });
+        }
+        return auth;
       }
-      return auth;
     }),
     provideFirestore(() => {
       const firestore = getFirestore();

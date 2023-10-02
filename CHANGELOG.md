@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# [DIANA/RED-23-FIX] -2023-10-02 (Mario)
+
+- Hacer fix para que se inicialice Firebase Auth de forma correcta en iOS.
+
 # [DIANA/RED-23-FIX] -2023-09-27 (Mario) (build 15).
 
 - Ampliar la descripción de NSLocationWhenInUseUsageDescription en el info.plist para iOS.
