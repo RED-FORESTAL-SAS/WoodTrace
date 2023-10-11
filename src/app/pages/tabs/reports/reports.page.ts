@@ -158,11 +158,6 @@ export class ReportsPage implements OnInit, OnDestroy {
       // @dev no encoding value is provided to write file as base64 encoded.
     });
 
-    /**
-     * @todo @mario Abrir archivo pdf.
-     * @todo @mario Testear en dispositivo.
-     */
-    console.log(result);
     this.open(result.uri);
 
     // urlPdf

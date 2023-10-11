@@ -72,11 +72,6 @@ export class ReportService implements OnDestroy {
     this.store.patch({
       activeReport: activeReport,
       reports: reports,
-      /**
-       * @todo @mario Determinar que pasa con el campo 'isFirstReport' en el ReportState y
-       * eliminarlo si es el caso.
-       */
-      // isFirstReport: this.fetchIsFirstReportFromLocalStorage(),
     });
 
     // Intentar solicitar la primera página de Reports del servidor.
@@ -179,22 +174,6 @@ export class ReportService implements OnDestroy {
     } catch (e: unknown) {
       throw new ReportFailure("Error al analizar la muestra.", "", e);
     }
-  }
-
-  /**
-   * Permite analizar un Wood, pero con un delay de 5 segundos para simular un error.
-   *
-   * @throws ReportFailure.
-   *
-   * @todo @mario Eliminar este método cuando se implemente la AI.
-   */
-  async analayzedWoodWithFailure(): Promise<void> {
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-    throw new ReportFailure(
-      "Error al analizar la muestra.",
-      "mock-error",
-      new AiFailure("mock-error", "mock-error", "mock-error")
-    );
   }
 
   /**
@@ -526,15 +505,6 @@ export class ReportService implements OnDestroy {
               });
               return;
             }
-
-            /**
-             * @todo @mario Es necesario descargar y convertir las fotos y los pdfs de cada reporte
-             * a DataUrls para que se puedan mostrar en la app. Esto es necesario hacerlo aquí para
-             * que puedan estar disponibles cuando el dispositivo esté offline.
-             *
-             * @todo @mario En que momento se limitaría/eliminarían los reportes qu esobrepasen el
-             * humbral de reportes disponibles offline?
-             */
 
             // Update reports in state if localId is the same. Otherwise append.
             const allReports = [...reports];

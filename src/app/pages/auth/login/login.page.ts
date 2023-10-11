@@ -153,7 +153,7 @@ export class LoginPage {
             }
 
             /**
-             * @todo @mario User should be redirected to email verification page. He should not be
+             * @dev User should be redirected to email verification page. He should not be
              * trying to login again, since there is already a session open.
              *
              * If he showld be allowed, put code inside this if statement: if (loginIn) {...}

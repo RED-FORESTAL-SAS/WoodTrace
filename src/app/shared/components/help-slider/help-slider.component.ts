@@ -1,11 +1,6 @@
 import { Component, ViewChild } from "@angular/core";
 import { UtilsService } from "src/app/services/utils.service";
 
-/**
- * @todo @mario Borrar este import y el archivo de origen, porque ya no se usa.
- */
-// import { helpSlides } from "src/assets/data/help-slides";
-
 import SwiperCore, { SwiperOptions, Pagination, Virtual } from "swiper";
 import { SwiperComponent } from "swiper/angular";
 

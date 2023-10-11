@@ -1,27 +1,39 @@
 import { Timestamp } from "../types/timestamp.type";
 
 /**
- * Describe la estructura un usuario de la aplicación.
- * Esta interfaz es más precisa que User y debería de usarse en todo el código.
- *
- * @todo @diana terminar de documentar campos.
+ * Describe la estructura un usuario de la aplicación WoodTracer.
+ * Este usuario está almacenado en la colección "wt_users" y es diferente a los usuarios de la 
+ * colección "usuarios".
+ * 
+ * @dev Esta interfaz es más precisa que User y debería de usarse en todo el código.
  */
 export interface WtUser {
+  /** ID del documento en Firestore. Coincide con el valor UID del User en Firebase Auth. */
   id: string;
+  /** Email con el que se registra el usuario en la App. */
   email: string;
-  /**
-   * Solo para uso local. Cuando se envía al servidor, se elimina.
+  /** 
+   * Contraseña creada por el usuario al registrarse. Solo se usa durante el registro, pero no se 
+   * almacena en la base de datos.
    */
   password?: string;
+  /** Nombre completo del Usuario. */
   fullName: string;
+  /** Tipo de documento de identidad del usuario. */
   docType: number;
+  /** Número de documento de identidad del usuario. */
   docNumber: string;
+  /** Boolean que indica si el email ha sido verificado o no. */
   emailVerified: boolean;
+  /** Genero del Usuario. */
   genero: string;
+  /** Fecha de nacimiento del usuario */
   fNacimiento: Timestamp | null;
+  /** Número del teléfono móvil del usuario. */
   movil: string;
-  /**
-   * Dispositivos asociados al usuario.
+  /** 
+   * Array con los dispositivos asociados al usuario. No tienen ningún uso en la App, pero se deja
+   * para usos futuros.
    */
   devices: Array<{
     model: string;
@@ -32,7 +44,12 @@ export interface WtUser {
    * stored as/converted to a base64 data url.
    */
   photo: string;
+  /** Boolean que indica si el usuario está activo o no. */
   activo: boolean;
+  /** 
+   * Boolean que indica si el usuario ya creó o no el primer reporte. Sirve para mostrar/ocultar las
+   * ayudas.
+   */
   firstReport: boolean;
 }
 

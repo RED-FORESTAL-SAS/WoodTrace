@@ -61,7 +61,6 @@ export class MembershipPage implements OnInit {
             this.utilsSvc.presentToast(
               "No hay una licencia identificada con este código. "
             );
-            // this.isValidLicense = false;
             return;
           }
 
@@ -69,17 +68,11 @@ export class MembershipPage implements OnInit {
             this.utilsSvc.presentToast(
               "Ya hay un usuario asociado a este código de licencia. "
             );
-            //   this.isValidLicense = false;
             return;
           }
 
-          /**
-           * @todo @mario asumo que la validación de la fecha de vigencia no tiene que hacerse
-           * sabiendo que el cron que cambiará el estatus va a hacerlo.
-           */
           if (license[0].status !== "active") {
             this.utilsSvc.presentToast("Esta licencia se encuentra inactiva. ");
-            //   this.isValidLicense = false;
             return;
           }
 
@@ -100,7 +93,6 @@ export class MembershipPage implements OnInit {
         })
         .catch((err) => {
           this.loading = false;
-          console.log(err);
         });
     }
   }

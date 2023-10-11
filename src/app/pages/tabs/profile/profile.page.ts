@@ -85,8 +85,11 @@ export class ProfilePage implements OnDestroy, OnInit {
    */
   async ionViewDidEnter() {
     /**
-     * @todo @mario Descomentar cuando se arregle el bug que reintenta la sincronización sin éxito.
-     * No debería de reintentar la sincronización tan seguido.
+     * @dev El bloque comentado a continuación permite activar la sincronización automática de los 
+     * reportes, cada vez que el usuario entra a la pantalla de perfil.
+     * 
+     * Se deshabilita porque puede ser un proceso dispendioso, pero se deja la implementación 
+     * comentada por si es de interés reactivarla más adelante.
      */
     // const online = await this.online$.pipe(take(1)).toPromise();
     // const reports = await this.reports$.pipe(take(1)).toPromise();
@@ -226,9 +229,6 @@ export class ProfilePage implements OnDestroy, OnInit {
 
             this.loadingPhoto = true;
             await this.userService.updateUserPhoto(photo).catch((e) => {
-              /**
-               * @todo @mario Refinar los mensajes de error.
-               */
               this.utilsSvc.presentToast(
                 "Ocurrió un error al subir el archivo. Por favor intente de nuevo."
               );

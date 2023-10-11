@@ -11,11 +11,6 @@ import { ReportState } from "./report.state";
 export class ReportStore extends BaseStore<ReportState> {
   public store = "active-report-store" + "-" + Date.now().toString().slice(-3);
 
-  /**
-   * @todo @diana Poner en false antes de tirar a producción.
-   */
-  protected override debug = true;
-
   constructor() {
     super({
       activeReport: null,

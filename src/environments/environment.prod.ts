@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   /**
-   * @todo @mario Esta es la configuración del dev. Cambiarla para que refleje el prod.
+   * @todo  Esta es la configuración del dev. Cambiarla para que refleje el prod.
    */
   firebaseConfig: {
     apiKey: "AIzaSyC2ObxfQBz9bscDyAyMQUqmzD8bbiUqV8k",

@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { UtilsService } from "src/app/services/utils.service";
 import { ReportService } from "src/app/services/report.service";
 import { WtReport } from "src/app/models/wt-report";
-import { Observable, Subscription } from "rxjs";
+import { Observable } from "rxjs";
 import { WtWood } from "src/app/models/wt-wood";
 import { Router } from "@angular/router";
 
@@ -20,11 +20,6 @@ export class AnalysisListPage {
     private router: Router
   ) {
     this.report$ = this.reportService.activeReport;
-
-    /**
-     * @todo @mario Suscribirse al reportService.error, para vigilar los errores que ocurran en el
-     * state.
-     */
   }
 
   onDeleteWood(index: number) {
@@ -42,9 +37,6 @@ export class AnalysisListPage {
         {
           text: "Cancelar",
           handler: () => {},
-          /**
-           * @todo manejo de errores.
-           */
         },
       ],
     });
@@ -81,9 +73,6 @@ export class AnalysisListPage {
         {
           text: "Cancelar",
           handler: () => {},
-          /**
-           * @todo manejo de errores.
-           */
         },
       ],
     });

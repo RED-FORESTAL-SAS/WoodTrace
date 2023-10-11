@@ -8,11 +8,6 @@ import { UserState } from "./user.state";
 export class UserStore extends BaseStore<UserState> {
   public store = "user-store" + "-" + Date.now().toString().slice(-3);
 
-  /**
-   * @todo @diana Poner en false antes de tirar a producción.
-   */
-  protected override debug = true;
-
   constructor() {
     super({
       company: null,

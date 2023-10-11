@@ -6,7 +6,7 @@ import { Router } from "@angular/router";
 import { User } from "../models/user.model";
 
 /**
- * @todo @mario Estos imports deberían eliminarse y usarse los imports de @angular/fire/storage.
+ * @dev Estos imports deberían eliminarse y usarse los imports de @angular/fire/storage.
  * Es necesario hacer refactor para que sea compatible la implementación.
  */
 import {
@@ -19,7 +19,7 @@ import {
 } from "firebase/storage";
 
 /**
- * @todo @mario Estos imports deberían eliminarse y usarse los imports de @angular/fire/auth.
+ * @dev Estos imports deberían eliminarse y usarse los imports de @angular/fire/auth.
  * Es necesario hacer refactor para que sea compatible la implementación.
  */
 import { getAuth, updatePassword, User as FirebaseUser } from "firebase/auth";
@@ -69,10 +69,6 @@ import { orderBy } from "firebase/firestore";
 
 export { FirebaseUser };
 
-/**
- * @todo @diana Esta clase contiene dependencias a módulos de angular fire en modo compat. Esto
- * debería de migrarse al modo modular y eliminarse la inicialización del archivo app.module.ts.
- */
 @Injectable({
   providedIn: "root",
 })

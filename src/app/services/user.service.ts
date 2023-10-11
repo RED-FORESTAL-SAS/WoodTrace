@@ -167,14 +167,6 @@ export class UserService implements OnDestroy {
                       this.saveUserToLocalStorage(null);
                     }
                     return null;
-
-                    /**
-                     * @todo @mario Debe cerrarse la sesión de firebase cuando esto ocurre?
-                     */
-
-                    // throw new NotFoundFailure(
-                    //   "El usuario no existe en la base de datos."
-                    // );
                   }
 
                   // If user is a valid WtUser, return it with updated 'emailVerified' property.

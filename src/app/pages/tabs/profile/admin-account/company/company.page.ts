@@ -10,11 +10,7 @@ import { WtLicense } from "src/app/models/wt-license";
   templateUrl: "./company.page.html",
   styleUrls: ["./company.page.scss"],
 })
-export class CompanyPage implements OnInit {
-  /**
-   * @todo borrar esta variable cuando se traiga la foto del usuario y se implemente la funcionalidad.
-   */
-  photo = new FormControl("");
+export class CompanyPage implements OnInit { 
   loading: boolean;
   loadingPhoto: boolean;
 

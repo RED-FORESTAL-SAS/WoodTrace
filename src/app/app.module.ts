@@ -11,8 +11,9 @@ import { AppRoutingModule } from "./app-routing.module";
 import { HttpClientModule } from "@angular/common/http";
 
 /**
- * @todo @mario Este import no debería necesitarse, pero aun hay funcionalidades que usan
- * imports 'compat' de firestore. Por eso es que requieren el provider. ¡BORRAR!
+ * @dev Este import no debería necesitarse, pero aun hay funcionalidades que usan imports 'compat' 
+ * de firestore. Por eso es que requieren el provider. No borrar hasta que se haya hecho el refactor
+ * de las funcionalidades que aún usan la versión compat.
  */
 import { FIREBASE_OPTIONS } from "@angular/fire/compat";
 
@@ -39,10 +40,6 @@ import { Capacitor } from "@capacitor/core";
 
 registerLocaleData(es);
 
-/**
- * @todo @diana Esta clase contiene dependencias a módulos de angular fire en modo compat. Deberían
- * eliminarse, una vez se migre lo implementado en el archivo firebase.service.ts.
- */
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -87,8 +84,9 @@ registerLocaleData(es);
   ],
   providers: [
     /**
-     * @todo @mario Este provider no debería necesitarse, pero aun hay funcionalidades que usan
-     * imports 'compat' de firestore. Por eso es que requieren el provider. ¡BORRAR!
+     * @dev Este provider no debería necesitarse, pero aun hay funcionalidades que usan imports 
+     * 'compat' de firestore. Por eso es que requieren el provider. No borrar hasta que se haya 
+     * hecho el refactor de las funcionalidades que aún usan la versión compat.
      */
     { provide: FIREBASE_OPTIONS, useValue: environment.firebaseConfig },
     { provide: LOCALE_ID, useValue: "es-MX" },

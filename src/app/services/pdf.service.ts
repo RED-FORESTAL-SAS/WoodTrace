@@ -34,10 +34,6 @@ export class PdfService {
     company: WtCompany,
     open = true
   ): Promise<string> {
-    /**
-     * @todo @mario Verificar si el archivo ya existe antes de vovler a crearlo.
-     */
-
     const pdfDefinitions = this.buildPdfDefinitions(report, user, company);
     const pdfObject = pdfMake.createPdf(pdfDefinitions);
 

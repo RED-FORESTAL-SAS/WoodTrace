@@ -1,7 +1,5 @@
 /**
  * Describe la respuesta de la AI al analizar una imagen correspondiente a una pieza de Madera.
- *
- * @todo @diana Validar que esta sea la estructura definitiva.
  */
 export interface AiRespose {
   /**
