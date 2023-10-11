@@ -112,8 +112,6 @@ export class AdminAccountPage implements OnInit, OnDestroy {
                             this.loading = false;
                           },
                           (err) => {
-                            console.log(err);
-
                             this.utilsSvc.presentToast(
                               "No tienes conexión actualmente los datos se subiran una vez se restablesca la conexión"
                             );

@@ -7,7 +7,6 @@ import { WtLicense } from "src/app/models/wt-license";
 import { BehaviorSubject, Observable, Subscription } from "rxjs";
 import { map, skipWhile } from "rxjs/operators";
 import { WtReport } from "src/app/models/wt-report";
-import { WtCompany } from "src/app/models/wt-company";
 
 @Component({
   selector: "app-analysis",

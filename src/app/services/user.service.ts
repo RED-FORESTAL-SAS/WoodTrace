@@ -16,7 +16,7 @@ import {
   withLatestFrom,
 } from "rxjs/operators";
 import { WtLicense } from "../models/wt-license";
-import { LicenseFailure, LicenseService } from "./license.service";
+import { LicenseService } from "./license.service";
 import { CompanyService } from "./company.service";
 import { FirebaseService, FirebaseUser } from "./firebase.service";
 import { Timestamp } from "../types/timestamp.type";

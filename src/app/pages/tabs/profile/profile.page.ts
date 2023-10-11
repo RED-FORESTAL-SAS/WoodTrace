@@ -1,13 +1,10 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { BehaviorSubject, Observable, Subscription, combineLatest } from "rxjs";
-import { isEqual } from "lodash";
-import {
-  distinctUntilChanged,
+import {  
   filter,
   map,
   skip,
-  skipWhile,
   switchMap,
   take,
   tap,
@@ -62,7 +59,7 @@ export class ProfilePage implements OnDestroy, OnInit {
   ) {
     // Watch events and User.
     this.watchUploadPhotoClicks();
-    this.user$ = this.userService.authState; //.pipe(distinctUntilChanged(isEqual));
+    this.user$ = this.userService.authState;
     this.reports$ = this.reportService.reports.pipe(
       map((reports) => reports.filter((report) => !report.synced))
     );
@@ -105,11 +102,6 @@ export class ProfilePage implements OnDestroy, OnInit {
    */
   ngOnInit(): void {
     this.syncReportsHandler();
-  }
-
-  ionViewWillLeave(): void {
-    // console.log("ProfilePage::ionViewWillLeave");
-    // this.sbs.forEach((s) => s.unsubscribe());
   }
 
   /**
@@ -217,11 +209,6 @@ export class ProfilePage implements OnDestroy, OnInit {
         withLatestFrom(this.userService.online),
         tap({
           next: async ([_, online]) => {
-            // if (!online) {
-            //   this.utilsSvc.presentToast("No tienes conexión a internet.");
-            //   return;
-            // }
-
             const photo = await this.cameraService.pickOrTakePhoto({
               promptLabelHeader: "Foto de perfil",
             });

@@ -286,7 +286,6 @@ export class FirebaseService {
 
     // 'file' comes from the Blob or File API
     return uploadBytesLegacy(storageRef, file).then((snapshot) => {
-      console.log("Uploaded a blob or file!");
       return this.storage.ref(id).getDownloadURL().toPromise();
     });
   }

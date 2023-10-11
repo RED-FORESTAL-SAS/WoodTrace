@@ -15,8 +15,9 @@ export class ResetPasswordPage implements OnInit {
     private firebaseSvc: FirebaseService,
     private utilsSvc: UtilsService
   ) {
-    /* This is a listener that listens for the enter key to be pressed. If the enter key is pressed, and
- the validator() function returns true, the sendRecoveryEmail() function is called. */
+     
+    // This is a listener that listens for the enter key to be pressed. If the enter key is pressed, 
+    // and the validator() function returns true, the sendRecoveryEmail() function is called. 
     window.addEventListener("keyup", (e) => {
       if (e.key == "Enter" && this.validator()) {
         this.sendRecoveryEmail();
@@ -38,7 +39,6 @@ export class ResetPasswordPage implements OnInit {
         this.utilsSvc.dismissLoading();
       },
       (err) => {
-        console.log(err);
         this.utilsSvc.presentToast("Ha ocurrido un error, intenta de nuevo");
         this.utilsSvc.dismissLoading();
       }

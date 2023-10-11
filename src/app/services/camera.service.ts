@@ -45,7 +45,7 @@ export class CameraService {
   public async pickOrTakePhoto(
     pickOrTakePhotoConfig: Partial<PickOrTakePhotoConfig>
   ): Promise<Photo | null> {
-    // Check permissions. I user denies, cancell operation.
+    // Check permissions. If user denies, cancell operation.
     let permissionStatus = await Camera.checkPermissions();
 
     if (
@@ -69,29 +69,6 @@ export class CameraService {
      * @bug Check https://github.com/ionic-team/capacitor-plugins/issues/1512
      * Check https://github.com/ionic-team/capacitor-plugins/issues?q=camera+photos
      */
-
-    // if (
-    //   pickOrTakePhotoConfig.source === CameraSource.Prompt ||
-    //   pickOrTakePhotoConfig.source === CameraSource.Photos
-    // ) {
-    //   if (permissionStatus.photos !== "granted") {
-    //     const photosPermissionStatus = await Camera.requestPermissions({
-    //       permissions: ["photos"],
-    //     });
-
-    //     /**
-    //      * @bug Check https://github.com/ionic-team/capacitor-plugins/issues/1512
-    //      */
-
-    //     console.log("photosPermissionStatus", photosPermissionStatus);
-
-    //     if (photosPermissionStatus.camera !== "granted") {
-    //       throw new CameraPermissionsFailure(
-    //         "No se han concedido permisos para las fotos."
-    //       );
-    //     }
-    //   }
-    // }
 
     const defaultConfig: PickOrTakePhotoConfig = {
       quality: 70,

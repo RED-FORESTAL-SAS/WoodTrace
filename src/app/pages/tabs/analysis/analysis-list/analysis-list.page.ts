@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { UtilsService } from "src/app/services/utils.service";
 import { ReportService } from "src/app/services/report.service";
 import { WtReport } from "src/app/models/wt-report";

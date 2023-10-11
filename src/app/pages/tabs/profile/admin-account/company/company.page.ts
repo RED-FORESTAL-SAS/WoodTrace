@@ -1,5 +1,4 @@
 import { Component, OnInit } from "@angular/core";
-import { FormControl } from "@angular/forms";
 import { UserService } from "src/app/services/user.service";
 import { WtCompany } from "src/app/models/wt-company";
 import { Observable } from "rxjs";
@@ -10,7 +9,7 @@ import { WtLicense } from "src/app/models/wt-license";
   templateUrl: "./company.page.html",
   styleUrls: ["./company.page.scss"],
 })
-export class CompanyPage implements OnInit { 
+export class CompanyPage { 
   loading: boolean;
   loadingPhoto: boolean;
 
@@ -21,8 +20,4 @@ export class CompanyPage implements OnInit {
     this.license$ = this.userService.license;
     this.company$ = this.userService.company;
   }
-
-  ngOnInit() {}
-
-  ionViewWillEnter() {}
 }

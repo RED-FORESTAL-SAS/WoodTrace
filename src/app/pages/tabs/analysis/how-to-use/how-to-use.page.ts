@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { Component, ViewChild } from "@angular/core";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { WtWood } from "src/app/models/wt-wood";

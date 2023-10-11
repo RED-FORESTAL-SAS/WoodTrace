@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { FormControl, Validators } from "@angular/forms";
 import { FirebaseService } from "src/app/services/firebase.service";
 import { UtilsService } from "src/app/services/utils.service";
@@ -14,7 +14,7 @@ import { WtUser } from "src/app/models/wt-user";
   templateUrl: "./membership.page.html",
   styleUrls: ["./membership.page.scss"],
 })
-export class MembershipPage implements OnInit {
+export class MembershipPage {
   date = Date.now();
   redeemCode = new FormControl("", [
     Validators.required,
@@ -36,10 +36,6 @@ export class MembershipPage implements OnInit {
     this.license$ = this.userService.license;
     this.wtUser = this.userService.currentUser;
   }
-
-  ngOnInit() {}
-
-  ionViewWillEnter() {}
 
   /**
    * It gets the license from the database and checks if it's valid. If it is, it saves the license in
@@ -85,7 +81,6 @@ export class MembershipPage implements OnInit {
               this.loading = false;
             },
             (err) => {
-              console.log(err);
               this.utilsSvc.presentToast("No se pudo redimir la licencia.");
               this.loading = false;
             }

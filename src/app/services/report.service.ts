@@ -25,7 +25,7 @@ import {
   NoNetworkFailure,
 } from "../utils/failure.utils";
 import { REPORTS_LS_KEY } from "../constants/reports-ls-key.constant";
-import { AiFailure, AiService } from "./ai.service";
+import { AiService } from "./ai.service";
 import { PdfService } from "./pdf.service";
 import { PersonaType } from "src/assets/data/persona-types";
 import { IonicLocalStorageRepository } from "../infrastructure/ionic-local-storage.repository";
@@ -90,7 +90,6 @@ export class ReportService implements OnDestroy {
       woods: [],
       localId: new Date().getTime().toString(),
       wtUserId: this.userService.currentUser!.id,
-      // wtCompanyId: this.userService.c
       fCreado: Timestamp.fromDate(new Date()),
       fModificado: Timestamp.fromDate(new Date()),
     };

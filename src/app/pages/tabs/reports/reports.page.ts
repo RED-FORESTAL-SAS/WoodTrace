@@ -7,11 +7,8 @@ import { UtilsService } from "src/app/services/utils.service";
 import { Filesystem, Directory, Encoding } from "@capacitor/filesystem";
 import { NoNetworkFailure } from "src/app/utils/failure.utils";
 import {
-  map,
-  skip,
   skipWhile,
   take,
-  takeUntil,
   tap,
   withLatestFrom,
 } from "rxjs/operators";

@@ -76,8 +76,6 @@ export class OwnerPage implements OnInit, OnDestroy {
                 ? user.fNacimiento.toDate().toISOString().slice(0, 10)
                 : null;
 
-              console.log(fNacimientoAsDate);
-
               this.email.setValue(user.email);
               this.email.disable();
               this.fullName.setValue(user.fullName);
@@ -138,8 +136,6 @@ export class OwnerPage implements OnInit, OnDestroy {
                 genero: this.genero.value,
               };
 
-              console.log('patchData', patchData);
-
               this.userService.patchUser(patchData);
 
               this.loading = true;
@@ -149,8 +145,6 @@ export class OwnerPage implements OnInit, OnDestroy {
                   this.loading = false;
                 },
                 (err) => {
-                  console.log(err);
-
                   this.utilsSvc.presentToast(
                     "No tienes conexión actualmente los datos se subiran una vez se restablesca la conexión"
                   );
