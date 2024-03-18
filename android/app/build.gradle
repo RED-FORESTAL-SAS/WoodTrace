@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
+
+    namespace 'com.redforestal.woodtracer'
     compileSdkVersion 33
     defaultConfig {
         applicationId "com.redforestal.woodtracer"
