@@ -1,0 +1,48 @@
+<app-header backButton="/tabs/profile" title="Árboles del Mundo"></app-header>
+
+<ion-content>
+<h1 class="title">Busca El Árbol Por</h1>
+<ion-list>
+  <ion-item>
+    <ion-input label="Nombre Común" placeholder="¿Con qué nombre lo conoces?"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-input label="Nombre Científico" placeholder="Nombre Científico"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-select label="Uso del Árbol" placeholder="¿Para qué se usa?">
+      <ion-select-option value="madera">Madera</ion-select-option>
+      <ion-select-option value="noMaderables">No Maderable</ion-select-option>
+      <ion-select-option value="medicina">Medicina</ion-select-option>
+      <ion-select-option value="industria">Industria</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item>
+    <ion-select label="En Peligro" placeholder="¿Amenazada?">
+      <ion-select-option value="Si">Si</ion-select-option>
+      <ion-select-option value="No">No</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item>
+    <ion-select label="Flor" placeholder="¿Tiene Flor?">
+      <ion-select-option value="Si">Si</ion-select-option>
+      <ion-select-option value="No">No</ion-select-option>
+    </ion-select>
+  </ion-item>
+</ion-list>
+</ion-content>
+
+<ion-content>
+  <h1 class="title">Árboles Encontrados</h1>
+  <ion-list>
+    <ion-item *ngFor="let item of items; let index">
+      <ion-avatar slot="start">
+        <img [src]="'https://picsum.photos/80/80?random=' + index" alt="avatar" />
+      </ion-avatar>
+      <ion-label>{{ item }}</ion-label>
+    </ion-item>
+  </ion-list>
+  <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

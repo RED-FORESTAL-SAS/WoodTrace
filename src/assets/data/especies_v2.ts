@@ -41,7 +41,7 @@ export interface Especie {
       },
       usos: {
         madera: {
-            construccion:["Columna", "Vigas"], 
+            construccion:["Columna", "Vigas"],
             carpinteria:["Mesas", "Sillas"],
             propiedadesOrganolepticas:{
                 olor: "Cuando se corta huele feo",

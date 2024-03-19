@@ -27,6 +27,11 @@ const routes: Routes = [
     loadChildren: () =>
       import("./help/help.module").then((m) => m.HelpPageModule),
   },
+  {
+    path: 'trees',
+    loadChildren: () => 
+    import('./trees/trees.module').then( m => m.TreesPageModule)
+  },
 ];
 
 @NgModule({
